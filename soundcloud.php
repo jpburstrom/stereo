@@ -144,10 +144,10 @@ class Soundcloud {
         $headers['User-Agent'] = (isset($headers['User-Agent']))
             ? $headers['User-Agent']
             : 'PHP SoundCloud/' . self::VERSION;
+        $headers['Content-Length'] = (isset($headers['Content-Length']))
+            ? $headers['Content-Length']
+            : 0;
         $headers = (is_array($headers)) ? $this->_build_header($headers) : array();
-        if(!isset($headers['Content-Length'])) {
-            $headers['Content-Length'] = 0;
-        }
         $options = array(
             CURLOPT_URL => $url,
             CURLOPT_HEADER => false,
