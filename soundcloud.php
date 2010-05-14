@@ -161,7 +161,7 @@ class Soundcloud {
 
         if (is_array($post_data) && count($post_data) > 0 || $mime === true) {
             $options[CURLOPT_POSTFIELDS] = (is_array($post_data) && count($post_data) == 1)
-                ? ((isset($post_data[0])) ? $post_data[0] : $post_data)
+                ? ((isset($post_data[key($post_data)])) ? $post_data[key($post_data)] : $post_data)
                 : $post_data;
             $options[CURLOPT_POST] = true;
         }
