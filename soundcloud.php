@@ -196,20 +196,9 @@ class Soundcloud {
     }
 
     private function _parse_response($response) {
-        $return = array();
-        $response = explode('&', $response);
+        parse_str($response, $output);
 
-        foreach ($response as $r) {
-            if (strstr($r, '=')) {
-                list($key, $val) = explode('=', $r);
-
-                if (!empty($key) && !empty($val)) {
-                    $return[urldecode($key)] = urldecode($val);
-                }
-            }
-        }
-
-        return (count($return) > 0) ? $return : false;
+        return (count($output) > 0) ? $output : false;
     }
 
 }
