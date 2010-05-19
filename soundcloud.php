@@ -9,8 +9,15 @@
 class Soundcloud {
 
     const VERSION = '1.1';
-    const URL_API = 'http://api.soundcloud.com/';
-    const URL_OAUTH = 'http://api.soundcloud.com/oauth/';
+
+    public static $urls = array(
+        'api' => 'http://api.soundcloud.com/',
+        'oauth' => array(
+            'access' => 'http://api.soundcloud.com/oauth/access_token',
+            'authorize' => 'http://soundcloud.com/oauth/authorize',
+            'request' => 'http://api.soundcloud.com/oauth/request_token'
+        )
+    );
 
     function __construct($consumer_key, $consumer_secret, $oauth_token = null, $oauth_token_secret = null) {
         $this->sha1_method = new OAuthSignatureMethod_HMAC_SHA1();
@@ -28,7 +35,7 @@ class Soundcloud {
             $token = $token['oauth_token'];
         }
 
-        return $this->_get_url('authorize') . sprintf('?oauth_token=%s', $token);
+        return $this->_get_url('authorize') . '?oauth_token=' . $token;
     }
 
     function get_request_token($oauth_callback) {
@@ -94,7 +101,7 @@ class Soundcloud {
 
     function request($resource, $method = 'GET', $args = array(), $headers = null) {
         if (!preg_match('/http:\/\//', $resource)) {
-            $url = self::URL_API . $resource;
+            $url = self::$urls['api'] . $resource;
         } else {
             $url = $resource;
         }
@@ -180,19 +187,9 @@ class Soundcloud {
     }
 
     private function _get_url($type) {
-        switch ($type) {
-            case 'access':
-                $method = 'access_token';
-                break;
-            case 'authorize':
-                $method = 'authorize';
-                break;
-            case 'request':
-                $method = 'request_token';
-                break;
-        }
-
-        return self::URL_OAUTH . $method;
+        return (array_key_exists($type, self::$urls['oauth']))
+            ? self::$urls['oauth'][$type]
+            : false;
     }
 
     private function _parse_response($response) {
