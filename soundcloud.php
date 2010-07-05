@@ -6,20 +6,74 @@
  * @version 1.1
  * @link http://github.com/mptre/php-soundcloud/
  */
+ // Extension of Array to allow linked partitioning
+ class PartitionedResource extends ArrayObject
+ {
+   function __construct($string) {
+       $data = $this->parse_to_array($string);
+       parent::__construct($data);
+   }
+
+    public function get_next_partition($soundcloud) {
+      $next_partition_url =  $this['@attributes']['next-partition-href'];
+      
+      if ($next_partition_url != '')
+      {
+        preg_match("/([a-z]+)\?/", $next_partition_url, $matches);
+        $method = $matches[0];
+
+        preg_match("/(\?)(.+)/", $next_partition_url, $matches);
+        $param = $matches[2];
+        
+        $string = $soundcloud->request($method.$param);
+        return new PartitionedResource($string);
+      }
+      else {
+        return '';
+      }
+    }
+    
+    /// Turns the string that the main PHP API returns into an array that works with our resource.  
+    private function parse_to_array($string) {
+      // SimpleXMLElement fails due to some of the characters in the query string, so they get stripped out here...
+      if (strstr($string, 'next-partition-href'))
+      {
+        preg_match("/\/([a-z]+\?.*)\"/", $string, $matches);
+        $queryparams = $matches[1];   
+        $string = str_replace($queryparams, "", $string);       
+      }
+      
+      $data = new SimpleXMLElement($string);
+      $data = get_object_vars($data);
+      // ...and replaced here.  
+      if ($data['@attributes']['next-partition-href'])
+      {
+        $data['@attributes']['next-partition-href'] = $data['@attributes']['next-partition-href'].$queryparams;
+      }
+      return $data;
+    }
+} 
+ 
+ 
 class Soundcloud {
 
     const VERSION = '1.1';
 
-    public static $urls = array(
-        'api' => 'http://api.soundcloud.com/',
-        'oauth' => array(
-            'access' => 'http://api.soundcloud.com/oauth/access_token',
-            'authorize' => 'http://soundcloud.com/oauth/authorize',
-            'request' => 'http://api.soundcloud.com/oauth/request_token'
-        )
-    );
+    function __construct($consumer_key, $consumer_secret, $oauth_token = null, $oauth_token_secret = null) {      
+        # Please add your API host and version information here.
+        $web = 'sandbox-soundcloud.com/';
+        $api = 'api.'.$web.'v1/'; // Version data can be added here, with a trailing slash.
 
-    function __construct($consumer_key, $consumer_secret, $oauth_token = null, $oauth_token_secret = null) {
+        # Setting up url data
+        $this->api = 'http://'.$api;
+        $oauth_access = $this->api.'oauth/access_token';
+        $oauth_request = $this->api.'oauth/request_token';
+        $oauth_auth = "http://".$web.'oauth/authorize';
+        $this->oauth = array('access' => $oauth_access, 'request' => $oauth_request, 'authorize' => $oauth_auth);
+      
+        if ($consumer_key == null) {
+            throw Exception("Error:  Consumer Key required for all requests, even those to public resources.");
+        }
         $this->sha1_method = new OAuthSignatureMethod_HMAC_SHA1();
         $this->consumer = new OAuthConsumer($consumer_key, $consumer_secret);
 
@@ -101,7 +155,7 @@ class Soundcloud {
 
     function request($resource, $method = 'GET', $args = array(), $headers = null) {
         if (!preg_match('/http:\/\//', $resource)) {
-            $url = self::$urls['api'] . $resource;
+            $url = $this->api.$resource;
         } else {
             $url = $resource;
         }
@@ -122,13 +176,10 @@ class Soundcloud {
             ($body === true) ? $args : null
         );
         $request->sign_request($this->sha1_method, $this->consumer, $this->token);
-
-        return $this->_curl(
-            $request->get_normalized_http_url(),
-            $request,
-            $args,
-            $headers
-        );
+        
+        // Formerly $url was $request->get_normalized_http_url(), which prevented params from being passed.  
+         return $this->_curl($url, $request, $args, $headers);
+        
     }
 
     private function _build_header($headers) {
@@ -187,8 +238,8 @@ class Soundcloud {
     }
 
     private function _get_url($type) {
-        return (array_key_exists($type, self::$urls['oauth']))
-            ? self::$urls['oauth'][$type]
+        return (array_key_exists($type, $this->oauth))
+            ? $this->oauth[$type]
             : false;
     }
 
@@ -197,5 +248,4 @@ class Soundcloud {
 
         return (count($output) > 0) ? $output : false;
     }
-
 }
