@@ -70,8 +70,8 @@ class Soundcloud {
     );
 
     function __construct($consumer_key, $consumer_secret, $oauth_token = null, $oauth_token_secret = null) {
-        if ($consumer_key == null) {
-            throw Exception("Error:  Consumer Key required for all requests, even those to public resources.");
+        if (empty($consumer_key)) {
+            throw new SoundcloudException('Consumer Key required for all requests, even those to public resources.');
         }
 
         $this->sha1_method = new OAuthSignatureMethod_HMAC_SHA1();
@@ -250,4 +250,8 @@ class Soundcloud {
 
         return (count($output) > 0) ? $output : false;
     }
+}
+
+class SoundcloudException extends Exception {
+    // kthxbye!
 }
