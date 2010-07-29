@@ -60,19 +60,24 @@ class Soundcloud {
     const VERSION = '1.1.0';
 
     public static $api_version = 1;
-    public static $urls = array(
-        'api' => 'http://api.soundcloud.com/v%d/',
-        'oauth' => array(
-            'access' => 'http://api.soundcloud.com/v%d/oauth/access_token',
-            'authorize' => 'http://soundcloud.com/oauth/authorize',
-            'request' => 'http://api.soundcloud.com/v%d/oauth/request_token'
-        )
+    public static $domains = array(
+        'development' => 'sandbox-soundcloud.com',
+        'production' => 'soundcloud.com'
+    );
+    public static $oauth_paths = array(
+        'access' => '/oauth/access_token',
+        'authorize' => '/oauth/authorize',
+        'request' => '/oauth/request_token'
     );
 
-    function __construct($consumer_key, $consumer_secret, $oauth_token = null, $oauth_token_secret = null) {
+    public $development;
+
+    function __construct($consumer_key, $consumer_secret, $oauth_token = null, $oauth_token_secret = null, $development = false) {
         if (empty($consumer_key)) {
             throw new SoundcloudException('Consumer Key required for all requests, even those to public resources.');
         }
+
+        $this->development = $development;
 
         $this->sha1_method = new OAuthSignatureMethod_HMAC_SHA1();
         $this->consumer = new OAuthConsumer($consumer_key, $consumer_secret);
@@ -238,11 +243,25 @@ class Soundcloud {
     }
 
     private function _get_url($type = null) {
-        $url = ($type && array_key_exists($type, self::$urls['oauth']))
-            ? self::$urls['oauth'][$type]
-            : self::$urls['api'];
+        if ($type == 'authorize') {
+            return 'http://'
+                . (($this->development)
+                    ? self::$domains['development']
+                    : self::$domains['production'])
+                . self::$oauth_paths[$type];
+        }
 
-        return sprintf($url, self::$api_version);
+        $url = 'http://api.';
+        $url .= ($this->development)
+            ? self::$domains['development']
+            : self::$domains['production'];
+        $url .= '/v' . self::$api_version;
+        $url .= (array_key_exists($type, self::$oauth_paths))
+            ? self::$oauth_paths[$type]
+            : null;
+        $url .= '/';
+
+        return $url;
     }
 
     private function _parse_response($response) {
