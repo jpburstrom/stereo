@@ -57,7 +57,7 @@
  
 class Soundcloud {
 
-    const VERSION = '1.1';
+    const VERSION = '1.1.0';
 
     function __construct($consumer_key, $consumer_secret, $oauth_token = null, $oauth_token_secret = null) {      
         # Please add your API host and version information here.
