@@ -3,13 +3,13 @@
  * API Wrapper for SoundCloud written in PHP with support for authication using OAuth.
  *
  * @package Soundcloud
- * @version 1.1.0
+ * @version 1.2.0
  * @author Anton Lindqvist <anton@qvister.se>
  * @link http://github.com/mptre/php-soundcloud/
  */
 class Soundcloud {
 
-    const VERSION = '1.1.0';
+    const VERSION = '1.2.0';
 
     public static $api_version = 1;
     public static $domains = array(
