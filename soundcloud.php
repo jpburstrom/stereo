@@ -59,21 +59,21 @@ class Soundcloud {
 
     const VERSION = '1.1.0';
 
+    public static $api_version = 1;
+    public static $urls = array(
+        'api' => 'http://api.soundcloud.com/v%d/',
+        'oauth' => array(
+            'access' => 'http://api.soundcloud.com/v%d/oauth/access_token',
+            'authorize' => 'http://soundcloud.com/oauth/authorize',
+            'request' => 'http://api.soundcloud.com/v%d/oauth/request_token'
+        )
+    );
+
     function __construct($consumer_key, $consumer_secret, $oauth_token = null, $oauth_token_secret = null) {
-        # Please add your API host and version information here.
-        $web = 'sandbox-soundcloud.com/';
-        $api = 'api.'.$web.'v1/'; // Version data can be added here, with a trailing slash.
-
-        # Setting up url data
-        $this->api = 'http://'.$api;
-        $oauth_access = $this->api.'oauth/access_token';
-        $oauth_request = $this->api.'oauth/request_token';
-        $oauth_auth = "http://".$web.'oauth/authorize';
-        $this->oauth = array('access' => $oauth_access, 'request' => $oauth_request, 'authorize' => $oauth_auth);
-
         if ($consumer_key == null) {
             throw Exception("Error:  Consumer Key required for all requests, even those to public resources.");
         }
+
         $this->sha1_method = new OAuthSignatureMethod_HMAC_SHA1();
         $this->consumer = new OAuthConsumer($consumer_key, $consumer_secret);
 
@@ -155,7 +155,7 @@ class Soundcloud {
 
     function request($resource, $method = 'GET', $args = array(), $headers = null) {
         if (!preg_match('/http:\/\//', $resource)) {
-            $url = $this->api.$resource;
+            $url = $this->_get_url() . $resource;
         } else {
             $url = $resource;
         }
@@ -237,10 +237,12 @@ class Soundcloud {
         return $response;
     }
 
-    private function _get_url($type) {
-        return (array_key_exists($type, $this->oauth))
-            ? $this->oauth[$type]
-            : false;
+    private function _get_url($type = null) {
+        $url = ($type && array_key_exists($type, self::$urls['oauth']))
+            ? self::$urls['oauth'][$type]
+            : self::$urls['api'];
+
+        return sprintf($url, self::$api_version);
     }
 
     private function _parse_response($response) {
