@@ -16,7 +16,7 @@
 
     public function get_next_partition($soundcloud) {
       $next_partition_url =  $this['@attributes']['next-partition-href'];
-      
+
       if ($next_partition_url != '')
       {
         preg_match("/([a-z]+)\?/", $next_partition_url, $matches);
@@ -24,7 +24,7 @@
 
         preg_match("/(\?)(.+)/", $next_partition_url, $matches);
         $param = $matches[2];
-        
+
         $string = $soundcloud->request($method.$param);
         return new PartitionedResource($string);
       }
@@ -32,34 +32,34 @@
         return '';
       }
     }
-    
-    /// Turns the string that the main PHP API returns into an array that works with our resource.  
+
+    /// Turns the string that the main PHP API returns into an array that works with our resource.
     private function parse_to_array($string) {
       // SimpleXMLElement fails due to some of the characters in the query string, so they get stripped out here...
       if (strstr($string, 'next-partition-href'))
       {
         preg_match("/\/([a-z]+\?.*)\"/", $string, $matches);
-        $queryparams = $matches[1];   
-        $string = str_replace($queryparams, "", $string);       
+        $queryparams = $matches[1];
+        $string = str_replace($queryparams, "", $string);
       }
-      
+
       $data = new SimpleXMLElement($string);
       $data = get_object_vars($data);
-      // ...and replaced here.  
+      // ...and replaced here.
       if ($data['@attributes']['next-partition-href'])
       {
         $data['@attributes']['next-partition-href'] = $data['@attributes']['next-partition-href'].$queryparams;
       }
       return $data;
     }
-} 
- 
- 
+}
+
+
 class Soundcloud {
 
     const VERSION = '1.1.0';
 
-    function __construct($consumer_key, $consumer_secret, $oauth_token = null, $oauth_token_secret = null) {      
+    function __construct($consumer_key, $consumer_secret, $oauth_token = null, $oauth_token_secret = null) {
         # Please add your API host and version information here.
         $web = 'sandbox-soundcloud.com/';
         $api = 'api.'.$web.'v1/'; // Version data can be added here, with a trailing slash.
@@ -70,7 +70,7 @@ class Soundcloud {
         $oauth_request = $this->api.'oauth/request_token';
         $oauth_auth = "http://".$web.'oauth/authorize';
         $this->oauth = array('access' => $oauth_access, 'request' => $oauth_request, 'authorize' => $oauth_auth);
-      
+
         if ($consumer_key == null) {
             throw Exception("Error:  Consumer Key required for all requests, even those to public resources.");
         }
@@ -176,10 +176,10 @@ class Soundcloud {
             ($body === true) ? $args : null
         );
         $request->sign_request($this->sha1_method, $this->consumer, $this->token);
-        
-        // Formerly $url was $request->get_normalized_http_url(), which prevented params from being passed.  
+
+        // Formerly $url was $request->get_normalized_http_url(), which prevented params from being passed.
          return $this->_curl($url, $request, $args, $headers);
-        
+
     }
 
     private function _build_header($headers) {
