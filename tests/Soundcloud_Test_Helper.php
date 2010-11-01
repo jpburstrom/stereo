@@ -14,7 +14,7 @@ require_once 'Soundcloud.php';
  *
  * @author Anton Lindqvist <anton@qvister.se>
  * @copyright 2010 Anton Lindqvist <anton@qvister.se>
- * @license todo: choose license!
+ * @license http://www.opensource.org/licenses/mit-license.php MIT
  * @link http://github.com/mptre/php-soundcloud
  */
 class Soundcloud_Expose extends Soundcloud {
