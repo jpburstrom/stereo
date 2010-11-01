@@ -6,18 +6,20 @@ set_include_path(
 );
 
 require_once 'PHPUnit/Framework.php';
-require_once 'Soundcloud.php';
+require_once 'Services/Soundcloud.php';
 
 /**
  * Extended class of the Soundcloud class in order to expose protected methods
  * for testing.
  *
+ * @category Services
+ * @package Services_Soundcloud
  * @author Anton Lindqvist <anton@qvister.se>
  * @copyright 2010 Anton Lindqvist <anton@qvister.se>
  * @license http://www.opensource.org/licenses/mit-license.php MIT
  * @link http://github.com/mptre/php-soundcloud
  */
-class Soundcloud_Expose extends Soundcloud {
+class Services_Soundcloud_Expose extends Services_Soundcloud {
 
     /**
      * Class constructor. See parent constructor for further reference.

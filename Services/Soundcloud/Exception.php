@@ -2,12 +2,14 @@
 /**
  * Soundcloud missing client id exception.
  *
+ * @category Services
+ * @package Services_Soundcloud
  * @author Anton Lindqvist <anton@qvister.se>
  * @copyright 2010 Anton Lindqvist <anton@qvister.se>
  * @license http://www.opensource.org/licenses/mit-license.php MIT
  * @link http://github.com/mptre/php-soundcloud
  */
-class Soundcloud_Missing_Client_Id_Exception extends Exception {
+class Services_Soundcloud_Missing_Client_Id_Exception extends Exception {
 
     /**
      * Default message.
@@ -23,12 +25,14 @@ class Soundcloud_Missing_Client_Id_Exception extends Exception {
 /**
  * Soundcloud invalid HTTP response code exception.
  *
+ * @category Services
+ * @package Services_Soundcloud
  * @author Anton Lindqvist <anton@qvister.se>
  * @copyright 2010 Anton Lindqvist <anton@qvister.se>
  * @license http://www.opensource.org/licenses/mit-license.php MIT
  * @link http://github.com/mptre/php-soundcloud
  */
-class Soundcloud_Invalid_Http_Response_Code_Exception extends Exception {
+class Services_Soundcloud_Invalid_Http_Response_Code_Exception extends Exception {
 
     /**
      * HTTP response body.
@@ -98,12 +102,14 @@ class Soundcloud_Invalid_Http_Response_Code_Exception extends Exception {
 /**
  * Soundcloud invalid response format exception.
  *
+ * @category Services
+ * @package Services_Soundcloud
  * @author Anton Lindqvist <anton@qvister.se>
  * @copyright 2010 Anton Lindqvist <anton@qvister.se>
  * @license http://www.opensource.org/licenses/mit-license.php MIT
  * @link http://github.com/mptre/php-soundcloud
  */
-class Soundcloud_Invalid_Response_Format_Exception extends Exception {
+class Services_Soundcloud_Invalid_Response_Format_Exception extends Exception {
 
     /**
      * Default message.

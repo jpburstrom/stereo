@@ -5,12 +5,14 @@ require_once 'Soundcloud/Version.php';
 /**
  * SoundCloud API wrapper with support for authentication using OAuth 2.
  *
+ * @category Services
+ * @package Services_Soundcloud
  * @author Anton Lindqvist <anton@qvister.se>
  * @copyright 2010 Anton Lindqvist <anton@qvister.se>
  * @license http://www.opensource.org/licenses/mit-license.php MIT
  * @link http://github.com/mptre/php-soundcloud
  */
-class Soundcloud {
+class Services_Soundcloud {
 
     /**
      * Access token returned by the service provider after a successful authentication.
@@ -153,12 +155,12 @@ class Soundcloud {
      * @param string $redirectUri OAuth redirect uri
      * @param boolean $development Sandbox mode
      *
-     * @throws Soundcloud_Missing_Client_Id_Exception when missing client id
+     * @throws Services_Soundcloud_Missing_Client_Id_Exception when missing client id
      * @return void
      */
     function __construct($clientId, $clientSecret, $redirectUri = null, $development = false) {
         if (empty($clientId)) {
-            throw new Soundcloud_Missing_Client_Id_Exception();
+            throw new Services_Soundcloud_Missing_Client_Id_Exception();
         }
 
         $this->_clientId = $clientId;
@@ -166,7 +168,7 @@ class Soundcloud {
         $this->_redirectUri = $redirectUri;
         $this->_development = $development;
         $this->_responseFormat = self::$_responseFormats['json'];
-        $this->version = Soundcloud_Version::get();
+        $this->version = Services_Soundcloud_Version::get();
     }
 
     /**
@@ -320,14 +322,14 @@ class Soundcloud {
      *
      * @param string $format Could either be xml or json
      *
-     * @throws Soundcloud_Invalid_Response_Format_Exception if the given response format isn't supported
+     * @throws Services_Soundcloud_Invalid_Response_Format_Exception if the given response format isn't supported
      * @return object
      */
     function setResponseFormat($format) {
         if (array_key_exists($format, self::$_responseFormats)) {
             $this->_responseFormat = self::$_responseFormats[$format];
         } else {
-            throw new Soundcloud_Invalid_Response_Format_Exception();
+            throw new Services_Soundcloud_Invalid_Response_Format_Exception();
         }
 
         return $this;
@@ -518,7 +520,7 @@ class Soundcloud {
      * @param string $url
      * @param array $options Optional curl options
      *
-     * @throws Soundcloud_Invalid_Http_Response_Code_Exception if the response code isn't valid
+     * @throws Services_Soundcloud_Invalid_Http_Response_Code_Exception if the response code isn't valid
      * @return mixed
      */
     protected function _request($url, $options = array()) {
@@ -554,7 +556,7 @@ class Soundcloud {
         if ($this->_validResponseCode($this->_lastHttpResponseCode)) {
             return $this->_lastHttpResponseBody;
         } else {
-            throw new Soundcloud_Invalid_Http_Response_Code_Exception(
+            throw new Services_Soundcloud_Invalid_Http_Response_Code_Exception(
                 null,
                 0,
                 $this->_lastHttpResponseBody,
