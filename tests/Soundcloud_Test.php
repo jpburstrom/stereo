@@ -209,7 +209,7 @@ class Soundcloud_Test extends PHPUnit_Framework_TestCase {
         $this->soundcloud->get('me');
     }
 
-    function testSoundcloudInvalidHttpResponseCodeGetHttpBody() {
+    function testSoundcloudInvalidHttpResponseCodeGetHttpBodyAndCode() {
         try {
             $this->soundcloud->get('me');
         } catch (Services_Soundcloud_Invalid_Http_Response_Code_Exception $e) {
@@ -217,17 +217,8 @@ class Soundcloud_Test extends PHPUnit_Framework_TestCase {
                 '{"error":"401 - Unauthorized"}',
                 $e->getHttpBody()
             );
-        }
-    }
 
-    function testSoundcloudInvalidHttpResponseCodeGetHttpCode() {
-        try {
-            $this->soundcloud->get('me');
-        } catch (Services_Soundcloud_Invalid_Http_Response_Code_Exception $e) {
-            $this->assertEquals(
-                401,
-                $e->getHttpCode()
-            );
+            $this->assertEquals(401, $e->getHttpCode());
         }
     }
 
