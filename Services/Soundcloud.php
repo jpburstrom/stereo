@@ -476,18 +476,15 @@ class Services_Soundcloud {
             $this->getAccessTokenUrl(),
             array(CURLOPT_POST => true, CURLOPT_POSTFIELDS => $postData)
         );
+        $response = json_decode($response, true);
 
-        if ($response) {
-            $response = json_decode($response, true);
+        if (array_key_exists('access_token', $response)) {
+            $this->_accessToken = $response['access_token'];
 
-            if (array_key_exists('access_token', $response)) {
-                $this->_accessToken = $response['access_token'];
-
-                return $response;
-            }
+            return $response;
+        } else {
+            return false;
         }
-
-        return false;
     }
 
     /**
