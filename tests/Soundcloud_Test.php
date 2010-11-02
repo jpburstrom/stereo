@@ -48,14 +48,7 @@ class Soundcloud_Test extends PHPUnit_Framework_TestCase {
             'ogg' => 'audio/ogg',
             'wav' => 'audio/x-wav'
         );
-        $unsupportedExtensions = array(
-            'gif' => 'image/gif',
-            'html' => 'text/html',
-            'jpg' => 'image/jpeg',
-            'mp4' => 'video/mp4',
-            'xml' => 'text/xml',
-            'xspf' => 'application/xspf+xml'
-        );
+        $unsupportedExtensions = array('gif', 'html', 'jpg', 'mp4', 'xml', 'xspf');
 
         foreach ($supportedExtensions as $extension => $mimeType) {
             $this->assertEquals(
