@@ -118,6 +118,6 @@ class Services_Soundcloud_Unsupported_Response_Format_Exception extends Exceptio
      *
      * @var string
      */
-    protected $message = 'Invalid response format given. Currently the supported response formats are either JSON or XML.';
+    protected $message = 'The given response format is unsupported.';
 
 }
