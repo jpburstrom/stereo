@@ -39,6 +39,38 @@ class Soundcloud_Test extends PHPUnit_Framework_TestCase {
         $this->assertEquals(1, $this->soundcloud->getApiVersion());
     }
 
+    function testGetAudioMimeTypes() {
+        $supportedExtensions = array(
+            'aac' => 'video/mp4',
+            'aiff' => 'audio/x-aiff',
+            'flac' => 'audio/flac',
+            'mp3' => 'audio/mpeg',
+            'ogg' => 'audio/ogg',
+            'wav' => 'audio/x-wav'
+        );
+        $unsupportedExtensions = array(
+            'gif' => 'image/gif',
+            'html' => 'text/html',
+            'jpg' => 'image/jpeg',
+            'mp4' => 'video/mp4',
+            'xml' => 'text/xml',
+            'xspf' => 'application/xspf+xml'
+        );
+
+        foreach ($supportedExtensions as $extension => $mimeType) {
+            $this->assertEquals(
+                $mimeType,
+                $this->soundcloud->getAudioMimeType($extension)
+            );
+        }
+
+        foreach ($unsupportedExtensions as $extension => $mimeType) {
+            $this->setExpectedException('Services_Soundcloud_Unsupported_Audio_Format_Exception');
+
+            $this->soundcloud->getAudioMimeType($extension);
+        }
+    }
+
     function testGetAuthorizeUrl() {
         $this->assertEquals(
             'https://soundcloud.com/connect?client_id=1337&redirect_uri=http%3A%2F%2Fsoundcloud.local%2Fcallback&response_type=code',

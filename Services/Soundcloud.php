@@ -33,6 +33,22 @@ class Services_Soundcloud {
     private static $_apiVersion = 1;
 
     /**
+     * Supported audio MIME types.
+     *
+     * @access private
+     *
+     * @var array
+     */
+    private static $_audioMimeTypes = array(
+        'aac' => 'video/mp4',
+        'aiff' => 'audio/x-aiff',
+        'flac' => 'audio/flac',
+        'mp3' => 'audio/mpeg',
+        'ogg' => 'audio/ogg',
+        'wav' => 'audio/x-wav'
+    );
+
+    /**
      * OAuth client id.
      *
      * @access private
@@ -262,6 +278,22 @@ class Services_Soundcloud {
      */
     function getApiVersion() {
         return self::$_apiVersion;
+    }
+
+    /**
+     * Get the corresponding MIME type for a given file extension.
+     *
+     * @param string $extension
+     *
+     * @return string
+     * @throws Services_Soundcloud_Unsupported_Audio_Format_Exception if the format is unsupported
+     */
+    function getAudioMimeType($extension) {
+        if (array_key_exists($extension, self::$_audioMimeTypes)) {
+            return self::$_audioMimeTypes[$extension];
+        } else {
+            throw new Services_Soundcloud_Unsupported_Audio_Format_Exception();
+        }
     }
 
     /**
