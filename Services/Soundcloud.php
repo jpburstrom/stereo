@@ -111,7 +111,7 @@ class Services_Soundcloud {
     private $_redirectUri;
 
     /**
-     * API response format mime type.
+     * API response format MIME type.
      *
      * @access private
      *
