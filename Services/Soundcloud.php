@@ -322,14 +322,14 @@ class Services_Soundcloud {
      *
      * @param string $format Could either be xml or json
      *
-     * @throws Services_Soundcloud_Invalid_Response_Format_Exception if the given response format isn't supported
+     * @throws Services_Soundcloud_Unsupported_Response_Format_Exception if the given response format isn't supported
      * @return object
      */
     function setResponseFormat($format) {
         if (array_key_exists($format, self::$_responseFormats)) {
             $this->_responseFormat = self::$_responseFormats[$format];
         } else {
-            throw new Services_Soundcloud_Invalid_Response_Format_Exception();
+            throw new Services_Soundcloud_Unsupported_Response_Format_Exception();
         }
 
         return $this;

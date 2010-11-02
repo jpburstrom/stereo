@@ -100,7 +100,7 @@ class Services_Soundcloud_Invalid_Http_Response_Code_Exception extends Exception
 }
 
 /**
- * Soundcloud invalid response format exception.
+ * Soundcloud unsupported response format exception.
  *
  * @category Services
  * @package Services_Soundcloud
@@ -109,7 +109,7 @@ class Services_Soundcloud_Invalid_Http_Response_Code_Exception extends Exception
  * @license http://www.opensource.org/licenses/mit-license.php MIT
  * @link http://github.com/mptre/php-soundcloud
  */
-class Services_Soundcloud_Invalid_Response_Format_Exception extends Exception {
+class Services_Soundcloud_Unsupported_Response_Format_Exception extends Exception {
 
     /**
      * Default message.

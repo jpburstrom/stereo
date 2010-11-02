@@ -94,7 +94,7 @@ class Soundcloud_Test extends PHPUnit_Framework_TestCase {
     }
 
     function testSetResponseFormatHtml() {
-        $this->setExpectedException('Services_Soundcloud_Invalid_Response_Format_Exception');
+        $this->setExpectedException('Services_Soundcloud_Unsupported_Response_Format_Exception');
 
         $this->soundcloud->setResponseFormat('html');
     }
