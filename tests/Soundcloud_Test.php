@@ -225,16 +225,8 @@ class Soundcloud_Test extends PHPUnit_Framework_TestCase {
     /**
      * @dataProvider dataProviderHttpHeaders
      */
-    function testParseHttpHeaders($headers) {
-        $parsedHeaders = $this->soundcloud->parseHttpHeaders($headers);
-        $expectedHeaders = array(
-            'date' => 'Wed, 17 Nov 2010 15:39:52 GMT',
-            'cache_control' => 'public',
-            'content_type' => 'text/html; charset=utf-8',
-            'content_encoding' => 'gzip',
-            'server' => 'foobar',
-            'content_length' => '1337'
-        );
+    function testParseHttpHeaders($rawHeaders, $expectedHeaders) {
+        $parsedHeaders = $this->soundcloud->parseHttpHeaders($rawHeaders);
 
         foreach ($parsedHeaders as $key => $val) {
             $this->assertEquals($val, $expectedHeaders[$key]);
@@ -253,15 +245,10 @@ class Soundcloud_Test extends PHPUnit_Framework_TestCase {
         $this->soundcloud->get('me');
     }
 
-    function testSoundcloudInvalidHttpResponseCode() {
-        $expectedHeaders = array(
-            'server' => 'nginx',
-            'content_type' => 'application/json; charset=utf-8',
-            'connection' => 'keep-alive',
-            'cache_control' => 'no-cache',
-            'content_length' => '30'
-        );
-
+    /**
+     * @dataProvider dataProviderSoundcloudInvalidHttpResponseCode
+     */
+    function testSoundcloudInvalidHttpResponseCode($expectedHeaders) {
         try {
             $this->soundcloud->get('me');
         } catch (Services_Soundcloud_Invalid_Http_Response_Code_Exception $e) {
@@ -282,7 +269,7 @@ class Soundcloud_Test extends PHPUnit_Framework_TestCase {
     }
 
     static function dataProviderHttpHeaders() {
-        $headers = <<<HEADERS
+        $rawHeaders = <<<HEADERS
 HTTP/1.1 200 OK
 Date: Wed, 17 Nov 2010 15:39:52 GMT
 Cache-Control: public
@@ -291,8 +278,28 @@ Content-Encoding: gzip
 Server: foobar
 Content-Length: 1337
 HEADERS;
+        $expectedHeaders = array(
+            'date' => 'Wed, 17 Nov 2010 15:39:52 GMT',
+            'cache_control' => 'public',
+            'content_type' => 'text/html; charset=utf-8',
+            'content_encoding' => 'gzip',
+            'server' => 'foobar',
+            'content_length' => '1337'
+        );
 
-        return array(array($headers));
+        return array(array($rawHeaders, $expectedHeaders));
+    }
+
+    static function dataProviderSoundcloudInvalidHttpResponseCode() {
+        $expectedHeaders = array(
+            'server' => 'nginx',
+            'content_type' => 'application/json; charset=utf-8',
+            'connection' => 'keep-alive',
+            'cache_control' => 'no-cache',
+            'content_length' => '30'
+        );
+
+        return array(array($expectedHeaders));
     }
 
     static function dataProviderVersion() {
