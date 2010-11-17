@@ -106,6 +106,15 @@ class Services_Soundcloud {
     private $_lastHttpResponseCode;
 
     /**
+     * HTTP response headers from last request.
+     *
+     * @access private
+     *
+     * @var array
+     */
+    private $_lastHttpResponseHeaders;
+
+    /**
      * OAuth paths.
      *
      * @access private
@@ -306,6 +315,23 @@ class Services_Soundcloud {
     }
 
     /**
+     * Get HTTP response header.
+     *
+     * @param string $header Name of the header
+     *
+     * @return mixed
+     */
+    function getHttpHeader($header) {
+        if (is_array($this->_lastHttpResponseHeaders)) {
+            return (array_key_exists($header, $this->_lastHttpResponseHeaders))
+                ? $this->_lastHttpResponseHeaders[$header]
+                : false;
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * Get redirect uri.
      *
      * @return mixed
@@ -449,6 +475,32 @@ class Services_Soundcloud {
         return $this->_request($url, $options);
     }
 
+    function uploadTrack($postData, $audioMimeType, $artworkMimeType = null) {
+        die(var_dump($postData));
+        $body = '';
+        $boundary = '---------------------------' . md5(rand());
+        $crlf = "\r\n";
+
+        foreach ($postData as $key => $val) {
+            $body .= "--{$boundary}{$crlf}";
+
+            if (preg_match('/\_data$/', $key)) {
+                $body .= "Content-Disposition: form-data; name=\"{$key}\"; filename=\"" . basename($val) . "\"{$crlf}";
+                $body .= "Content-Type: " . ((preg_match('/^asset\_/', $key)) ? $audioMimeType : $artworkMimeType) . $crlf;
+                $body .= $crlf;
+                $body .= 'contentz' . $crlf;
+                // $body .= file_get_contents($val) . $crlf;
+            } else {
+                $body .= "Content-Disposition: form-data; name=\"{$key}\"{$crlf}";
+                $body .= $crlf;
+                $body .= $val . $crlf;
+            }
+        }
+
+        $body .= "--{$boundary}--{$crlf}";
+        die(var_dump($body));
+    }
+
     /**
      * Construct default HTTP headers including response format and authorization.
      *
@@ -531,6 +583,31 @@ class Services_Soundcloud {
     }
 
     /**
+     * Parse HTTP response headers.
+     *
+     * @param string $headers
+     *
+     * @return array
+     */
+    protected function _parseHttpHeaders($headers) {
+        $headers = preg_split('/\n/', trim($headers));
+        $parsedHeaders = array();
+
+        // remove the first line inlucding the response code and message.
+        unset($headers[0]);
+
+        foreach ($headers as $header) {
+            list($key, $val) = preg_split('/\:\s/', $header, 2);
+            $key = str_replace('-', '_', strtolower($key));
+            $val = trim($val);
+
+            $parsedHeaders[$key] = $val;
+        }
+
+        return $parsedHeaders;
+    }
+
+    /**
      * Validates HTTP response code.
      *
      * @access protected
@@ -556,7 +633,7 @@ class Services_Soundcloud {
         $ch = curl_init();
         $defaultOptions = array(
             CURLOPT_URL => $url,
-            CURLOPT_HEADER => false,
+            CURLOPT_HEADER => true,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_USERAGENT => $this->_getUserAgent()
         );
@@ -577,10 +654,16 @@ class Services_Soundcloud {
 
         curl_setopt_array($ch, $options);
 
-        $this->_lastHttpResponseBody = curl_exec($ch);
-        $this->_lastHttpResponseCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $data = curl_exec($ch);
+        $info = curl_getinfo($ch);
 
         curl_close($ch);
+
+        $this->_lastHttpResponseHeaders = $this->_parseHttpHeaders(
+            substr($data, 0, $info['header_size'])
+        );
+        $this->_lastHttpResponseBody = substr($data, $info['header_size']);
+        $this->_lastHttpResponseCode = $info['http_code'];
 
         if ($this->_validResponseCode($this->_lastHttpResponseCode)) {
             return $this->_lastHttpResponseBody;

@@ -71,6 +71,18 @@ class Services_Soundcloud_Expose extends Services_Soundcloud {
     }
 
     /**
+     * Parse HTTP response headers.
+     *
+     * @param string $headers
+     *
+     * @return array
+     * @see Soundcloud::_parseHttpHeaders()
+     */
+    function parseHttpHeaders($headers) {
+        return $this->_parseHttpHeaders($headers);
+    }
+
+    /**
      * Validates http response code.
      *
      * @return boolean

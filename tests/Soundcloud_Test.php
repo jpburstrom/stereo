@@ -222,6 +222,25 @@ class Soundcloud_Test extends PHPUnit_Framework_TestCase {
         );
     }
 
+    /**
+     * @dataProvider dataProviderHttpHeaders
+     */
+    function testParseHttpHeaders($headers) {
+        $parsedHeaders = $this->soundcloud->parseHttpHeaders($headers);
+        $expectedHeaders = array(
+            'date' => 'Wed, 17 Nov 2010 15:39:52 GMT',
+            'cache_control' => 'public',
+            'content_type' => 'text/html; charset=utf-8',
+            'content_encoding' => 'gzip',
+            'server' => 'foobar',
+            'content_length' => '1337'
+        );
+
+        foreach ($parsedHeaders as $key => $val) {
+            $this->assertEquals($val, $expectedHeaders[$key]);
+        }
+    }
+
     function testSoundcloudMissingConsumerKeyException() {
         $this->setExpectedException('Services_Soundcloud_Missing_Client_Id_Exception');
 
@@ -234,7 +253,15 @@ class Soundcloud_Test extends PHPUnit_Framework_TestCase {
         $this->soundcloud->get('me');
     }
 
-    function testSoundcloudInvalidHttpResponseCodeGetHttpBodyAndCode() {
+    function testSoundcloudInvalidHttpResponseCode() {
+        $expectedHeaders = array(
+            'server' => 'nginx',
+            'content_type' => 'application/json; charset=utf-8',
+            'connection' => 'keep-alive',
+            'cache_control' => 'no-cache',
+            'content_length' => '30'
+        );
+
         try {
             $this->soundcloud->get('me');
         } catch (Services_Soundcloud_Invalid_Http_Response_Code_Exception $e) {
@@ -244,7 +271,28 @@ class Soundcloud_Test extends PHPUnit_Framework_TestCase {
             );
 
             $this->assertEquals(401, $e->getHttpCode());
+
+            foreach ($expectedHeaders as $key => $val) {
+                $this->assertEquals(
+                    $val,
+                    $this->soundcloud->getHttpHeader($key)
+                );
+            }
         }
+    }
+
+    static function dataProviderHttpHeaders() {
+        $headers = <<<HEADERS
+HTTP/1.1 200 OK
+Date: Wed, 17 Nov 2010 15:39:52 GMT
+Cache-Control: public
+Content-Type: text/html; charset=utf-8
+Content-Encoding: gzip
+Server: foobar
+Content-Length: 1337
+HEADERS;
+
+        return array(array($headers));
     }
 
     static function dataProviderVersion() {
