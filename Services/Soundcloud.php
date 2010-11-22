@@ -498,6 +498,16 @@ class Services_Soundcloud {
         return $this->_request($url, $options);
     }
 
+    /**
+     * Upload new track.
+     *
+     * @param array $postData Track data
+     * @param string $audioMimeType Audio MIME type
+     * @param string $artworkMimeType Artwork MIME type if supplied
+     *
+     * @return mixed
+     * @see Soundcloud::_request()
+     */
     function uploadTrack($postData, $audioMimeType, $artworkMimeType = null) {
         $body = '';
         $boundary = '---------------------------' . md5(rand());
@@ -506,12 +516,11 @@ class Services_Soundcloud {
         foreach ($postData as $key => $val) {
             $body .= "--{$boundary}{$crlf}";
 
-            if (preg_match('/\_data$/', $key)) {
+            if (preg_match('/\_data/', $key)) {
                 $body .= "Content-Disposition: form-data; name=\"{$key}\"; filename=\"" . basename($val) . "\"{$crlf}";
-                $body .= "Content-Type: " . ((preg_match('/^asset\_/', $key)) ? $audioMimeType : $artworkMimeType) . $crlf;
+                $body .= "Content-Type: " . ((preg_match('/asset\_/', $key)) ? $audioMimeType : $artworkMimeType) . $crlf;
                 $body .= $crlf;
-                $body .= 'contentz' . $crlf;
-                // $body .= file_get_contents($val) . $crlf;
+                $body .= file_get_contents($val) . $crlf;
             } else {
                 $body .= "Content-Disposition: form-data; name=\"{$key}\"{$crlf}";
                 $body .= $crlf;
@@ -520,7 +529,15 @@ class Services_Soundcloud {
         }
 
         $body .= "--{$boundary}--{$crlf}";
-        die(var_dump($body));
+
+        $options = array(
+            CURLOPT_HTTPHEADER => array(
+                'Content-Type: multipart/form-data; boundary=' . $boundary,
+                'Content-Length: ' . strlen($body)
+            )
+        );
+
+        return $this->post('tracks', $body, $options);
     }
 
     /**
