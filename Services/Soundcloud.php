@@ -410,15 +410,16 @@ class Services_Soundcloud {
      * Send a GET HTTP request.
      *
      * @param string $path URI to request
-     * @param array $params Options query string parameters
+     * @param array $params Optional query string parameters
+     * @param array $options Optional cURL options
      *
      * @return mixed
      * @see Soundcloud::_request()
      */
-    function get($path, $params = array()) {
+    function get($path, $params = array(), $options = array()) {
         $url = $this->_buildUrl($path, $params);
 
-        return $this->_request($url, $params);
+        return $this->_request($url, $options);
     }
 
     /**
@@ -426,16 +427,23 @@ class Services_Soundcloud {
      *
      * @param string $path URI to request
      * @param array $postData Optional post data
+     * @param array $options Optional cURL options
      *
      * @return mixed
      * @see Soundcloud::_request()
      */
-    function post($path, $postData = array()) {
+    function post($path, $postData = array(), $options = array()) {
         $url = $this->_buildUrl($path);
-        $options = array(
+        $defaultOptions = array(
             CURLOPT_POST => true,
             CURLOPT_POSTFIELDS => $postData
         );
+
+        foreach ($defaultOptions as $key => $val) {
+            if (!array_key_exists($key, $options)) {
+                $options[$key] = $val;
+            }
+        }
 
         return $this->_request($url, $options);
     }
@@ -445,16 +453,24 @@ class Services_Soundcloud {
      *
      * @param string $path URI to request
      * @param array $postData Optional post data
+     * @param array $options Optional cURL options
      *
      * @return mixed
      * @see Soundcloud::_request()
      */
-    function put($path, $postData) {
+    function put($path, $postData, $options) {
         $url = $this->_buildUrl($path);
-        $options = array(
+        $defaultOptions = array(
             CURLOPT_CUSTOMREQUEST => 'PUT',
             CURLOPT_POSTFIELDS => $postData
+        
         );
+
+        foreach ($defaultOptions as $key => $val) {
+            if (!array_key_exists($key, $options)) {
+                $options[$key] = $val;
+            }
+        }
 
         return $this->_request($url, $options);
     }
@@ -464,19 +480,25 @@ class Services_Soundcloud {
      *
      * @param string $path URI to request
      * @param array $params Optional query string parameters
+     * @param array $options Optional cURL options
      *
      * @return mixed
      * @see Soundcloud::_request()
      */
-    function delete($path, $params = array()) {
+    function delete($path, $params = array(), $options = array()) {
         $url = $this->_buildUrl($path, $params);
-        $options = array(CURLOPT_CUSTOMREQUEST => 'DELETE');
+        $defaultOptions = array(CURLOPT_CUSTOMREQUEST => 'DELETE');
+
+        foreach ($defaultOptions as $key => $val) {
+            if (!array_key_exists($key, $options)) {
+                $options[$key] = $val;
+            }
+        }
 
         return $this->_request($url, $options);
     }
 
     function uploadTrack($postData, $audioMimeType, $artworkMimeType = null) {
-        die(var_dump($postData));
         $body = '';
         $boundary = '---------------------------' . md5(rand());
         $crlf = "\r\n";
