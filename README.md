@@ -36,7 +36,7 @@ try {
         $soundcloud->post(
             'tracks/1/comments',
             $comment,
-            array(CURLOPT_HTTPHEADER => 'Content-Type: application/xml')
+            array(CURLOPT_HTTPHEADER => array('Content-Type: application/xml'))
         ),
         true
     );
@@ -57,7 +57,7 @@ try {
         $soundcloud->put(
             'tracks/1',
             $track,
-            array(CURLOPT_HTTPHEADER => 'Content-Type: application/xml')
+            array(CURLOPT_HTTPHEADER => array('Content-Type: application/xml'))
         ),
         true
     );
