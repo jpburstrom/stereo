@@ -632,10 +632,11 @@ class Services_Soundcloud {
         $headers = preg_split('/\n/', trim($headers));
         $parsedHeaders = array();
 
-        // remove the first line inlucding the response code and message.
-        unset($headers[0]);
-
         foreach ($headers as $header) {
+            if (!preg_match('/\:\s/', $header)) {
+                continue;
+            }
+
             list($key, $val) = preg_split('/\:\s/', $header, 2);
             $key = str_replace('-', '_', strtolower($key));
             $val = trim($val);
