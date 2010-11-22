@@ -17,21 +17,18 @@ The wrapper includes convenient methods used to perform HTTP requests on behalf 
 
 ### GET
 
-```php
-try {
+<pre><code>try {
     $response = json_decode($soundcloud->get('me'), true);
 } catch (Services_Soundcloud_Invalid_Http_Response_Code_Exception $e) {
     exit($e->getMessage());
-}
-```
+}</code></pre>
 
 ### POST
 
-```php
-$comment = <<<EOH
-<comment>
-    <body>Yeah!</body>
-</comment>
+<pre><code>$comment = &lt;&lt;&lt;EOH
+&lt;comment&gt;
+    &lt;body&gt;Yeah!&lt;/body&gt;
+&lt;/comment&gt;
 EOH;
 
 try {
@@ -45,16 +42,14 @@ try {
     );
 } catch (Services_Soundcloud_Invalid_Http_Response_Code_Exception $e) {
     exit($e->getMessage());
-}
-```
+}</code></pre>
 
 ### PUT
 
-```php
-$track = <<<EOH
-<track>
-    <downloadable>true</downloadable>
-</track>
+<pre><code>$track = &lt;&lt;&lt;EOH
+&lt;track&gt;
+    &lt;downloadable&gt;true&lt;/downloadable&gt;
+&lt;/track&gt;
 EOH;
 
 try {
@@ -68,18 +63,15 @@ try {
     );
 } catch (Services_Soundcloud_Invalid_Http_Response_Code_Exception $e) {
     exit($e->getMessage());
-}
-```
+}</code></pre>
 
 ### DELETE
 
-```php
-try {
+<pre><code>try {
     $response = json_decode($soundcloud->delete('tracks/1'), true);
 } catch (Services_Soundcloud_Invalid_Http_Response_Code_Exception $e) {
     exit($e->getMessage());
-}
-```
+}</code></pre>
 
 ## Feedback and questions
 
