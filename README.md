@@ -4,7 +4,7 @@
 
 A wrapper for the SoundCloud API written in PHP with support for authentication using [OAuth 2.0](http://oauth.net/2/).
 
-The wrapper got a real overhaul with version 2.0. The current version can easily be distributed as a PEAR package.
+The wrapper got a real overhaul with version 2.0. The current version was written with [PEAR](http://pear.php.net/) in mind and can easily by distributed as a PEAR package.
 
 ## Getting started
 
