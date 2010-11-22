@@ -258,7 +258,7 @@ class Services_Soundcloud {
      * @return mixed
      * @see Soundcloud::_getAccessToken()
      */
-    function accessTokenRefresh($refreshToken, $postData) {
+    function accessTokenRefresh($refreshToken, $postData = array()) {
         $defaultPostData = array(
             'refresh_token' => $refreshToken,
             'client_id' => $this->_clientId,
