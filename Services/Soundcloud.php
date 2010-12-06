@@ -458,7 +458,7 @@ class Services_Soundcloud {
      * @return mixed
      * @see Soundcloud::_request()
      */
-    function put($path, $postData, $options) {
+    function put($path, $postData, $options = array()) {
         $url = $this->_buildUrl($path);
         $defaultOptions = array(
             CURLOPT_CUSTOMREQUEST => 'PUT',
