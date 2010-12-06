@@ -499,48 +499,6 @@ class Services_Soundcloud {
     }
 
     /**
-     * Upload new track.
-     *
-     * @param array $postData Track data
-     * @param string $audioMimeType Audio MIME type
-     * @param string $artworkMimeType Artwork MIME type if supplied
-     *
-     * @return mixed
-     * @see Soundcloud::_request()
-     */
-    function uploadTrack($postData, $audioMimeType, $artworkMimeType = null) {
-        $body = '';
-        $boundary = '---------------------------' . md5(rand());
-        $crlf = "\r\n";
-
-        foreach ($postData as $key => $val) {
-            $body .= "--{$boundary}{$crlf}";
-
-            if (preg_match('/\_data/', $key)) {
-                $body .= "Content-Disposition: form-data; name=\"{$key}\"; filename=\"" . basename($val) . "\"{$crlf}";
-                $body .= "Content-Type: " . ((preg_match('/asset\_/', $key)) ? $audioMimeType : $artworkMimeType) . $crlf;
-                $body .= $crlf;
-                $body .= file_get_contents($val) . $crlf;
-            } else {
-                $body .= "Content-Disposition: form-data; name=\"{$key}\"{$crlf}";
-                $body .= $crlf;
-                $body .= $val . $crlf;
-            }
-        }
-
-        $body .= "--{$boundary}--{$crlf}";
-
-        $options = array(
-            CURLOPT_HTTPHEADER => array(
-                'Content-Type: multipart/form-data; boundary=' . $boundary,
-                'Content-Length: ' . strlen($body)
-            )
-        );
-
-        return $this->post('tracks', $body, $options);
-    }
-
-    /**
      * Construct default HTTP headers including response format and authorization.
      *
      * @return array $headers
