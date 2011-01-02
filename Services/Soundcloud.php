@@ -322,10 +322,10 @@ class Services_Soundcloud {
      * @return mixed
      */
     function getHttpHeader($header) {
-        if (is_array($this->_lastHttpResponseHeaders)) {
-            return (array_key_exists($header, $this->_lastHttpResponseHeaders))
-                ? $this->_lastHttpResponseHeaders[$header]
-                : false;
+        if (is_array($this->_lastHttpResponseHeaders)
+            && array_key_exists($header, $this->_lastHttpResponseHeaders)
+        ) {
+            return $this->_lastHttpResponseHeaders[$header];
         } else {
             return false;
         }
@@ -635,22 +635,18 @@ class Services_Soundcloud {
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_USERAGENT => $this->_getUserAgent()
         );
-
-        // Can't use array_merge here since it messes up the array keys.
-        foreach ($defaultOptions as $key => $val) {
-            $options[$key] = $val;
-        }
+        $defaultOptions += $options;
 
         if (array_key_exists(CURLOPT_HTTPHEADER, $options)) {
-            $options[CURLOPT_HTTPHEADER] = array_merge(
+            $defaultOptions[CURLOPT_HTTPHEADER] = array_merge(
                 $this->_buildDefaultHeaders(),
                 $options[CURLOPT_HTTPHEADER]
             );
         } else {
-            $options[CURLOPT_HTTPHEADER] = $this->_buildDefaultHeaders();
+            $defaultOptions[CURLOPT_HTTPHEADER] = $this->_buildDefaultHeaders();
         }
 
-        curl_setopt_array($ch, $options);
+        curl_setopt_array($ch, $defaultOptions);
 
         $data = curl_exec($ch);
         $info = curl_getinfo($ch);
