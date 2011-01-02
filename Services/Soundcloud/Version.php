@@ -13,7 +13,7 @@ class Services_Soundcloud_Version {
 
     const MAJOR = 2;
     const MINOR = 0;
-    const PATCH = 2;
+    const PATCH = 3;
 
     public static function get() {
         return implode('.', array(self::MAJOR, self::MINOR, self::PATCH));
