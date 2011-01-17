@@ -5,7 +5,6 @@ set_include_path(
     . realpath(dirname(__FILE__) . '/../')
 );
 
-require_once 'PHPUnit/Framework.php';
 require_once 'Services/Soundcloud.php';
 
 /**
