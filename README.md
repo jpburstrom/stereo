@@ -75,6 +75,16 @@ try {
     exit($e->getMessage());
 }</code></pre>
 
+### DOWNLOAD TRACK
+
+<pre><code>try {
+    $track = $soundcloud->download(1337);
+} catch (Services_Soundcloud_Invalid_Http_Response_Code_Exception $e) {
+    exit($e->getMessage());
+}
+
+// do something clever with $track. Save to file perhaps?</code></pre>
+
 ## Feedback and questions
 
 Found a bug or missing a feature? Don't hesitate to create a new issue here on GitHub. Or contact me [directly](https://github.com/mptre).
