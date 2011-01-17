@@ -204,13 +204,13 @@ class Services_Soundcloud {
      * @return string
      * @see Soundcloud::_buildUrl()
      */
-    function getAuthorizeUrl($options = array()) {
-        $params = array(
+    function getAuthorizeUrl($params = array()) {
+        $defaultParams = array(
             'client_id' => $this->_clientId,
             'redirect_uri' => $this->_redirectUri,
             'response_type' => 'code'
         );
-        $params = array_merge($params, $options);
+        $params = array_merge($defaultParams, $params);
 
         return $this->_buildUrl(self::$_paths['authorize'], $params, false);
     }
@@ -232,11 +232,12 @@ class Services_Soundcloud {
      *
      * @param string $code OAuth code returned from the service provider
      * @param array $postData Optional post data
+     * @param array $curlOptions Optional cURL options
      *
      * @return mixed
      * @see Soundcloud::_getAccessToken()
      */
-    function accessToken($code, $postData = array()) {
+    function accessToken($code, $postData = array(), $curlOptions = array()) {
         $defaultPostData = array(
             'code' => $code,
             'client_id' => $this->_clientId,
@@ -246,7 +247,7 @@ class Services_Soundcloud {
         );
         $postData = array_merge($defaultPostData, $postData);
 
-        return $this->_getAccessToken($postData);
+        return $this->_getAccessToken($postData, $curlOptions);
     }
 
     /**
@@ -254,11 +255,12 @@ class Services_Soundcloud {
      *
      * @param string $refreshToken
      * @param array $postData Optional post data
+     * @param array $curlOptions Optional cURL options
      *
      * @return mixed
      * @see Soundcloud::_getAccessToken()
      */
-    function accessTokenRefresh($refreshToken, $postData = array()) {
+    function accessTokenRefresh($refreshToken, $postData = array(), $curlOptions = array()) {
         $defaultPostData = array(
             'refresh_token' => $refreshToken,
             'client_id' => $this->_clientId,
@@ -268,7 +270,7 @@ class Services_Soundcloud {
         );
         $postData = array_merge($defaultPostData, $postData);
 
-        return $this->_getAccessToken($postData);
+        return $this->_getAccessToken($postData, $curlOptions);
     }
 
     /**
@@ -411,15 +413,15 @@ class Services_Soundcloud {
      *
      * @param string $path URI to request
      * @param array $params Optional query string parameters
-     * @param array $options Optional cURL options
+     * @param array $curlOptions Optional cURL options
      *
      * @return mixed
      * @see Soundcloud::_request()
      */
-    function get($path, $params = array(), $options = array()) {
+    function get($path, $params = array(), $curlOptions = array()) {
         $url = $this->_buildUrl($path, $params);
 
-        return $this->_request($url, $options);
+        return $this->_request($url, $curlOptions);
     }
 
     /**
@@ -427,23 +429,15 @@ class Services_Soundcloud {
      *
      * @param string $path URI to request
      * @param array $postData Optional post data
-     * @param array $options Optional cURL options
+     * @param array $curlOptions Optional cURL options
      *
      * @return mixed
      * @see Soundcloud::_request()
      */
-    function post($path, $postData = array(), $options = array()) {
+    function post($path, $postData = array(), $curlOptions = array()) {
         $url = $this->_buildUrl($path);
-        $defaultOptions = array(
-            CURLOPT_POST => true,
-            CURLOPT_POSTFIELDS => $postData
-        );
-
-        foreach ($defaultOptions as $key => $val) {
-            if (!array_key_exists($key, $options)) {
-                $options[$key] = $val;
-            }
-        }
+        $options = array(CURLOPT_POST => true, CURLOPT_POSTFIELDS => $postData);
+        $options += $curlOptions;
 
         return $this->_request($url, $options);
     }
@@ -453,26 +447,20 @@ class Services_Soundcloud {
      *
      * @param string $path URI to request
      * @param array $postData Optional post data
-     * @param array $options Optional cURL options
+     * @param array $curlOptions Optional cURL options
      *
      * @return mixed
      * @see Soundcloud::_request()
      */
-    function put($path, $postData, $options = array()) {
+    function put($path, $postData, $curlOptions = array()) {
         $url = $this->_buildUrl($path);
-        $defaultOptions = array(
+        $options = array(
             CURLOPT_CUSTOMREQUEST => 'PUT',
             CURLOPT_POSTFIELDS => $postData
-        
         );
+        $options += $curlOptions;
 
-        foreach ($defaultOptions as $key => $val) {
-            if (!array_key_exists($key, $options)) {
-                $options[$key] = $val;
-            }
-        }
-
-        return $this->_request($url, $options);
+        return $this->_request($url, $curlOptions);
     }
 
     /**
@@ -480,20 +468,15 @@ class Services_Soundcloud {
      *
      * @param string $path URI to request
      * @param array $params Optional query string parameters
-     * @param array $options Optional cURL options
+     * @param array $curlOptions Optional cURL options
      *
      * @return mixed
      * @see Soundcloud::_request()
      */
-    function delete($path, $params = array(), $options = array()) {
+    function delete($path, $params = array(), $curlOptions = array()) {
         $url = $this->_buildUrl($path, $params);
-        $defaultOptions = array(CURLOPT_CUSTOMREQUEST => 'DELETE');
-
-        foreach ($defaultOptions as $key => $val) {
-            if (!array_key_exists($key, $options)) {
-                $options[$key] = $val;
-            }
-        }
+        $options = array(CURLOPT_CUSTOMREQUEST => 'DELETE');
+        $options += $curlOptions;
 
         return $this->_request($url, $options);
     }
@@ -549,15 +532,17 @@ class Services_Soundcloud {
      * Retrieve access token.
      *
      * @param array $postData Post data
+     * @param array $curlOptions Optional cURL options
      *
      * @return mixed
      */
-    protected function _getAccessToken($postData) {
-        $response = $this->_request(
-            $this->getAccessTokenUrl(),
-            array(CURLOPT_POST => true, CURLOPT_POSTFIELDS => $postData)
+    protected function _getAccessToken($postData, $curlOptions = array()) {
+        $options = array(CURLOPT_POST => true, CURLOPT_POSTFIELDS => $postData);
+        $options += $curlOptions;
+        $response = json_decode(
+            $this->_request($this->getAccessTokenUrl(), $options),
+            true
         );
-        $response = json_decode($response, true);
 
         if (array_key_exists('access_token', $response)) {
             $this->_accessToken = $response['access_token'];
@@ -622,31 +607,31 @@ class Services_Soundcloud {
      * @access protected
      *
      * @param string $url
-     * @param array $options Optional curl options
+     * @param array $curlOptions Optional cURL options
      *
      * @throws Services_Soundcloud_Invalid_Http_Response_Code_Exception if the response code isn't valid
      * @return mixed
      */
-    protected function _request($url, $options = array()) {
+    protected function _request($url, $curlOptions = array()) {
         $ch = curl_init();
-        $defaultOptions = array(
+        $options = array(
             CURLOPT_URL => $url,
             CURLOPT_HEADER => true,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_USERAGENT => $this->_getUserAgent()
         );
-        $defaultOptions += $options;
+        $options += $curlOptions;
 
         if (array_key_exists(CURLOPT_HTTPHEADER, $options)) {
-            $defaultOptions[CURLOPT_HTTPHEADER] = array_merge(
+            $options[CURLOPT_HTTPHEADER] = array_merge(
                 $this->_buildDefaultHeaders(),
-                $options[CURLOPT_HTTPHEADER]
+                $curlOptions[CURLOPT_HTTPHEADER]
             );
         } else {
-            $defaultOptions[CURLOPT_HTTPHEADER] = $this->_buildDefaultHeaders();
+            $options[CURLOPT_HTTPHEADER] = $this->_buildDefaultHeaders();
         }
-
-        curl_setopt_array($ch, $defaultOptions);
+        
+        curl_setopt_array($ch, $options);
 
         $data = curl_exec($ch);
         $info = curl_getinfo($ch);
