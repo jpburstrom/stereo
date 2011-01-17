@@ -15,6 +15,15 @@ require_once 'Soundcloud/Version.php';
 class Services_Soundcloud {
 
     /**
+     * Custom cURL option.
+     *
+     * @access public
+     *
+     * @var integer
+     */
+    const CURLOPT_OAUTH_TOKEN = 173;
+
+    /**
      * Access token returned by the service provider after a successful authentication.
      *
      * @access private
@@ -483,18 +492,55 @@ class Services_Soundcloud {
     }
 
     /**
+     * Download track.
+     *
+     * @param integer $trackId
+     * @param array Optional query string parameters
+     * @param array $curlOptions Optional cURL options
+     *
+     * @return mixed
+     * @see Soundcloud::_request()
+     */
+    function download($trackId, $params = array(), $curlOptions = array()) {
+        $lastResponseFormat = array_pop(
+            preg_split('/\//', $this->getResponseFormat())
+        );
+        $defaultParams = array('oauth_token' => $this->getAccessToken());
+        $defaultCurlOptions = array(
+            CURLOPT_FOLLOWLOCATION => true,
+            self::CURLOPT_OAUTH_TOKEN => false
+        );
+        $url = $this->_buildUrl(
+            'tracks/' . $trackId . '/download',
+            array_merge($defaultParams, $params)
+        );
+        $options = $defaultCurlOptions + $curlOptions;
+
+        $this->setResponseFormat('*');
+
+        $response = $this->_request($url, $options);
+
+        // rollback to the previously defined response format.
+        $this->setResponseFormat($lastResponseFormat);
+
+        return $response;
+    }
+
+    /**
      * Construct default HTTP headers including response format and authorization.
+     *
+     * @param boolean Include access token or not
      *
      * @return array $headers
      */
-    protected function _buildDefaultHeaders() {
+    protected function _buildDefaultHeaders($includeAccessToken = true) {
         $headers = array();
 
         if ($this->_responseFormat) {
             array_push($headers, 'Accept: ' . $this->_responseFormat);
         }
 
-        if ($this->_accessToken) {
+        if ($includeAccessToken && $this->_accessToken) {
             array_push($headers, 'Authorization: OAuth ' . $this->_accessToken);
         }
 
@@ -623,15 +669,22 @@ class Services_Soundcloud {
         );
         $options += $curlOptions;
 
+        if (array_key_exists(self::CURLOPT_OAUTH_TOKEN, $options)) {
+            $includeAccessToken = $options[self::CURLOPT_OAUTH_TOKEN];
+            unset($options[self::CURLOPT_OAUTH_TOKEN]);
+        } else {
+            $includeAccessToken = true;
+        }
+
         if (array_key_exists(CURLOPT_HTTPHEADER, $options)) {
             $options[CURLOPT_HTTPHEADER] = array_merge(
                 $this->_buildDefaultHeaders(),
                 $curlOptions[CURLOPT_HTTPHEADER]
             );
         } else {
-            $options[CURLOPT_HTTPHEADER] = $this->_buildDefaultHeaders();
+            $options[CURLOPT_HTTPHEADER] = $this->_buildDefaultHeaders($includeAccessToken);
         }
-        
+
         curl_setopt_array($ch, $options);
 
         $data = curl_exec($ch);
