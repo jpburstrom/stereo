@@ -152,6 +152,7 @@ class Services_Soundcloud {
      * @var array
      */
     private static $_responseFormats = array(
+        '*' => '*/*',
         'json' => 'application/json',
         'xml' => 'application/xml'
     );

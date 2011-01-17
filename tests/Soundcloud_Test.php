@@ -124,6 +124,15 @@ class Soundcloud_Test extends PHPUnit_Framework_TestCase {
         $this->soundcloud->setResponseFormat('html');
     }
 
+    function testSetResponseFormatAll() {
+        $this->soundcloud->setResponseFormat('*');
+
+        $this->assertEquals(
+            '*/*',
+            $this->soundcloud->getResponseFormat()
+        );
+    }
+
     function testSetResponseFormatJson() {
         $this->soundcloud->setResponseFormat('json');
 
