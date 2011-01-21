@@ -470,7 +470,7 @@ class Services_Soundcloud {
         );
         $options += $curlOptions;
 
-        return $this->_request($url, $curlOptions);
+        return $this->_request($url, $options);
     }
 
     /**
