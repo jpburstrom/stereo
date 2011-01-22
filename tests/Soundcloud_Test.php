@@ -26,7 +26,7 @@ class Soundcloud_Test extends PHPUnit_Framework_TestCase {
 
     function testGetUserAgent() {
         $this->assertRegExp(
-            '/^PHP\-SoundCloud\/[0-9]+\.[0-9]+\.[0-9]+(beta[0-9]+)?$/',
+            '/^PHP\-SoundCloud\/[0-9]+\.[0-9]+\.[0-9]+$/',
             $this->soundcloud->getUserAgent()
         );
     }
