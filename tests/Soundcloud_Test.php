@@ -17,21 +17,17 @@ class Soundcloud_Test extends PHPUnit_Framework_TestCase {
         $this->soundcloud = null;
     }
 
-    /**
-     * @dataProvider dataProviderVersion
-     */
-    function testVersionFormat($regex) {
-        $this->assertTrue(
-            (bool)preg_match($regex, Services_Soundcloud_Version::get())
+    function testVersionFormat() {
+        $this->assertRegExp(
+            '/^[0-9]+\.[0-9]+\.[0-9]+$/',
+            Services_Soundcloud_Version::get()
         );
     }
 
-    /**
-     * @dataProvider dataProviderUserAgent
-     */
-    function testGetUserAgent($regex) {
-        $this->assertTrue(
-            (bool)preg_match($regex, $this->soundcloud->getUserAgent())
+    function testGetUserAgent() {
+        $this->assertRegExp(
+            '/^PHP\-SoundCloud\/[0-9]+\.[0-9]+\.[0-9]+(beta[0-9]+)?$/',
+            $this->soundcloud->getUserAgent()
         );
     }
 
