@@ -307,16 +307,4 @@ HEADERS;
         return array(array($expectedHeaders));
     }
 
-    static function dataProviderVersion() {
-        return array(array('/^[0-9]+\.[0-9]+\.[0-9]+(beta[0-9]+)?$/'));
-    }
-
-    static function dataProviderUserAgent() {
-        return array(
-            array(
-                '/^PHP\-SoundCloud\/[0-9]+\.[0-9]+\.[0-9]+(beta[0-9]+)?$/'
-            )
-        );
-    }
-
 }
