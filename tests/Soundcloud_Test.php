@@ -18,21 +18,21 @@ class Soundcloud_Test extends PHPUnit_Framework_TestCase {
     }
 
     function testVersionFormat() {
-        $this->assertRegExp(
+        self::assertRegExp(
             '/^[0-9]+\.[0-9]+\.[0-9]+$/',
             Services_Soundcloud_Version::get()
         );
     }
 
     function testGetUserAgent() {
-        $this->assertRegExp(
+        self::assertRegExp(
             '/^PHP\-SoundCloud\/[0-9]+\.[0-9]+\.[0-9]+$/',
             $this->soundcloud->getUserAgent()
         );
     }
 
     function testApiVersion() {
-        $this->assertEquals(1, $this->soundcloud->getApiVersion());
+        self::assertEquals(1, $this->soundcloud->getApiVersion());
     }
 
     function testGetAudioMimeTypes() {
@@ -47,7 +47,7 @@ class Soundcloud_Test extends PHPUnit_Framework_TestCase {
         $unsupportedExtensions = array('gif', 'html', 'jpg', 'mp4', 'xml', 'xspf');
 
         foreach ($supportedExtensions as $extension => $mimeType) {
-            $this->assertEquals(
+            self::assertEquals(
                 $mimeType,
                 $this->soundcloud->getAudioMimeType($extension)
             );
@@ -61,26 +61,26 @@ class Soundcloud_Test extends PHPUnit_Framework_TestCase {
     }
 
     function testGetAuthorizeUrl() {
-        $this->assertEquals(
+        self::assertEquals(
             'https://soundcloud.com/connect?client_id=1337&redirect_uri=http%3A%2F%2Fsoundcloud.local%2Fcallback&response_type=code',
             $this->soundcloud->getAuthorizeUrl()
         );
     }
 
     function testGetAuthorizeUrlWithCustomQueryParameters() {
-        $this->assertEquals(
+        self::assertEquals(
             'https://soundcloud.com/connect?client_id=1337&redirect_uri=http%3A%2F%2Fsoundcloud.local%2Fcallback&response_type=code&foo=bar',
             $this->soundcloud->getAuthorizeUrl(array('foo' => 'bar'))
         );
 
-        $this->assertEquals(
+        self::assertEquals(
             'https://soundcloud.com/connect?client_id=1337&redirect_uri=http%3A%2F%2Fsoundcloud.local%2Fcallback&response_type=code&foo=bar&bar=foo',
             $this->soundcloud->getAuthorizeUrl(array('foo' => 'bar', 'bar' => 'foo'))
         );
     }
 
     function testGetAccessTokenUrl() {
-        $this->assertEquals(
+        self::assertEquals(
             'https://api.soundcloud.com/oauth2/token',
             $this->soundcloud->getAccessTokenUrl()
         );
@@ -89,26 +89,26 @@ class Soundcloud_Test extends PHPUnit_Framework_TestCase {
     function testSetAccessToken() {
         $this->soundcloud->setAccessToken('1337');
 
-        $this->assertEquals('1337', $this->soundcloud->getAccessToken());
+        self::assertEquals('1337', $this->soundcloud->getAccessToken());
     }
 
     function testSetDevelopment() {
         $this->soundcloud->setDevelopment(true);
 
-        $this->assertTrue($this->soundcloud->getDevelopment());
+        self::assertTrue($this->soundcloud->getDevelopment());
     }
 
     function testSetRedirectUri() {
         $this->soundcloud->setRedirectUri('http://soundcloud.local/callback');
 
-        $this->assertEquals(
+        self::assertEquals(
             'http://soundcloud.local/callback',
             $this->soundcloud->getRedirectUri()
         );
     }
 
     function testDefaultResponseFormat() {
-        $this->assertEquals(
+        self::assertEquals(
             'application/json',
             $this->soundcloud->getResponseFormat()
         );
@@ -123,7 +123,7 @@ class Soundcloud_Test extends PHPUnit_Framework_TestCase {
     function testSetResponseFormatAll() {
         $this->soundcloud->setResponseFormat('*');
 
-        $this->assertEquals(
+        self::assertEquals(
             '*/*',
             $this->soundcloud->getResponseFormat()
         );
@@ -132,7 +132,7 @@ class Soundcloud_Test extends PHPUnit_Framework_TestCase {
     function testSetResponseFormatJson() {
         $this->soundcloud->setResponseFormat('json');
 
-        $this->assertEquals(
+        self::assertEquals(
             'application/json',
             $this->soundcloud->getResponseFormat()
         );
@@ -141,30 +141,30 @@ class Soundcloud_Test extends PHPUnit_Framework_TestCase {
     function testSetResponseFormatXml() {
         $this->soundcloud->setResponseFormat('xml');
 
-        $this->assertEquals(
+        self::assertEquals(
             'application/xml',
             $this->soundcloud->getResponseFormat()
         );
     }
 
     function testResponseCodeSuccess() {
-        $this->assertTrue($this->soundcloud->validResponseCode(200));
+        self::assertTrue($this->soundcloud->validResponseCode(200));
     }
 
     function testResponseCodeRedirect() {
-        $this->assertFalse($this->soundcloud->validResponseCode(301));
+        self::assertFalse($this->soundcloud->validResponseCode(301));
     }
 
     function testResponseCodeClientError() {
-        $this->assertFalse($this->soundcloud->validResponseCode(400));
+        self::assertFalse($this->soundcloud->validResponseCode(400));
     }
 
     function testResponseCodeServerError() {
-        $this->assertFalse($this->soundcloud->validResponseCode(500));
+        self::assertFalse($this->soundcloud->validResponseCode(500));
     }
 
     function testBuildDefaultHeaders() {
-        $this->assertEquals(
+        self::assertEquals(
             array('Accept: application/json'),
             $this->soundcloud->buildDefaultHeaders()
         );
@@ -173,21 +173,21 @@ class Soundcloud_Test extends PHPUnit_Framework_TestCase {
     function testBuildDefaultHeadersWithAccessToken() {
         $this->soundcloud->setAccessToken('1337');
 
-        $this->assertEquals(
+        self::assertEquals(
             array('Accept: application/json', 'Authorization: OAuth 1337'),
             $this->soundcloud->buildDefaultHeaders()
         );
     }
 
     function testBuildUrl() {
-        $this->assertEquals(
+        self::assertEquals(
             'https://api.soundcloud.com/v1/me',
             $this->soundcloud->buildUrl('me')
         );
     }
 
     function testBuildUrlWithQueryParameters() {
-        $this->assertEquals(
+        self::assertEquals(
             'https://api.soundcloud.com/v1/tracks?q=rofl+dubstep',
             $this->soundcloud->buildUrl(
                 'tracks',
@@ -195,7 +195,7 @@ class Soundcloud_Test extends PHPUnit_Framework_TestCase {
             )
         );
 
-        $this->assertEquals(
+        self::assertEquals(
             'https://api.soundcloud.com/v1/tracks?q=rofl+dubstep&filter=public',
             $this->soundcloud->buildUrl(
                 'tracks',
@@ -207,21 +207,21 @@ class Soundcloud_Test extends PHPUnit_Framework_TestCase {
     function testBuildUrlWithDevelopmentDomain() {
         $this->soundcloud->setDevelopment(true);
 
-        $this->assertEquals(
+        self::assertEquals(
             'https://api.sandbox-soundcloud.com/v1/me',
             $this->soundcloud->buildUrl('me')
         );
     }
 
     function testBuildUrlWithoutApiVersion() {
-        $this->assertEquals(
+        self::assertEquals(
             'https://api.soundcloud.com/me',
             $this->soundcloud->buildUrl('me', null, false)
         );
     }
 
     function testBuildUrlWithAbsoluteUrl() {
-        $this->assertEquals(
+        self::assertEquals(
             'https://api.soundcloud.com/me',
             $this->soundcloud->buildUrl('https://api.soundcloud.com/me')
         );
@@ -234,7 +234,7 @@ class Soundcloud_Test extends PHPUnit_Framework_TestCase {
         $parsedHeaders = $this->soundcloud->parseHttpHeaders($rawHeaders);
 
         foreach ($parsedHeaders as $key => $val) {
-            $this->assertEquals($val, $expectedHeaders[$key]);
+            self::assertEquals($val, $expectedHeaders[$key]);
         }
     }
 
@@ -257,15 +257,15 @@ class Soundcloud_Test extends PHPUnit_Framework_TestCase {
         try {
             $this->soundcloud->get('me');
         } catch (Services_Soundcloud_Invalid_Http_Response_Code_Exception $e) {
-            $this->assertEquals(
+            self::assertEquals(
                 '{"error":"401 - Unauthorized"}',
                 $e->getHttpBody()
             );
 
-            $this->assertEquals(401, $e->getHttpCode());
+            self::assertEquals(401, $e->getHttpCode());
 
             foreach ($expectedHeaders as $key => $val) {
-                $this->assertEquals(
+                self::assertEquals(
                     $val,
                     $this->soundcloud->getHttpHeader($key)
                 );
