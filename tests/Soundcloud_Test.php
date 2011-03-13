@@ -274,7 +274,7 @@ class Soundcloud_Test extends PHPUnit_Framework_TestCase {
     }
 
     static function dataProviderHttpHeaders() {
-        $rawHeaders = <<<HEADERS
+        $rawHeaders = <<<'HEADERS'
 HTTP/1.1 200 OK
 Date: Wed, 17 Nov 2010 15:39:52 GMT
 Cache-Control: public
