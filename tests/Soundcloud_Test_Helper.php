@@ -2,7 +2,7 @@
 set_include_path(
     get_include_path()
     . PATH_SEPARATOR
-    . realpath(dirname(__FILE__) . '/../')
+    . realpath(dirname(__FILE__) . DIRECTORY_SEPARATOR . '..')
 );
 
 require_once 'Services/Soundcloud.php';
