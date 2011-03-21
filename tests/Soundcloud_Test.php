@@ -92,6 +92,31 @@ class Soundcloud_Test extends PHPUnit_Framework_TestCase {
         self::assertEquals('1337', $this->soundcloud->getAccessToken());
     }
 
+    function testSetCurlOptions() {
+        $this->soundcloud->setCurlOptions(CURLOPT_SSL_VERIFYHOST, 0);
+
+        self::assertEquals(
+            0,
+            $this->soundcloud->getCurlOptions(CURLOPT_SSL_VERIFYHOST)
+        );
+    }
+
+    function testSetCurlOptionsArray() {
+        $options = array(
+            CURLOPT_SSL_VERIFYHOST => 0,
+            CURLOPT_SSL_VERIFYPEER => 0
+        );
+
+        $this->soundcloud->setCurlOptions($options);
+
+        foreach ($options as $key => $val) {
+            self::assertEquals(
+                $val,
+                $this->soundcloud->getCurlOptions($key)
+            );
+        }
+    }
+
     function testSetDevelopment() {
         $this->soundcloud->setDevelopment(true);
 

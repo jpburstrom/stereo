@@ -76,6 +76,29 @@ class Services_Soundcloud {
     private $_clientSecret;
 
     /**
+     * Default cURL options
+     *
+     * @var array
+     *
+     * @access private
+     * @static
+     */
+     private static $_curlDefaultOptions = array(
+         CURLOPT_HEADER => true,
+         CURLOPT_RETURNTRANSFER => true,
+         CURLOPT_USERAGENT => ''
+     );
+
+    /**
+     * cURL options
+     *
+     * @var array
+     *
+     * @access private
+     */
+    private $_curlOptions;
+
+    /**
      * Development mode.
      *
      * @access private
@@ -204,6 +227,8 @@ class Services_Soundcloud {
         $this->_development = $development;
         $this->_responseFormat = self::$_responseFormats['json'];
         $this->version = Services_Soundcloud_Version::get();
+        $this->_curlOptions = self::$_curlDefaultOptions;
+        $this->_curlOptions[CURLOPT_USERAGENT] .= $this->_getUserAgent();
     }
 
     /**
@@ -318,6 +343,25 @@ class Services_Soundcloud {
     }
 
     /**
+     * Get cURL options
+     *
+     * @param string $key Optional options key
+     *
+     * @return mixed
+     *
+     * @access public
+     */
+    function getCurlOptions($key = null) {
+        if ($key) {
+            return (array_key_exists($key, $this->_curlOptions))
+                ? $this->_curlOptions[$key]
+                : false;
+        } else {
+            return $this->_curlOptions;
+        }
+    }
+
+    /**
      * Get development mode.
      *
      * @return boolean
@@ -370,6 +414,26 @@ class Services_Soundcloud {
      */
     function setAccessToken($accessToken) {
         $this->_accessToken = $accessToken;
+
+        return $this;
+    }
+
+    /**
+     * Set cURL options. Either pass in two arguments or an associative array
+     *
+     * @return object
+     *
+     * @access public
+     */
+    function setCurlOptions() {
+        $args = func_get_args();
+        $options = (is_array($args[0]))
+            ? $args[0]
+            : array($args[0] => $args[1]);
+
+        foreach ($options as $key => $val) {
+            $this->_curlOptions[$key] = $val;
+        }
 
         return $this;
     }
@@ -658,13 +722,8 @@ class Services_Soundcloud {
      * @return mixed
      */
     protected function _request($url, $curlOptions = array()) {
-        $ch = curl_init();
-        $options = array(
-            CURLOPT_URL => $url,
-            CURLOPT_HEADER => true,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_USERAGENT => $this->_getUserAgent()
-        );
+        $ch = curl_init($url);
+        $options = $this->_curlOptions;
         $options += $curlOptions;
 
         if (array_key_exists(self::CURLOPT_OAUTH_TOKEN, $options)) {
