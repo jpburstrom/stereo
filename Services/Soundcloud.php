@@ -502,9 +502,7 @@ class Services_Soundcloud {
      * @see Soundcloud::_request()
      */
     function download($trackId, $params = array(), $curlOptions = array()) {
-        $lastResponseFormat = array_pop(
-            preg_split('/\//', $this->getResponseFormat())
-        );
+        $lastResponseFormat = array_pop(explode('/', $this->getResponseFormat()));
         $defaultParams = array('oauth_token' => $this->getAccessToken());
         $defaultCurlOptions = array(
             CURLOPT_FOLLOWLOCATION => true,
@@ -619,7 +617,7 @@ class Services_Soundcloud {
      * @return array
      */
     protected function _parseHttpHeaders($headers) {
-        $headers = preg_split('/\n/', trim($headers));
+        $headers = explode("\n", trim($headers));
         $parsedHeaders = array();
 
         foreach ($headers as $header) {
@@ -627,7 +625,7 @@ class Services_Soundcloud {
                 continue;
             }
 
-            list($key, $val) = preg_split('/\:\s/', $header, 2);
+            list($key, $val) = explode(': ', $header, 2);
             $key = str_replace('-', '_', strtolower($key));
             $val = trim($val);
 
