@@ -265,14 +265,14 @@ class Services_Soundcloud {
     /**
      * Retrieve access token.
      *
-     * @param string $code OAuth code returned from the service provider
+     * @param string $code Optional OAuth code returned from the service provider
      * @param array $postData Optional post data
      * @param array $curlOptions Optional cURL options
      *
      * @return mixed
      * @see Soundcloud::_getAccessToken()
      */
-    function accessToken($code, $postData = array(), $curlOptions = array()) {
+    function accessToken($code = null, $postData = array(), $curlOptions = array()) {
         $defaultPostData = array(
             'code' => $code,
             'client_id' => $this->_clientId,
@@ -280,7 +280,7 @@ class Services_Soundcloud {
             'redirect_uri' => $this->_redirectUri,
             'grant_type' => 'authorization_code'
         );
-        $postData = array_merge($defaultPostData, $postData);
+        $postData = array_filter(array_merge($defaultPostData, $postData));
 
         return $this->_getAccessToken($postData, $curlOptions);
     }
