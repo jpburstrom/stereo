@@ -206,15 +206,6 @@ class Services_Soundcloud
     private static $_userAgent = 'PHP-SoundCloud';
 
     /**
-     * Class version
-     *
-     * @var string
-     *
-     * @access public
-     */
-    public $version;
-
-    /**
      * Class constructor
      *
      * @param string  $clientId     OAuth client id
@@ -238,7 +229,6 @@ class Services_Soundcloud
         $this->_redirectUri = $redirectUri;
         $this->_development = $development;
         $this->_responseFormat = self::$_responseFormats['json'];
-        $this->version = Services_Soundcloud_Version::get();
         $this->_curlOptions = self::$_curlDefaultOptions;
         $this->_curlOptions[CURLOPT_USERAGENT] .= $this->_getUserAgent();
     }
@@ -769,7 +759,7 @@ class Services_Soundcloud
      */
     protected function _getUserAgent()
     {
-        return self::$_userAgent . '/' . $this->version;
+        return self::$_userAgent . '/' . new Services_Soundcloud_Version;
     }
 
     /**

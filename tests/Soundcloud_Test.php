@@ -20,7 +20,7 @@ class Soundcloud_Test extends PHPUnit_Framework_TestCase {
     function testVersionFormat() {
         self::assertRegExp(
             '/^[0-9]+\.[0-9]+\.[0-9]+$/',
-            Services_Soundcloud_Version::get()
+            (string)new Services_Soundcloud_Version
         );
     }
 
