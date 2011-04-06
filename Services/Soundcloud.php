@@ -702,8 +702,12 @@ class Services_Soundcloud
      *
      * @access protected
      */
-    protected function _buildUrl($path, $params = null, $includeVersion = true)
+    protected function _buildUrl($path, $params = array(), $includeVersion = true)
     {
+        if (!$this->_accessToken) {
+            $params['consumer_key'] = $this->_clientId;
+        }
+
         if (preg_match('/^https?\:\/\//', $path)) {
             $url = $path;
         } else {

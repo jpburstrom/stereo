@@ -11,6 +11,8 @@ class Soundcloud_Test extends PHPUnit_Framework_TestCase {
             '1337',
             'http://soundcloud.local/callback'
         );
+
+        $this->soundcloud->setAccessToken('1337');
     }
 
     function tearDown() {
@@ -189,6 +191,8 @@ class Soundcloud_Test extends PHPUnit_Framework_TestCase {
     }
 
     function testBuildDefaultHeaders() {
+        $this->soundcloud->setAccessToken(null);
+
         self::assertEquals(
             array('Accept: application/json'),
             $this->soundcloud->buildDefaultHeaders()
@@ -249,6 +253,15 @@ class Soundcloud_Test extends PHPUnit_Framework_TestCase {
         self::assertEquals(
             'https://api.soundcloud.com/me',
             $this->soundcloud->buildUrl('https://api.soundcloud.com/me')
+        );
+    }
+
+    function testBuildUrlWithoutAccessToken() {
+        $this->soundcloud->setAccessToken(null);
+
+        self::assertEquals(
+            'https://api.soundcloud.com/v1/tracks?consumer_key=1337',
+            $this->soundcloud->buildUrl('tracks')
         );
     }
 
