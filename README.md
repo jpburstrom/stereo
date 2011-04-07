@@ -75,6 +75,20 @@ try {
     exit($e->getMessage());
 }</code></pre>
 
+### UPLOAD TRACK
+
+<pre><code>$track = array(
+    'track[title]' => 'My awesome track',
+    'track[tags]' => 'dubstep rofl',
+    'track[asset_data]' => '@/absolute/path/to/track.mp3'
+);
+    
+try {
+    $response = $soundcloud->post('tracks', $track);
+} catch (Services_Soundcloud_Invalid_Http_Response_Code_Exception $e) {
+    exit($e->getMessage());
+}</code></pre>
+
 ### DOWNLOAD TRACK
 
 <pre><code>try {
