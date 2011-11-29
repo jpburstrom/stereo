@@ -19,18 +19,21 @@ Ofcourse you need to handle the authentication first before being able to reques
 
 ### GET
 
-<pre><code>try {
+``` php
+try {
     $response = json_decode($soundcloud->get('me'), true);
 } catch (Services_Soundcloud_Invalid_Http_Response_Code_Exception $e) {
     exit($e->getMessage());
-}</code></pre>
+}
+```
 
 ### POST
 
-<pre><code>$comment = &lt;&lt;&lt;EOH
-&lt;comment&gt;
-    &lt;body&gt;Yeah!&lt;/body&gt;
-&lt;/comment&gt;
+``` php
+$comment = <<<EOH
+<comment>
+    <body>Yeah!</body>
+</comment>
 EOH;
 
 try {
@@ -44,14 +47,16 @@ try {
     );
 } catch (Services_Soundcloud_Invalid_Http_Response_Code_Exception $e) {
     exit($e->getMessage());
-}</code></pre>
+}
+```
 
 ### PUT
 
-<pre><code>$track = &lt;&lt;&lt;EOH
-&lt;track&gt;
-    &lt;downloadable&gt;true&lt;/downloadable&gt;
-&lt;/track&gt;
+``` php
+$track = <<<EOH
+<track>
+    <downloadable>true</downloadable>
+</track>
 EOH;
 
 try {
@@ -65,19 +70,23 @@ try {
     );
 } catch (Services_Soundcloud_Invalid_Http_Response_Code_Exception $e) {
     exit($e->getMessage());
-}</code></pre>
+}
+```
 
 ### DELETE
 
-<pre><code>try {
+``` php
+try {
     $response = json_decode($soundcloud->delete('tracks/1'), true);
 } catch (Services_Soundcloud_Invalid_Http_Response_Code_Exception $e) {
     exit($e->getMessage());
-}</code></pre>
+}
+```
 
-### UPLOAD TRACK
+### Upload track
 
-<pre><code>$track = array(
+``` php
+$track = array(
     'track[title]' => 'My awesome track',
     'track[tags]' => 'dubstep rofl',
     'track[asset_data]' => '@/absolute/path/to/track.mp3'
@@ -87,17 +96,20 @@ try {
     $response = $soundcloud->post('tracks', $track);
 } catch (Services_Soundcloud_Invalid_Http_Response_Code_Exception $e) {
     exit($e->getMessage());
-}</code></pre>
+}
+```
 
-### DOWNLOAD TRACK
+### Download track
 
-<pre><code>try {
+``` php
+try {
     $track = $soundcloud->download(1337);
 } catch (Services_Soundcloud_Invalid_Http_Response_Code_Exception $e) {
     exit($e->getMessage());
 }
 
-// do something clever with $track. Save to file perhaps?</code></pre>
+// do something clever with $track. Save to file perhaps?
+```
 
 ### Update playlist
 
