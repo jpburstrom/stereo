@@ -99,6 +99,22 @@ try {
 
 // do something clever with $track. Save to file perhaps?</code></pre>
 
+### Update playlist
+
+Many found it difficult to update a existing playlist. Therefor a custom method is available to simplify this matter.
+
+``` php
+$playlistId = 2000;
+$trackIds = array(2001);
+$optionalFields = array('title' => 'My awesome playlist');
+
+try {
+    $playlist = $soundcloud->updatePlaylist($playlistId, $trackIds, $optionalFields);
+} catch (Services_Soundcloud_Invalid_Http_Response_Code_Exception $e) {
+    exit($e->getMessage());
+}
+```
+
 ## Feedback and questions
 
 Found a bug or missing a feature? Don't hesitate to create a new issue here on GitHub. Or contact me [directly](https://github.com/mptre).

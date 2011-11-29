@@ -668,6 +668,41 @@ class Services_Soundcloud
     }
 
     /**
+     * Update a existing playlist
+     *
+     * @param integer $playlistId       The playlist id
+     * @param array   $trackIds         Tracks to add to the playlist
+     * @param array   $optionalPostData Optional playlist fields to update
+     *
+     * @return mixed
+     *
+     * @access public
+     * @see Soundcloud::_request()
+     */
+    public function updatePlaylist($playlistId, $trackIds, $optionalPostData = null)
+    {
+        $url = $this->_buildUrl('playlists/' . $playlistId);
+        $postData = array_map(function ($track) {
+            return 'playlist[tracks][][id]=' . $track;
+        }, $trackIds);
+
+        if (is_array($optionalPostData)) {
+            foreach ($optionalPostData as $key => $val) {
+                array_push($postData, 'playlist[' . $key . ']=' . $val);
+            }
+        }
+
+        $postData = implode('&', $postData);
+        $curlOptions = array(
+            CURLOPT_CUSTOMREQUEST => 'PUT',
+            CURLOPT_HTTPHEADER => array('Content-Length' => strlen($postData)),
+            CURLOPT_POSTFIELDS => $postData
+        );
+
+        return $this->_request($url, $curlOptions);
+    }
+
+    /**
      * Construct default HTTP request headers
      *
      * @param boolean $includeAccessToken Include access token
