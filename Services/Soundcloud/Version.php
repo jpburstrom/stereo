@@ -13,8 +13,8 @@ class Services_Soundcloud_Version
 {
 
     const MAJOR = 2;
-    const MINOR = 1;
-    const PATCH = 3;
+    const MINOR = 2;
+    const PATCH = 0;
 
     /**
      * Magic to string method
