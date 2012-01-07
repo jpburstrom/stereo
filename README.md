@@ -20,6 +20,7 @@ Ofcourse you need to handle the authentication first before being able to reques
 ### GET
 
 ``` php
+<?php
 try {
     $response = json_decode($soundcloud->get('me'), true);
 } catch (Services_Soundcloud_Invalid_Http_Response_Code_Exception $e) {
@@ -30,6 +31,7 @@ try {
 ### POST
 
 ``` php
+<?php
 $comment = <<<EOH
 <comment>
     <body>Yeah!</body>
@@ -53,6 +55,7 @@ try {
 ### PUT
 
 ``` php
+<?php
 $track = <<<EOH
 <track>
     <downloadable>true</downloadable>
@@ -76,6 +79,7 @@ try {
 ### DELETE
 
 ``` php
+<?php
 try {
     $response = json_decode($soundcloud->delete('tracks/1'), true);
 } catch (Services_Soundcloud_Invalid_Http_Response_Code_Exception $e) {
@@ -86,6 +90,7 @@ try {
 ### Upload track
 
 ``` php
+<?php
 $track = array(
     'track[title]' => 'My awesome track',
     'track[tags]' => 'dubstep rofl',
@@ -102,6 +107,7 @@ try {
 ### Download track
 
 ``` php
+<?php
 try {
     $track = $soundcloud->download(1337);
 } catch (Services_Soundcloud_Invalid_Http_Response_Code_Exception $e) {
@@ -116,6 +122,7 @@ try {
 Many found it difficult to update a existing playlist. Therefor a custom method is available to simplify this matter.
 
 ``` php
+<?php
 $playlistId = 2000;
 $trackIds = array(2001);
 $optionalFields = array('title' => 'My awesome playlist');
