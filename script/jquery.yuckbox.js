@@ -28,10 +28,6 @@ YuckBox = function(options) {
     this.sIndex = -1;
     this.options = {};
 
-    //methods to pass on to sm
-    this.smSoundMethods = ["load", "stop", "play", "togglePause", "pause", "resume"];
-    this.smMethods = [];
-
     this.load = function() { self.songs[self.sIndex].load() };
     this.play = function() { self.songs[self.sIndex].play() };
     this.stop = function() { self.songs[self.sIndex].stop() };
