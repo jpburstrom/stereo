@@ -39,7 +39,7 @@ YuckBox = function(options) {
             self.songs[self.sIndex].play() 
         }
     };
-    this.stop = function() { self.songs[self.sIndex].stop() };
+    this.stop = function() { self.songs[self.sIndex].stop().setPosition(0) };
     this.togglePause = function() { self.songs[self.sIndex].togglePause() };
     this.pause = function() { self.songs[self.sIndex].pause() };
     this.resume = function() { self.songs[self.sIndex].resume() };
@@ -126,7 +126,6 @@ YuckBox = function(options) {
         }
         if (in_array || snd) {
             if (play && !this.playing) {
-                console.log("PLAY");
                 self.sIndex = self.songs.length - 1;
                 self.play();
             }
@@ -138,10 +137,13 @@ YuckBox = function(options) {
     this._prevNext = function (pn, play) {
         if (self.songs.length > 1) {
             i = (self.sIndex + pn) % self.songs.length;
-            if (self.songs[self.sIndex].playState == 1 || play) {
+            if (self.playing) {
                 self.songs[self.sIndex].stop();
                 self.songs[i].play();
+            } else {
+                self.songs[i].load();
             }
+
             self.sIndex = i;
         }
     };
@@ -187,8 +189,8 @@ YuckBox = function(options) {
             $(document).trigger("stop.yuckbox", this);
         },      //user stop
         finish : function() {
-            self.playing = false;
             var playlistEnd = self._playNext();
+            self.playing = false;
             $(document).trigger("finish.yuckbox", [this, playlistEnd]);
         },    //sound finished playing
         pause : function() {
