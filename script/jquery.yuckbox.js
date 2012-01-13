@@ -122,7 +122,10 @@ YuckBox = function(options) {
                 whileloading : self.events.whileloading,
                 whileplaying : self.events.whileplaying
             } , s ));
-            if (snd) self.songs.push(snd);
+            if (snd) { 
+                self.songs.push(snd);
+                $(document).trigger("addedsong.yuckbox", this);
+            }
         }
         if (in_array || snd) {
             if (play && !this.playing) {
