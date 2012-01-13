@@ -5,109 +5,166 @@ $.fn.log = function() {
     return this;
 };
 
-
-(function( $ ){
+/*
+test = function() {
+    this.foo = 2;
     
+    this.fap = function () {
+        console.log(this.foo);
+    }
+
+}
+
+t = new test();
+t.fap();
+*/
+
+YuckBox = function(options) {
+    
+    var $ = jQuery;
     var sm = soundManager;
-    var songs = [];
-    var sIndex = -1;
+    var self = this;
+    this.songs = [];
+    this.sIndex = -1;
+    this.options = {};
 
     //methods to pass on to sm
-    var smSoundMethods = ["load", "stop", "play", "togglePause", "pause", "resume"];
-    var smMethods = [];
+    this.smSoundMethods = ["load", "stop", "play", "togglePause", "pause", "resume"];
+    this.smMethods = [];
 
-    var addSongs = function(s) {
+    this.load = function() { self.songs[self.sIndex].load() };
+    this.play = function() { self.songs[self.sIndex].play() };
+    this.stop = function() { self.songs[self.sIndex].stop() };
+    this.togglePause = function() { self.songs[self.sIndex].togglePause() };
+    this.pause = function() { self.songs[self.sIndex].pause() };
+    this.resume = function() { self.songs[self.sIndex].resume() };
+
+
+    /**
+     * Init function
+     * @param Object options 
+     */
+    this.init = function(options) {
+        options = $.extend( { repeat: false, playAll: true, songs : [] },  options );
+        self.addSongs(options.songs);
+        self.sIndex = 0;
+        self.options = options;
+        self.load();
+    };
+
+    /**
+     * Go to next song
+     * @see this._prevnext
+     */
+    this.next = function (play) {
+        self._prevNext(1, play);
+    };
+
+    /**
+     * Go to prev song
+     * @see this._prevnext
+     */
+    this.prev = function (play) {
+        self._prevNext(-1, play);
+    };
+
+    /**
+     * Set volume for all songs
+     */
+    this.setVolume = function(vol) {
+        for (var i in self.songs) {
+            self.songs[i].setVolume(vol);
+        }
+    };
+
+    this.addSongs = function(s) {
         for (var i in s) {
             var in_array = false;
             //Check for matching url
-            for (var x in songs) {
-                if (songs[x].url == s[i].url) {
+            for (var x in self.songs) {
+                if (self.songs[x].url == s[i].url) {
                     in_array = true;
                     break;
                 }
             }
             if (!in_array) {
-                var snd = sm.createSound($.extend( { id : "yuckbox-" + songs.length, multiShot : false, } , s[i] ));
-                if (snd) songs.push(snd);
+                var snd = sm.createSound($.extend( { 
+                    id : "yuckbox-" + self.songs.length, 
+                    multiShot : false, 
+                    onload : self.events.load,      //load finished
+                    onstop : self.events.stop,      //user stop
+                    onfinish : self.events.finish,    //sound finished playing
+                    onpause : self.events.pause,     //pause
+                    onplay : self.events.play,      //play
+                    onresume : self.events.play,    //pause toggle
+                    whileloading : self.events.whileloading,
+                    whileplaying : self.events.whileplaying
+                } , s[i] ));
+                if (snd) self.songs.push(snd);
             }
+        }
+    };
+
+    this._prevNext = function (pn, play) {
+        if (self.songs.length > 1) {
+            i = (self.sIndex + pn) % self.songs.length;
+            if (self.songs[self.sIndex].playState == 1 || play) {
+                self.songs[self.sIndex].stop();
+                self.songs[i].play();
+            }
+            self.sIndex = i;
+        }
+    };
+
+    /**
+     * Play next song if...
+     */
+    this._playNext = function() {
+        if ((self.options.playAll && ((self.sIndex + 1) != self.songs.length))
+                || self.options.playAll && self.options.repeat) {
+            self._prevNext(1, true);
+        } else if (self.options.playAll && ((self.sIndex + 1))) {
+            self._prevNext(1);
+            return true;
+        }
+        return false;
+    }
+
+    this.events = {
+        load : function() {
+            $(document).trigger("load.yuckbox", this);
+        },      //load finished
+        stop : function () {
+            $(document).trigger("stop.yuckbox", this);
+        },      //user stop
+        finish : function() {
+            var playlistEnd = self._playNext();
+            $(document).trigger("finish.yuckbox", [this, playlistEnd]);
+        },    //sound finished playing
+        pause : function() {
+            $(document).trigger("pause.yuckbox", this);
+        },     //pause
+        play : function() {
+            $(document).trigger("play.yuckbox", this);
+        },      //play
+        /* resume = play
+        resume : function() {
+            //console.log("resume");
+        },    //pause toggle
+        */
+        whileloading : function() {
+            amt = this.bytesLoaded / this.bytesTotal;
+            $(document).trigger("whileloading.yuckbox", [this, amt]);
+        },
+        whileplaying : function() {
+            var d = (this.readyState == 1) ? this.durationEstimate : this.duration; 
+            amt = this.position / d;
+            $(document).trigger("whileplaying.yuckbox", [this, amt]);
         }
     }
 
-    var prevNext = function (pn, play) {
-        if (songs.length > 1) {
-            i = (sIndex + pn) % songs.length;
-            console.log(i);
-            if (songs[sIndex].playState == 1 || play) {
-                songs[sIndex].stop();
-                songs[i].play();
-            }
-            sIndex = i;
-        }
-    };
+    this.init(options);
+};
 
-    var methods = {
-        init: 
-            function( options ) {
-                if (options !== undefined) {
-                    addSongs(options.songs);
-                    sIndex = 0;
-                }
-                data = false;
-                return this.each(function(){
-
-                   // If the plugin hasn't been initialized yet
-                   if ( ! data ) {
-
-                   }
-               });
-            },
-        addSongs: 
-            function(options) {
-                addSongs(options);
-            },
-        getSongs: 
-            function() {
-                return songs;
-            },
-        /**
-         * Prev/Next: if play = true, start playing
-         */
-        next: 
-            function (play) {
-                prevNext(1, play);
-            },
-        prev: 
-            function (play) {
-                prevNext(-1, play);
-            },
-        /**
-         * Set volume for all songs
-         */
-        setVolume: 
-            function(vol) {
-                for (var i in songs) {
-                    songs[i].setVolume(vol);
-                }
-
-            },
-
-    };
-
-    $.fn.yuckbox = function( method ) {
-        if ( methods[method] ) {
-            return methods[method].apply( this, Array.prototype.slice.call( arguments, 1 ));
-        } else if ( typeof method === 'object' || ! method ) {
-            return methods.init.apply( this, arguments );
-        } else if ( songs[sIndex] !== undefined && $.inArray(method, smSoundMethods)) {
-            return songs[sIndex][method]();
-        } else if ( $.inArray(method, smMethods)) {
-            sm[method];
-            return this;
-        } else {
-            $.error( 'Method ' +  method + ' does not exist on jQuery.yuckbox' );
-        }    
-
-    };
-
-})( jQuery );
+//yuckbox = new YuckBox();
 
