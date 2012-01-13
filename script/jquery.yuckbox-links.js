@@ -1,7 +1,6 @@
 (function($) {
     $.fn.yuckboxLinks = function( options ) {  
         var settings = $.extend( {
-            idAttr: false,
             baseURI: false,
             loadOnLoad: false,
             loadOnClick: false,
@@ -46,7 +45,6 @@
 
   };
 })(jQuery)
-
 
 //testing
 $(document).ready(function() {
