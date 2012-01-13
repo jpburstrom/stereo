@@ -25,13 +25,28 @@ body {
 }
 
 </style>
-<!--<link rel="stylesheet" type="text/css" href="css/inlineplayer.css" />-->
-<link rel="stylesheet" type="text/css" href="../flashblock/flashblock.css" />
-<script type="text/javascript" src="../../script/soundmanager2.js"></script>
-<script type="text/javascript" src="script/yuckbox2.js"></script>
+<!--<link rel="stylesheet" type="text/css" href="css/inlineplayer.css" />
+<link rel="stylesheet" type="text/css" href="../flashblock/flashblock.css" />-->
+<script type="text/javascript" src="script/soundmanager2.js"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script type="text/javascript" src="script/jquery.yuckbox.js"></script>
 
 <script type="text/javascript">
-    var songs = [ { title: "Rain", url: "../_mp3/rain.mp3" }, {title: "Walking", url: "../_mp3/walking.mp3"}];
+    soundManager.debugMode = false; // disable or enable debug output
+    soundManager.preferFlash = false; // use HTML5 audio for MP3/MP4, if available
+    soundManager.useFlashBlock = true;
+    soundManager.url = 'swf/'; // path to directory containing SM2 SWF
+    // optional: enable MPEG-4/AAC support (requires flash 9)
+    soundManager.flashVersion = 9;
+
+    var songs = [ { title: "Rain", url: "_mp3/rain.mp3" }, {title: "Walking", url: "_mp3/walking.mp3"}];
+    $(document).ready(function() {
+            //$("div").yuckbox();
+    });
+    soundManager.onready(function() {
+      // soundManager.createSound() etc. may now be called
+        $.fn.yuckbox({ songs: songs} );
+    });
 </script>
 </head>
 
