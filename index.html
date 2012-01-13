@@ -25,11 +25,15 @@ body {
 }
 
 </style>
+<link rel="stylesheet" type="text/css" href="css/yuckbox.css" />
 <!--<link rel="stylesheet" type="text/css" href="css/inlineplayer.css" />
 <link rel="stylesheet" type="text/css" href="../flashblock/flashblock.css" />-->
 <script type="text/javascript" src="script/soundmanager2.js"></script>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 <script type="text/javascript" src="script/jquery.yuckbox.js"></script>
+<script type="text/javascript" src="script/jquery.yuckbox-links.js"></script>
+<script type="text/javascript" src="script/jquery.yuckbox-controls.js"></script>
+
 
 <script type="text/javascript">
     soundManager.debugMode = false; // disable or enable debug output
@@ -39,13 +43,16 @@ body {
     // optional: enable MPEG-4/AAC support (requires flash 9)
     soundManager.flashVersion = 9;
 
-    var songs = [ { title: "Rain", url: "_mp3/rain.mp3" }, {title: "Walking", url: "_mp3/walking.mp3"}];
+    var songs = [ { title: "Rain", id: "rain.mp3" }, {title: "Walking", id: "walking.mp3"}];
     $(document).ready(function() {
-            //$("div").yuckbox();
+        $("#yuckboxUI").yuckboxControls();
     });
     soundManager.onready(function() {
       // soundManager.createSound() etc. may now be called
-        $.fn.yuckbox({ songs: songs} );
+        yuckbox.baseURI = "_mp3/"
+        yuckbox.init()
+        yuckbox.addSongs(songs);
+        yuckbox.load();
     });
 </script>
 </head>
@@ -53,17 +60,11 @@ body {
 <body>
 
  <h1>Yuckbox 2 Demo page</h1>
-
- <p>Don't forget to set debugMode = false within <em>inlineplayer.js</em> to disable debug output.</p>
-
- <div id="sm2-container">
-  <!-- SM2 flash goes here -->
- </div>
  <div id="yuckboxUI"></div>
 
 
  <div class="section">
-    <p><a class="yuckbox-link" href="#FIXME">Play/Add Rain</a></p>
+     <p>Test <span class="yuckbox-link" data-yuckbox-song='{ "id": "walking.mp3", "title":"foo"}' href="#">Play/Add Rain</span></p>
  </div>
 
 </div>

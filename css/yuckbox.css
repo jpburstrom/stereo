@@ -1,0 +1,61 @@
+.yuckbox-playable {
+    cursor:pointer;
+    font-weight:bold;
+    color:red;
+}
+
+.playing {
+    color:green;
+}
+.paused {
+    color: gray;
+}
+
+.yuckbox-controls button {
+    cursor:pointer;
+    display:block;
+    float:left;
+    min-height:20px;
+    min-width:20px; 
+    padding-right:5px;
+    border:1px solid gray;
+    -moz-border-radius:0;
+}
+.yuckbox-controls span { display:block; }
+
+.yuckbox-controls .prev {
+}
+.yuckbox-controls .play {
+    background-image: url("../image/icon_play.png");
+}
+.playing .yuckbox-controls .play {
+    background-image: url("../image/icon_pause.png");
+}
+.yuckbox-controls .next {
+}
+.yuckbox-controls .label {
+}
+.yuckbox-controls .progress {
+    position:relative;
+    width:100px;
+    height:10px;
+}
+.yuckbox-controls .progress .loaded {
+    height:10px;
+    background-color:gray;
+    position:absolute;
+    z-index: 1;
+    -moz-border-radius: 2px;
+}
+.yuckbox-controls .progress .played {
+    height:10px;
+    background-color:black;
+    position:absolute;
+    z-index: 2;
+    -moz-border-radius: 2px;
+}
+
+
+.yuckbox-controls .time {
+    clear:both;
+}
