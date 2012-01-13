@@ -27,6 +27,7 @@ YuckBox = function(options) {
     this.songs = [];
     this.sIndex = -1;
     this.options = {};
+    this.playing = false;
 
     this.load = function() { self.songs[self.sIndex].load() };
     this.play = function() { self.songs[self.sIndex].play() };
@@ -45,7 +46,9 @@ YuckBox = function(options) {
         self.addSongs(options.songs);
         self.sIndex = 0;
         self.options = options;
-        self.load();
+        if (self.songs.length > 0)
+            self.load();
+
     };
 
     /**
@@ -73,31 +76,45 @@ YuckBox = function(options) {
         }
     };
 
-    this.addSongs = function(s) {
+    this.addSongs = function(s, play) {
+        var currentLength = self.songs.length;
         for (var i in s) {
-            var in_array = false;
-            //Check for matching url
-            for (var x in self.songs) {
-                if (self.songs[x].url == s[i].url) {
-                    in_array = true;
-                    break;
-                }
+            self.addSong(s[i], false);
+        }
+        if (play && !this.playing && (currentLength != self.songs.length)) {
+            self.sIndex = currentLength;
+            self.play();
+        }
+    }
+
+    this.addSong = function(s, play) {
+        var in_array = false;
+        //Check for matching url
+        for (var x in self.songs) {
+            if (self.songs[x].url == s.url) {
+                in_array = true;
+                break;
             }
-            if (!in_array) {
-                var snd = sm.createSound($.extend( { 
-                    id : "yuckbox-" + self.songs.length, 
-                    multiShot : false, 
-                    onload : self.events.load,      //load finished
-                    onstop : self.events.stop,      //user stop
-                    onfinish : self.events.finish,    //sound finished playing
-                    onpause : self.events.pause,     //pause
-                    onplay : self.events.play,      //play
-                    onresume : self.events.play,    //pause toggle
-                    whileloading : self.events.whileloading,
-                    whileplaying : self.events.whileplaying
-                } , s[i] ));
-                if (snd) self.songs.push(snd);
-            }
+        }
+        if (!in_array) {
+            var snd = sm.createSound($.extend( { 
+                id : "yuckbox-" + self.songs.length, 
+                multiShot : false, 
+                onload : self.events.load,      //load finished
+                onstop : self.events.stop,      //user stop
+                onfinish : self.events.finish,    //sound finished playing
+                onpause : self.events.pause,     //pause
+                onplay : self.events.play,      //play
+                onresume : self.events.play,    //pause toggle
+                whileloading : self.events.whileloading,
+                whileplaying : self.events.whileplaying
+            } , s ));
+            if (snd) self.songs.push(snd);
+        }
+        if (play && !this.playing) {
+            console.log("PLAY");
+            self.sIndex = self.songs.length - 1;
+            self.play();
         }
     };
 
@@ -131,16 +148,20 @@ YuckBox = function(options) {
             $(document).trigger("load.yuckbox", this);
         },      //load finished
         stop : function () {
+            this.playing = false;
             $(document).trigger("stop.yuckbox", this);
         },      //user stop
         finish : function() {
+            this.playing = false;
             var playlistEnd = self._playNext();
             $(document).trigger("finish.yuckbox", [this, playlistEnd]);
         },    //sound finished playing
         pause : function() {
+            this.playing = false;
             $(document).trigger("pause.yuckbox", this);
         },     //pause
         play : function() {
+            this.playing = true;
             $(document).trigger("play.yuckbox", this);
         },      //play
         /* resume = play
