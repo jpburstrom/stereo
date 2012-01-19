@@ -35,6 +35,9 @@
 }
 .yuckbox-controls .label {
 }
+.yuckbox-controls .label span {
+    display:inline;
+}
 .yuckbox-controls .progress {
     position:relative;
     width:100px;

@@ -112,6 +112,9 @@ YuckBox = function(options) {
             var snd = sm.createSound($.extend( { 
                 id : "yuckbox-" + self.songs.length,  //default
                 url : baseURI + s.id,
+                title : "",
+                artist : "",
+                album : "",
                 multiShot : false, 
                 onload : self.events.load,      //load finished
                 onstop : self.events.stop,      //user stop
@@ -122,7 +125,7 @@ YuckBox = function(options) {
                 whileloading : self.events.whileloading,
                 whileplaying : self.events.whileplaying
             } , s ));
-            if (snd) { 
+            if (snd) {
                 self.songs.push(snd);
                 $(document).trigger("addedsong.yuckbox", this);
             }

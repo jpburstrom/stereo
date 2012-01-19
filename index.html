@@ -21,6 +21,8 @@
 }
 
 body {
+width:50%;
+margin: 0 auto;
  font:75% normal verdana,arial,tahoma,"sans serif";
 }
 
@@ -43,12 +45,15 @@ body {
     // optional: enable MPEG-4/AAC support (requires flash 9)
     soundManager.flashVersion = 9;
 
-    var songs = [ { title: "Rain", id: "rain.mp3" }, {title: "Walking", id: "walking.mp3"}];
+    var songs = [ { artist: "Test artist", album: "Test album",  title: "Rain", id: "rain.mp3" }, {title: "Walking", id: "walking.mp3"}];
     $(document).ready(function() {
         $("#yuckboxUI").yuckboxControls();
+        //Demo things
+        $(".prev").html("&laquo;");
+        $(".next").html("&raquo;");
+        $(".stop").html("#");
     });
     soundManager.onready(function() {
-      // soundManager.createSound() etc. may now be called
         yuckbox.baseURI = "_mp3/"
         yuckbox.init()
         yuckbox.addSongs(songs);
@@ -60,12 +65,15 @@ body {
 <body>
 
  <h1>Yuckbox 2 Demo page</h1>
+ <p>Below is a classic player UI</p>
  <div id="yuckboxUI"></div>
 
-
+<p>Here's a link playing a certain song.</p>
  <div class="section">
-     <p>Test <span class="yuckbox-link" data-yuckbox-song='{ "id": "walking.mp3", "title":"foo"}' href="#">Play/Add Rain</span></p>
+     <p><span class="yuckbox-link" data-yuckbox-song='{ "id": "walking.mp3"}'>Play Walking</span></p>
  </div>
+ <p>The link can be any kind of element, but will need a <code>data-yuckbox-song</code> attribute in the form of a js object with at least an <code>id</code>. If id doesn't already exist in yuckbox, it will be appended to the playlist. <p>If you want your links to be playable without javascript, you could just use an ordinary <code>a href=""</code>, while adding the <code>data-yuckbox-song</code> attribute.
+
 
 </div>
 

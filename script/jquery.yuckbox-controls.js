@@ -31,9 +31,10 @@
 
 
         $(document).on("play.yuckbox load.yuckbox", function(ev, snd) {
+                console.log(snd);
                 if (ev.type == "play")
                     self.addClass("playing").removeClass("paused")
-                self.find(".artist").html(snd.options.artist);
+                self.find(".artist").html(  snd.options.artist);
                 self.find(".album").html(snd.options.album);
                 self.find(".title").html(snd.options.title);
             }).on("pause.yuckbox", function(ev, snd) {
