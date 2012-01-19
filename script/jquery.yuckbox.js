@@ -1,9 +1,3 @@
-$.fn.log = function() {
-    if (window.console && console.log) {
-        console.log(this);
-    }
-    return this;
-};
 
 /*
 test = function() {
@@ -160,7 +154,6 @@ YuckBox = function(options) {
     this._playNext = function() {
         if ((self.options.playAll && ((self.sIndex + 1) != self.songs.length))
                 || (self.options.playAll && self.options.repeat)) {
-            console.log("play next");
             self._prevNext(1, true);
         } else if (self.options.playAll && ((self.sIndex + 1))) {
             self._prevNext(1);

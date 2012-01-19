@@ -18,7 +18,7 @@
         };
 
         $(document).on("play.yuckbox", function(ev, snd) {
-            $('[data-yuckbox-id="' + snd.options.id + '"]').removeClass("paused").addClass("playing").log();
+            $('[data-yuckbox-id="' + snd.options.id + '"]').removeClass("paused").addClass("playing");
             }).on("pause.yuckbox", function(ev, snd) {
                 $('[data-yuckbox-id="' + snd.options.id + '"]').removeClass("playing").addClass("paused");
             }).on("stop.yuckbox finish.yuckbox", function(ev, snd) {
@@ -45,9 +45,3 @@
 
   };
 })(jQuery)
-
-//testing
-$(document).ready(function() {
-    $("p").yuckboxLinks();
-});
-
