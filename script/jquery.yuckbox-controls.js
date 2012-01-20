@@ -22,20 +22,29 @@
         self.html(settings.controlTemplate)
             .find(".play").click(function() { yuckbox.togglePause() } ).end()
             .find(".stop").click(function() { yuckbox.stop() } ).end()
-            .find(".prev").click(function() { yuckbox.prev() } ).end()
-            .find(".next").click(function() { yuckbox.next() } ).end()
+            .find(".prev").click(function() { yuckbox.play(); yuckbox.prev() } ).end()
+            .find(".next").click(function() { yuckbox.play(); yuckbox.next() } ).end()
         ;
 
         var played = self.find(".played");
         var loaded = self.find(".loaded");
 
 
-        $(document).on("play.yuckbox load.yuckbox", function(ev, snd) {
-                if (ev.type == "play")
-                    self.addClass("playing").removeClass("paused")
-                self.find(".artist").html(  snd.options.artist);
+        $(document).on("play.yuckbox", function(ev, snd) {
+                self.addClass("playing").removeClass("paused");
+                self.find(".artist").html(snd.options.artist);
                 self.find(".album").html(snd.options.album);
                 self.find(".title").html(snd.options.title);
+                link = (snd.options.info_url) ? $("<a href='"+ snd.options.info_url +"'/>") : $();
+
+                self.find(".label .scroll-wrap")
+                    .not(":has(a)").wrap(link).end()
+                    .children().not(":first,:empty").prepend(" / ");
+
+                $(document).trigger("newlabel.yuckbox", snd);
+
+            }).on("load.yuckbox", function(ev, snd) {
+                $("#yuckboxUI").slideDown(1000);
             }).on("pause.yuckbox", function(ev, snd) {
                 self.addClass("paused").removeClass("playing")
             }).on("stop.yuckbox finish.yuckbox", function(ev, snd) {
