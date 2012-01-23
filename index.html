@@ -26,15 +26,55 @@ margin: 0 auto;
  font:75% normal verdana,arial,tahoma,"sans serif";
 }
 
+#primary {
+    min-height:60px;
+}
+#primary a {
+    text-decoration: none;
+}
+#primary ul {
+    padding:0;
+    margin:0;
+}
+
+#primary ul li {
+    display:block;
+    float:left;
+    padding-right: 10px;
+}
+#primary ul li li {
+    float:none;
+    padding:0;
+}
+
+.menu-item a { color:black; }
+.current-menu-ancestor a { color:blue; }
+.current-menu-parent a { color:green; }
+.current-menu-item a { color:red; }
+.current-menu-item ul a { color:black; }
+
+#content, #sidebar {
+    width:30%;
+    float:left;
+    font-size:2em;
+    border:1px solid black;
+    padding:5%;
+    margin-right:20px;
+}
+
+
+
 </style>
 <link rel="stylesheet" type="text/css" href="css/yuckbox.css" />
 <!--<link rel="stylesheet" type="text/css" href="css/inlineplayer.css" />
 <link rel="stylesheet" type="text/css" href="../flashblock/flashblock.css" />-->
+<script type='text/javascript' src='http://mik.bik/sk/wp-includes/js/jquery/jquery.js?ver=1.7.1'></script>
 <script type="text/javascript" src="script/soundmanager2.js"></script>
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 <script type="text/javascript" src="script/jquery.yuckbox.js"></script>
 <script type="text/javascript" src="script/jquery.yuckbox-links.js"></script>
 <script type="text/javascript" src="script/jquery.yuckbox-controls.js"></script>
+<script type="text/javascript" src="script/history/bundled/html5/jquery.history.js"></script>
+<script type="text/javascript" src="script/jquery.yuckbox-history.js"></script>
 
 
 <script type="text/javascript">
@@ -46,25 +86,49 @@ margin: 0 auto;
     soundManager.flashVersion = 9;
 
     var songs = [ { artist: "Test artist", album: "Test album",  title: "Rain", id: "rain.mp3" }, {title: "Walking", id: "walking.mp3"}];
-    $(document).ready(function() {
+    jQuery(document).ready(function($) {
         $("#yuckboxUI").yuckboxControls();
         //Demo things
         $(".prev").html("&laquo;");
         $(".next").html("&raquo;");
         $(".stop").html("#");
+        $("#content,#sidebar").yuckboxHistory(
+            { rootUrl : History.getBasePageUrl() }
+        );
     });
     soundManager.onready(function() {
         yuckbox.baseURI = "_mp3/"
         yuckbox.init()
         yuckbox.addSongs(songs);
-        yuckbox.load();
+        yuckbox.play();
     });
 </script>
 </head>
 
 <body>
 
+
  <h1>Yuckbox 2 Demo page</h1>
+ 
+        <div id="primary" class="nav">
+
+            <ul id="menu-primary" class="menu"><li id="menu-item-29" class="menu-item current-menu-ancestor"><a href="test.php?get=6">News</a>
+<ul class="sub-menu">
+	<li id="menu-item-28" class="menu-item current-menu-ancestor current-menu-parent"><a href="test.php?get=7">Biography</a>
+	<ul class="sub-menu">
+		<li id="menu-item-27" class="menu-item current-menu-item menu-slug-discography"><a href="test.php?get=8">Discography</a></li>
+	</ul>
+</li>
+</ul>
+</li>
+
+<li id="menu-item-26" class="menu-item "><a href="test.php?get=1">Projects</a></li>
+<li id="menu-item-25" class="menu-item "><a href="test.php?get=2">Scores/Writings</a></li>
+<li id="menu-item-24" class="menu-item "><a href="test.php?get=3">Calendar</a></li>
+<li id="menu-item-23" class="menu-item "><a href="test.php?get=4">Press</a></li>
+<li id="menu-item-22" class="menu-item "><a href="test.php?get=5">Contact</a></li>
+</ul>        </div>
+ 
  <p>Below is a classic player UI</p>
  <div id="yuckboxUI"></div>
 
@@ -73,6 +137,12 @@ margin: 0 auto;
      <p><span class="yuckbox-link" data-yuckbox-song='{ "id": "walking.mp3"}'>Play Walking</span></p>
  </div>
  <p>The link can be any kind of element, but will need a <code>data-yuckbox-song</code> attribute in the form of a js object with at least an <code>id</code>. If id doesn't already exist in yuckbox, it will be appended to the playlist. <p>If you want your links to be playable without javascript, you could just use an ordinary <code>a href=""</code>, while adding the <code>data-yuckbox-song</code> attribute.
+ <div id="content">
+ <a href="test.php">Test</a>
+ </div>
+ <div id="sidebar">
+     test igen
+ </div>
 
 
 </div>
