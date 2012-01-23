@@ -22,7 +22,7 @@
             },
             menuChildren : '> li,> ul > li',
             body : document.body,
-            rootUrl : History.getBasePageUrl(),
+            rootUrl : History.getRootUrl(),
             scrollOptions : {
                 duration: 800,
                 easing:'swing'
@@ -49,7 +49,7 @@
             // Prepare
             var result = String(html)
                 .replace(/<\!DOCTYPE[^>]*>/i, '')
-                .replace(/<(html|head|body|title|meta|script)([\s\>])/gi,'<div class="history-document-$1"$2')
+                .replace(/<(html|head|body|title|meta|script)([\s\>])/gi,'<div data-history-$1="true"$2')
                 .replace(/<\/(html|head|body|title|meta|script)\>/gi,'</div>')
             ;
             
@@ -96,14 +96,15 @@
                 data: {
                     yuckbox_ajax : true
                 },
+                dataType: "html",
                 success: function(data, textStatus, jqXHR){
                     // Prepare
                     var $data = $(documentHtml(data)),
-                        $dataBody = $data.find('.history-document-body:first'),
+                        $dataBody = $data.find('[data-history-body]'),
                         $menuChildren, contentHtml, $scripts;
                     
                     // TODO: Fetch the scripts
-                    $scripts = $dataBody.find('.history-document-script');
+                    $scripts = $dataBody.find('[data-history-script]');
                     if ( $scripts.length ) {
                         $scripts.detach();
                     }
@@ -118,7 +119,11 @@
 
                     // Update the content
                     $(settings.content).stop(true,true).each(function() {
-                        $(this).html($dataBody.find("#" + $(this).attr("id")).html());
+                        $(this).each(function() {
+                            self = $(this);
+                            other = $dataBody.find("#" + self.attr("id"));
+                            self.html(other.html()).removeClass().addClass(other.attr("class"));
+                        });
                     }).css('opacity',100).show(); /* you could fade in here if you'd like */
 
                     // Update the menu
@@ -129,7 +134,7 @@
                             .parentsUntil(settings.menu).filter("li").addClass(settings.menuActiveClass.ancestor)
                                 .first().addClass(settings.menuActiveClass.parent); 
                     // Update the title
-                    document.title = $data.find('.history-document-title:first').text();
+                    document.title = $data.find('.data-history-title:first').text();
                     try {
                         document.getElementsByTagName('title')[0].innerHTML = document.title.replace('<','&lt;').replace('>','&gt;').replace(' & ',' &amp; ');
                     }
@@ -145,7 +150,7 @@
                     // Complete the change
                     $body = $(settings.body);
                     if ( $body.ScrollTo||false ) { $body.ScrollTo(scrollOptions); } /* http://balupton.com/projects/jquery-scrollto */
-                    $body.removeClass('loading');
+                    $body.removeClass().addClass($dataBody.attr("class"));
     
                     // Inform Google Analytics of the change
                     if ( typeof window.pageTracker !== 'undefined' ) {
