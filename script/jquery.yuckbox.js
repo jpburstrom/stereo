@@ -103,9 +103,9 @@ YuckBox = function(options) {
         }
         if (!in_array) {
             var baseURI = (typeof(s.baseURI) == "undefined" || false === s.baseURI) ? self.baseURI : s.baseURI;
-            var snd = sm.createSound($.extend( { 
+            var options = $.extend( { 
                 id : "yuckbox-" + self.songs.length,  //default
-                url : baseURI + s.id,
+                url : "",
                 title : "",
                 artist : "",
                 album : "",
@@ -118,7 +118,9 @@ YuckBox = function(options) {
                 onresume : self.events.play,    //pause toggle
                 whileloading : self.events.whileloading,
                 whileplaying : self.events.whileplaying
-            } , s ));
+            } , s );
+            options.url = baseURI + options.url;
+            var snd = sm.createSound(options);
             if (snd) {
                 self.songs.push(snd);
                 $(document).trigger("addedsong.yuckbox", this);
