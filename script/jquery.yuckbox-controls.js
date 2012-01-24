@@ -39,7 +39,7 @@
 
                 self.find(".label .scroll-wrap")
                     .not(":has(a)").wrap(link).end()
-                    .children().not(":first,:empty").prepend(" / ");
+                    .children().not(":empty").not(":first").prepend(" / ");
 
                 $(document).trigger("newlabel.yuckbox", snd);
 
