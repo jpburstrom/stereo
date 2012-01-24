@@ -162,6 +162,9 @@
                         reinvigorate.ajax_track(url);
                         // ^ we use the full url here as that is what reinvigorate supports
                     }
+
+                    $(document).trigger("newpageload.yuckbox");
+
                 },
                 error: function(jqXHR, textStatus, errorThrown){
                     document.location.href = url;
