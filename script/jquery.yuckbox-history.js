@@ -68,7 +68,9 @@
                 event.preventDefault();
                 return false;
             }); 
-        }).on("stop.yuckbox pause.yuckbox finish.yuckbox", function(ev, snd, really) {
+        }).on("stop.yuckbox pause.yuckbox finish.yuckbox", function(ev) {
+            $(settings.body).off("click.yuckboxHistory");
+        }).on("finish.yuckbox", function(ev, snd, really) {
             if (really) {
                 $(settings.body).off("click.yuckboxHistory");
             }
