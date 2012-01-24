@@ -22,7 +22,6 @@
 
         function newPage() {
             $(settings.containerElement).find("[data-yuckbox-song]").each(function() {
-            console.log(this, "asdasd");
                 $(this).attr("data-yuckbox-id", $(this).data("yuckboxSong").id);
                 if (settings.loadOnLoad)
                     loadElement($(this), false);
