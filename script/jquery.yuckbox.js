@@ -1,18 +1,3 @@
-
-/*
-test = function() {
-    this.foo = 2;
-    
-    this.fap = function () {
-        console.log(this.foo);
-    }
-
-}
-
-t = new test();
-t.fap();
-*/
-
 YuckBox = function(options) {
     
     var $ = jQuery;
@@ -139,7 +124,7 @@ YuckBox = function(options) {
     this._prevNext = function (pn, play) {
         if (self.songs.length > 1) {
             i = (self.sIndex + pn) % self.songs.length;
-            if (self.playing) {
+            if (self.playing || play) {
                 self.songs[self.sIndex].stop();
                 self.songs[i].play();
             } else {
@@ -157,7 +142,7 @@ YuckBox = function(options) {
         if ((self.options.playAll && ((self.sIndex + 1) != self.songs.length))
                 || (self.options.playAll && self.options.repeat)) {
             self._prevNext(1, true);
-        } else if (self.options.playAll && ((self.sIndex + 1))) {
+        } else if (self.options.playAll) {
             self._prevNext(1);
             return true;
         }
@@ -190,8 +175,8 @@ YuckBox = function(options) {
             $(document).trigger("stop.yuckbox", this);
         },      //user stop
         finish : function() {
-            var playlistEnd = self._playNext();
             self.playing = false;
+            var playlistEnd = self._playNext();
             $(document).trigger("finish.yuckbox", [this, playlistEnd]);
         },    //sound finished playing
         pause : function() {
