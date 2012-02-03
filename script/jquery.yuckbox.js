@@ -1,3 +1,10 @@
+/**
+ * YuckBox 
+ * Playback controller & playlist
+ *
+ * Johannes Burström 2012
+ */
+
 YuckBox = function(options) {
     
     var $ = jQuery;

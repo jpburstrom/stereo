@@ -1,3 +1,10 @@
+/**
+ * YuckBox Controls
+ * Playback controller GUI
+ *
+ * Johannes Burström 2012
+ */
+
 (function($) {
     $.fn.yuckboxControls = function( options ) {  
         var settings = $.extend( {

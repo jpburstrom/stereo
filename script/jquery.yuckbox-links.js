@@ -1,3 +1,8 @@
+/**
+ * YuckBox Links
+ * Johannes Burström 2012
+ */
+
 (function($) {
     $.fn.yuckboxLinks = $.fn.yuckboxLinks || function( options ) {  
         var settings = $.extend( {

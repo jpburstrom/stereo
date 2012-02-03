@@ -1,3 +1,11 @@
+/**
+ * YuckBox History
+ * Using History.js to ajax-load pages when music is playing
+ *
+ * Based on this gist: https://gist.github.com/854622
+ * Johannes Burström 2012
+ */
+
 (function($){
 
     var inited = false;
@@ -20,7 +28,7 @@
                 parent : '.current-menu-parent',
                 ancestor : '.current-menu-ancestor'
             },
-            menuChildren : '> li,> ul > li',
+            menuChildren : 'li',
             body : document.body,
             rootUrl : History.getRootUrl(),
             scrollOptions : {
@@ -103,7 +111,7 @@
                     // Prepare
                     var $data = $(documentHtml(data)),
                         $dataBody = $data.find('[data-history-body]'),
-                        $menuChildren, contentHtml, $scripts;
+                        contentHtml, $scripts;
                     
                     // TODO: Fetch the scripts
                     $scripts = $dataBody.find('[data-history-script]');
@@ -129,7 +137,7 @@
                     }).css('opacity',100).show(); /* you could fade in here if you'd like */
 
                     // Update the menu
-                    $(settings.menu).find("li")
+                    $(settings.menu).find(settings.menuChildren)
                         .removeClass(settings.menuActiveClasses)
                         .has('a[href^="'+relativeUrl+'"],a[href^="/'+relativeUrl+'"],a[href^="'+url+'"]')
                         .last().addClass(settings.menuActiveClass.item) 
