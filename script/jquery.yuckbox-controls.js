@@ -112,7 +112,6 @@
         getOffX = function(o) {
             // http://www.xs4all.nl/~ppk/js/findpos.html
             var curleft = 0;
-            console.log(self);
             if (o.offsetParent) {
                 while (o.offsetParent) {
                     curleft += o.offsetLeft;
@@ -171,9 +170,9 @@
                 self.removeClass("paused playing")
                 played.css("width", 0);
             }).on("whileplaying.yuckbox", function(ev, snd, amt) {
-                played.css("width", amt * 100);
+                played.css("width", (amt * 100) + "%");
             }).on("whileloading.yuckbox", function(ev, snd, amt) {
-                loaded.css("width", amt * 100);
+                loaded.css("width", (amt * 100) + "%");
             }) ;
 
         return this;
