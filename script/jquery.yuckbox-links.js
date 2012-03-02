@@ -10,8 +10,7 @@
             loadOnLoad: false,
             loadOnClick: false,
             playOnClick: true,
-            containerElement: "body",
-            playAction: yuckbox.togglePause
+            containerElement: "body"
         }, options);
 
         var self = $(this);
@@ -44,8 +43,9 @@
         })
 
         .on("click", "[data-yuckbox-song]", function(ev) {
-            var playAction = ($(this).hasClass("play") || settings.playOnClick) ? settings.playAction : false; 
-            if (settings.loadOnClick) {
+            var playAction = $(this).hasClass("play") || settings.playOnClick; 
+            var loadAction = $(this).hasClass("load") || settings.loadOnClick; 
+            if (loadAction) {
                 loadElement($(this), playAction);
             } else if (playAction) {
                 playAction($(this).data("yuckboxSong").id);
