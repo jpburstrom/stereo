@@ -85,12 +85,12 @@ YuckBox = function(options) {
         }
     }
 
-    this.addSong = function(s, play) {
+    this.addSong = function(s, playAction) {
         var in_array = false;
         //Check for matching url
         for (var x in self.songs) {
-            if (self.songs[x].id == s.id) {
-                in_array = true;
+            if (self.songs[x].sID == s.id) {
+                in_array = x;
                 break;
             }
         }
@@ -116,17 +116,27 @@ YuckBox = function(options) {
             var snd = sm.createSound(options);
             if (snd) {
                 self.songs.push(snd);
+                in_array = self.songs.length - 1;
                 $(document).trigger("addedsong.yuckbox", this);
+            } else {
+                return false;
             }
         }
-        if (in_array || snd) {
-            if (play && !this.playing) {
-                self._setSong(self.songs.length - 1);
+
+        if (playAction) {
+            if (in_array != self.sIndex) {
+                self.stop();
+                self._setSong(in_array);
                 self.play();
+            } 
+            else if (!self.playing) {
+                self._setSong(in_array);
+                self.play();
+            } else {
+                self.togglePause();
             }
-            return true;
         }
-        return false;
+        return true;
     };
 
     this._prevNext = function (pn, play) {
