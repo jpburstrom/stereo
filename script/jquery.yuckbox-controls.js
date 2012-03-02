@@ -12,7 +12,9 @@
             baseURI: false,
             loadOnLoad: false,
             loadOnClick: false,
-            playOnClick: true
+            playOnClick: true,
+            useThrottling: true,
+            progressClass: ".progress"
         }, options);
 
         function loadElement(el, play) {
@@ -25,13 +27,124 @@
             return yuckbox.play(o.id);
         };
 
+        setPosition = function(e) {
+            // called from slider control
+            var oThis = self.getTheDamnTarget(e),
+            x, oControl, oSound, nMsecOffset;
+            if (!oThis) {
+                return true;
+            }
+            oControl = oThis;
+            while (!self.hasClass(oControl,'controls') && oControl.parentNode) {
+                oControl = oControl.parentNode;
+            }
+            oSound = self.lastSound;
+            x = parseInt(e.clientX,10);
+            // play sound at this position
+            nMsecOffset = Math.floor((x-self.getOffX(oControl)-4)/(oControl.offsetWidth)*self.getDurationEstimate(oSound));
+            if (!isNaN(nMsecOffset)) {
+                nMsecOffset = Math.min(nMsecOffset,oSound.duration);
+            }
+            if (!isNaN(nMsecOffset)) {
+                oSound.setPosition(nMsecOffset);
+            }
+        };
+
+        handleMouseDown = function(e) {
+            // a sound link was clicked
+            self.dragActive = true;
+            yuckbox.pause();
+            setPosition(e);
+            $(document).on('mousemove', handleMouseMove);
+            //self.addClass(self.lastSound._data.oControls,'dragging');
+            e.preventDefault();
+            //return self.stopEvent(e);
+        };
+
+        handleMouseMove = function(e) {
+            /*
+            if (isTouchDevice && e.touches) {
+                e = e.touches[0];
+            }
+            */
+            // set position accordingly
+            if (self.dragActive) {
+                if (settings.useThrottling) {
+                    // be nice to CPU/externalInterface
+                    var d = new Date();
+                    if (d-self.dragExec>20) {
+                        setPosition(e);
+                    } else {
+                        window.clearTimeout(self.dragTimer);
+                        self.dragTimer = window.setTimeout(function(){setPosition(e);},20);
+                    }
+                    self.dragExec = d;
+                } else {
+                    // oh the hell with it
+                    setPosition(e);
+                }
+            } else {
+                stopDrag();
+            }
+            //e.stopPropagation = true;
+            return false;
+        };
+
+        setPosition = function(e) {
+            // called from slider control
+            
+            var oSound = yuckbox.songs[yuckbox.sIndex],
+            oControl = self.find(settings.progressClass)[0],
+            duration;
+            
+            duration = oSound.durationEstimate;
+            
+            x = parseInt(e.clientX,10);
+            // play sound at this position
+            nMsecOffset = Math.floor(( x - getOffX(oControl)-4)/(oControl.offsetWidth)*duration);
+            if (!isNaN(nMsecOffset)) {
+                nMsecOffset = Math.min(nMsecOffset,duration);
+            }
+            if (!isNaN(nMsecOffset)) {
+                oSound.setPosition(nMsecOffset);
+            }
+        };
+        getOffX = function(o) {
+            // http://www.xs4all.nl/~ppk/js/findpos.html
+            var curleft = 0;
+            console.log(self);
+            if (o.offsetParent) {
+                while (o.offsetParent) {
+                    curleft += o.offsetLeft;
+                    o = o.offsetParent;
+                }
+            }
+            else if (o.x) {
+                curleft += o.x;
+            }
+            return curleft;
+        };
+        
+        
+        stopDrag = function(e) {
+            if (self.dragActive) {
+                yuckbox.songs[yuckbox.sIndex].resume(); //XXX
+                $(document).off('mousemove', handleMouseMove);
+                self.dragActive = false;
+                e.preventDefault();
+                return;
+            }
+        };
+        
+
         var self = $(this);
         self.html(settings.controlTemplate)
             .find(".play").click(function() { yuckbox.togglePause() } ).end()
             .find(".stop").click(function() { yuckbox.stop() } ).end()
             .find(".prev").click(function() { yuckbox.play(); yuckbox.prev() } ).end()
             .find(".next").click(function() { yuckbox.play(); yuckbox.next() } ).end()
-        ;
+            .find(settings.progressClass).on("mousedown", handleMouseDown );
+        $(document).on("mouseup", stopDrag );
 
         var played = self.find(".played");
         var loaded = self.find(".loaded");
@@ -44,9 +157,9 @@
                 self.find(".title").html(snd.options.title);
                 link = (snd.options.info_url) ? $("<a href='"+ snd.options.info_url +"'/>") : $();
 
-                self.find(".label .scroll-wrap")
+                self.find(".label")
                     .not(":has(a)").wrap(link).end()
-                    .children().not(":empty").not(":first").prepend(" / ");
+                    .children(".artist,.album").not(":empty").not(":first").prepend(" – ");
 
                 $(document).trigger("newlabel.yuckbox", snd);
 
