@@ -10,7 +10,8 @@
             loadOnLoad: false,
             loadOnClick: false,
             playOnClick: true,
-            containerElement: "body"
+            containerElement: "body",
+            playAction: yuckbox.togglePause
         }, options);
 
         var self = $(this);
@@ -43,11 +44,11 @@
         })
 
         .on("click", "[data-yuckbox-song]", function(ev) {
-            var play = $(this).hasClass("play") || settings.playOnClick; 
+            var playAction = ($(this).hasClass("play") || settings.playOnClick) ? settings.playAction : false; 
             if (settings.loadOnClick) {
-                loadElement($(this), play);
-            } else if (settings.playOnClick) {
-                yuckbox.play($(this).data("yuckboxSong").id);
+                loadElement($(this), playAction);
+            } else if (playAction) {
+                playAction($(this).data("yuckboxSong").id);
             }
             ev.preventDefault();
             
