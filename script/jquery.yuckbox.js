@@ -12,6 +12,7 @@ YuckBox = function(options) {
     var self = this;
     this.songs = [];
     this.sIndex = -1;
+    this.currentSong = null;
     this.options = {};
     this.playing = false;
     this.baseURI = "";
@@ -22,13 +23,13 @@ YuckBox = function(options) {
             if (self.playing) {
                 this.playing.stop();
             }
-            self.songs[self.sIndex].play() 
+            self.currentSong.play() 
         }
     };
-    this.stop = function() { self.songs[self.sIndex].stop().setPosition(0) };
-    this.togglePause = function() { self.songs[self.sIndex].togglePause() };
-    this.pause = function() { self.songs[self.sIndex].pause() };
-    this.resume = function() { self.songs[self.sIndex].resume() };
+    this.stop = function() { ( self.currentSong && self.currentSong.stop().setPosition(0)); };
+    this.togglePause = function() { (self.currentSong && self.currentSong.togglePause()) };
+    this.pause = function() { (self.currentSong && self.currentSong.pause()) };
+    this.resume = function() { self.currentSong && self.currentSong.resume() };
 
 
     /**
@@ -38,7 +39,7 @@ YuckBox = function(options) {
     this.init = function(options) {
         options = $.extend( { repeat: false, playAll: true },  options );
         //self.addSongs(options.songs);
-        self.sIndex = 0;
+        self._setSong(0);
         self.options = options;
         if (options.baseURI) {
             this.baseURI = options.baseURI;
@@ -79,7 +80,7 @@ YuckBox = function(options) {
             self.addSong(s[i], false);
         }
         if (play && !this.playing && (currentLength != self.songs.length)) {
-            self.sIndex = currentLength;
+            self._setSong(currentLength);
             self.play();
         }
     }
@@ -120,7 +121,7 @@ YuckBox = function(options) {
         }
         if (in_array || snd) {
             if (play && !this.playing) {
-                self.sIndex = self.songs.length - 1;
+                self._setSong(self.songs.length - 1);
                 self.play();
             }
             return true;
@@ -138,7 +139,7 @@ YuckBox = function(options) {
                 self.songs[i].load();
             }
 
-            self.sIndex = i;
+            self._setSong(i);
         }
     };
 
@@ -166,11 +167,16 @@ YuckBox = function(options) {
             }
         }
         if (song) {
-            self.sIndex = parseInt(song);
+            self._setSong(parseInt(song));
             return true;
         } else {
             return false;
         }
+    }
+
+    this._setSong = function(index) {
+        self.sIndex = index;
+        self.currentSong = (self.songs[self.sIndex] != null) ? self.songs[self.sIndex] : null;
     }
 
     this.events = {
