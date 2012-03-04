@@ -10,7 +10,8 @@
             loadOnLoad: false,
             loadOnClick: false,
             playOnClick: true,
-            containerElement: "body"
+            containerElement: "body",
+            postCreation: function(e) {}
         }, options);
 
         var self = $(this);
@@ -31,6 +32,7 @@
                 if (settings.loadOnLoad)
                     loadElement($(this), false);
                 $(this).addClass("yuckbox-playable");
+                settings.postCreation($(this));
             })
         }
 
