@@ -112,7 +112,9 @@ YuckBox = function(options) {
                 whileloading : self.events.whileloading,
                 whileplaying : self.events.whileplaying
             } , s );
-            options.url = baseURI + options.url;
+            if (options.url.indexOf("http://")) {
+                options.url = baseURI + options.url;
+            }
             var snd = sm.createSound(options);
             if (snd) {
                 self.songs.push(snd);
