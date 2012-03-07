@@ -137,6 +137,8 @@ YuckBox = function(options) {
             } else {
                 self.togglePause();
             }
+        } else if (!self.playing && !self.currentSong) {
+            self._setSong(in_array);
         }
         return true;
     };
