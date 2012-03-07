@@ -17,7 +17,9 @@ YuckBox = function(options) {
     this.playing = false;
     this.baseURI = "";
 
-    this.load = function() { self.songs[self.sIndex].load() };
+    this.load = function() { 
+        self.currentSong.load(); 
+    };
     this.play = function(id) { 
         if(self._setSongFromURI(id) || typeof(id) === "undefined") {
             if (self.playing) {
@@ -191,6 +193,7 @@ YuckBox = function(options) {
     this._setSong = function(index) {
         self.sIndex = index;
         self.currentSong = (self.songs[self.sIndex] != null) ? self.songs[self.sIndex] : null;
+        $(document).trigger("currentchanged.yuckbox", self.currentSong);
     }
 
     this.events = {

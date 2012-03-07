@@ -9,10 +9,6 @@
     $.fn.yuckboxControls = function( options ) {  
         var settings = $.extend( {
             controlTemplate: "<span class='yuckbox-controls'> <button class='prev'/> <button class='stop'/> <button class='play'/> <button class='next'/> <span class='label'> <span class='artist'/> <span class='album'/> <span class='title'/> </span> <span class='progress'> <span class='loaded'/> <span class='played'/> </span> <span class='time'> <span class='min'/><span class='delim'/><span class='sec'/> </span> </span>",
-            baseURI: false,
-            loadOnLoad: false,
-            loadOnClick: false,
-            playOnClick: true,
             useThrottling: true,
             progressClass: ".progress"
         }, options);
@@ -151,6 +147,7 @@
 
         $(document).on("play.yuckbox", function(ev, snd) {
                 self.addClass("playing").removeClass("paused");
+            }).on("currentchanged.yuckbox", function(ev, snd) {
                 self.find(".artist").html(snd.options.artist);
                 self.find(".album").html(snd.options.album);
                 self.find(".title").html(snd.options.title);
@@ -161,9 +158,6 @@
                     .children(".artist,.album").not(":empty").not(":first").prepend(" – ");
 
                 $(document).trigger("newlabel.yuckbox", snd);
-
-            }).on("load.yuckbox", function(ev, snd) {
-                $("#yuckboxUI").slideDown(1000);
             }).on("pause.yuckbox", function(ev, snd) {
                 self.addClass("paused").removeClass("playing")
             }).on("stop.yuckbox finish.yuckbox", function(ev, snd) {
