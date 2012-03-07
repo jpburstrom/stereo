@@ -36,7 +36,8 @@
                 easing:'swing'
             },
             content : this,
-            noAjaxLink : ".no-ajax"
+            noAjaxLink : ".no-ajax",
+            loader: null
         }, options);
 
         settings.menuActiveClasses = settings.menuActiveClass.item + " " + settings.menuActiveClass.parent + " " + settings.menuActiveClass.ancestor;
@@ -173,6 +174,7 @@
                         // ^ we use the full url here as that is what reinvigorate supports
                     }
 
+                    settings.loader && settings.loader();
                     $(document).trigger("newpageload.yuckbox");
 
                 },
@@ -184,6 +186,7 @@
 
         }); // end onStateChange
 
+        settings.loader && settings.loader();
         return this;
 
     }
