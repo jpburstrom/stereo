@@ -10,7 +10,8 @@
         var settings = $.extend( {
             controlTemplate: "<span class='yuckbox-controls'> <button class='prev'/> <button class='stop'/> <button class='play'/> <button class='next'/> <span class='label'> <span class='artist'/> <span class='album'/> <span class='title'/> </span> <span class='progress'> <span class='loaded'/> <span class='played'/> </span> <span class='time'> <span class='min'/><span class='delim'/><span class='sec'/> </span> </span>",
             useThrottling: true,
-            progressClass: ".progress"
+            progressClass: ".progress",
+            buildPlaylist: true
         }, options);
 
         function loadElement(el, play) {
@@ -160,9 +161,15 @@
                 $(document).trigger("newlabel.yuckbox", snd);
             }).on("pause.yuckbox", function(ev, snd) {
                 self.addClass("paused").removeClass("playing")
-            }).on("stop.yuckbox finish.yuckbox", function(ev, snd) {
+            }).on("stop.yuckbox", function(ev, snd) {
+                console.log(ev);
                 self.removeClass("paused playing")
                 played.css("width", 0);
+            }).on("finish.yuckbox", function(ev, snd, really) {
+                if (really) {
+                    self.removeClass("paused playing")
+                    played.css("width", 0);
+                }
             }).on("whileplaying.yuckbox", function(ev, snd, amt) {
                 played.css("width", (amt * 100) + "%");
             }).on("whileloading.yuckbox", function(ev, snd, amt) {
