@@ -121,7 +121,7 @@ YuckBox = function(options) {
             if (snd) {
                 self.songs.push(snd);
                 in_array = self.songs.length - 1;
-                $(document).trigger("addedsong.yuckbox", this);
+                $(document).trigger("addedsong.yuckbox", snd);
             } else {
                 return false;
             }
