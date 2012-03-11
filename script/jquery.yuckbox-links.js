@@ -12,7 +12,8 @@
             loadOnClick: false,
             playOnClick: true,
             containerElement: "body",
-            postCreation: function(e) {}
+            postCreation: function(e) {},
+            defaultPlaylist: false
         }, options);
 
         var self = $(this);
@@ -28,14 +29,17 @@
         };
 
         function newPage(firstLoad) {
-            $(settings.containerElement).find("[data-yuckbox-song]").each(function() {
+            var len = $(settings.containerElement).find("[data-yuckbox-song]").each(function() {
                 $(this).attr("data-yuckbox-id", $(this).data("yuckboxSong").id);
                 if (settings.loadOnLoad || (settings.loadOnFirstLoad && firstLoad)) {
                     loadElement($(this), false);
                 }
                 $(this).addClass("yuckbox-playable");
                 settings.postCreation($(this));
-            })
+            }).length;
+            if (len == 0 && firstLoad && settings.defaultPlaylist) {
+                yuckbox.addSongs(settings.defaultPlaylist);
+            }
         }
 
         $(document).on("play.yuckbox", function(ev, snd) {
