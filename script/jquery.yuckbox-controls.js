@@ -142,11 +142,15 @@
             .find(settings.progressClass).on("mousedown", handleMouseDown );
         $(document).on("mouseup", stopDrag );
 
-        var played = self.find(".played");
-        var loaded = self.find(".loaded");
+        var played = self.find(".played"),
+            loaded = self.find(".loaded"),
+            preload = false;
 
 
         $(document).on("play.yuckbox", function(ev, snd) {
+                self.addClass("preload");
+                preload = true;
+                loaded.css("width", 0);
                 self.addClass("playing").removeClass("paused");
             }).on("currentchanged.yuckbox", function(ev, snd) {
                 self.find(".artist").html(snd.options.artist);
@@ -162,7 +166,6 @@
             }).on("pause.yuckbox", function(ev, snd) {
                 self.addClass("paused").removeClass("playing")
             }).on("stop.yuckbox", function(ev, snd) {
-                console.log(ev);
                 self.removeClass("paused playing")
                 played.css("width", 0);
             }).on("finish.yuckbox", function(ev, snd, really) {
@@ -171,9 +174,15 @@
                     played.css("width", 0);
                 }
             }).on("whileplaying.yuckbox", function(ev, snd, amt) {
+                if (isNaN(amt)) return;
                 played.css("width", (amt * 100) + "%");
+                if (preload) { 
+                    self.removeClass("preload");
+                    preload = false;
+                }
             }).on("whileloading.yuckbox", function(ev, snd, amt) {
                 loaded.css("width", (amt * 100) + "%");
+
             }) ;
 
         return this;
