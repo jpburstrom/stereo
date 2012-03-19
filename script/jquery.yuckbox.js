@@ -197,8 +197,8 @@ YuckBox = function(options) {
     }
 
     this.events = {
-        load : function() {
-            $(document).trigger("load.yuckbox", this);
+        load : function(success) {
+            $(document).trigger("load.yuckbox", [this, success]);
         },      //load finished
         stop : function () {
             self.playing = false;
@@ -224,6 +224,7 @@ YuckBox = function(options) {
         */
         whileloading : function() {
             amt = this.bytesLoaded / this.bytesTotal;
+            console.log(this);
             $(document).trigger("whileloading.yuckbox", [this, amt]);
         },
         whileplaying : function() {

@@ -79,6 +79,9 @@
             }); 
         }).on("stop.yuckbox pause.yuckbox finish.yuckbox", function(ev) {
             $(settings.body).off("click.yuckboxHistory");
+        }).on("load.yuckbox", function(ev, snd, success) {
+            if (!success)
+                $(settings.body).off("click.yuckboxHistory");
         }).on("finish.yuckbox", function(ev, snd, really) {
             if (really) {
                 $(settings.body).off("click.yuckboxHistory");

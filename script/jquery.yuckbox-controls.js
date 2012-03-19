@@ -152,6 +152,15 @@
                 preload = true;
                 loaded.css("width", 0);
                 self.addClass("playing").removeClass("paused");
+            }).on("load.yuckbox", function(ev, snd, success) {
+                if (!success) {
+                    self.preload = false;
+                    self.removeClass("playing paused preload").addClass("error");
+                    self.find(".title").html("Oops!");
+                    self.find(".artist").html("We can't play that song.");
+                } else {
+                    self.removeClass("error");
+                }
             }).on("currentchanged.yuckbox", function(ev, snd) {
                 self.find(".artist").html(snd.options.artist);
                 self.find(".album").html(snd.options.album);
@@ -183,7 +192,7 @@
             }).on("whileloading.yuckbox", function(ev, snd, amt) {
                 loaded.css("width", (amt * 100) + "%");
 
-            }) ;
+            });
 
         return this;
 
