@@ -224,7 +224,6 @@ YuckBox = function(options) {
         */
         whileloading : function() {
             amt = this.bytesLoaded / this.bytesTotal;
-            console.log(this);
             $(document).trigger("whileloading.yuckbox", [this, amt]);
         },
         whileplaying : function() {
