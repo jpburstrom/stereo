@@ -17,6 +17,14 @@
         }, options);
 
         var self = $(this);
+        var currentSongs = null;
+
+        function sortSongs() 
+        {
+            yuckbox.sort(function(a, b) {
+                return $.inArray(a.sID, currentSongs) - $.inArray(b.sID, currentSongs);
+            });
+        }
 
         function loadElement(el, play) {
             o = el.data("yuckboxSong");
@@ -29,16 +37,25 @@
         };
 
         function newPage(firstLoad) {
+            currentSongs = []
             var len = $(settings.containerElement).find("[data-yuckbox-song]").each(function() {
-                $(this).attr("data-yuckbox-id", $(this).data("yuckboxSong").id);
+                e = $(this);
+                e.attr("data-yuckbox-id", e.data("yuckboxSong").id);
                 if (settings.loadOnLoad || (settings.loadOnFirstLoad && firstLoad)) {
-                    loadElement($(this), false);
+                    currentSongs.push(e.data("yuckboxSong").id);
+                    loadElement(e, false);
                 }
-                $(this).addClass("yuckbox-playable");
-                settings.postCreation($(this));
+                e.addClass("yuckbox-playable");
+                if (yuckbox.playing && e.data("yuckboxSong").id == yuckbox.currentSong.sID) {
+                    e.addClass("playing")
+                }
+                settings.postCreation(e);
             }).length;
             if (len == 0 && firstLoad && settings.defaultPlaylist) {
                 yuckbox.addSongs(settings.defaultPlaylist);
+            }
+            if (settings.loadOnLoad || (settings.loadOnFirstLoad && firstLoad)) {
+                sortSongs();
             }
         }
 
