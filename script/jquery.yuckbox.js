@@ -33,6 +33,7 @@ YuckBox = function(options) {
         }
     };
     this.stop = function() { ( self.currentSong && self.currentSong.stop().setPosition(0)); };
+    this.togglePause = function() { (self.currentSong && self.currentSong.togglePause()) };
     this.pause = function() { (self.currentSong && self.currentSong.pause()) };
     this.resume = function() { self.currentSong && self.currentSong.resume() };
 
