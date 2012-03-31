@@ -13,7 +13,8 @@
             playOnClick: true,
             containerElement: "body",
             postCreation: function(e) {},
-            defaultPlaylist: false
+            defaultPlaylist: false,
+            playlistElem: false
         }, options);
 
         var self = $(this);
@@ -32,8 +33,18 @@
         };
 
         function playElement(el) {
-            o = el.data("yuckboxSong");
-            return yuckbox.play(o.id);
+            return yuckbox.play(el.data("yuckboxId"));
+        };
+
+        function buildPlaylist() {
+            console.log(settings.playlistElem);
+            $(settings.playlistElem).each(function() {
+                pl = $("<ul class='playlist template-attachment' id='yuckboxLinksPlaylist'>").appendTo($(this));
+                $.each(yuckbox.songs, function(i, val) {
+                    var title = val._iO.artist + " – " + val._iO.title;
+                    $('<li data-yuckbox-song="" data-yuckbox-id="'+ val.sID +'" class="noload item-' + i + ' single tracks yuckbox-playable"><span class="icon"/>'+title+'</li>').data(val._iO).appendTo(pl);
+                });
+            });
         };
 
         function newPage(firstLoad) {
@@ -57,6 +68,7 @@
             if (settings.loadOnLoad || (settings.loadOnFirstLoad && firstLoad)) {
                 sortSongs();
             }
+            buildPlaylist();
         }
 
         $(document).on("play.yuckbox", function(ev, snd) {
@@ -68,12 +80,12 @@
         })
 
         .on("click", "[data-yuckbox-song]", function(ev) {
-            var playAction = $(this).hasClass("play") || settings.playOnClick; 
-            var loadAction = $(this).hasClass("load") || settings.loadOnClick; 
+            var playAction = !($(this).hasClass("noplay")) && ($(this).hasClass("play") || settings.playOnClick); 
+            var loadAction = !($(this).hasClass("noload")) && ($(this).hasClass("load") || settings.loadOnClick); 
             if (loadAction) {
                 loadElement($(this), playAction);
             } else if (playAction) {
-                playAction($(this).data("yuckboxSong").id);
+                playElement($(this));
             }
             ev.preventDefault();
             
