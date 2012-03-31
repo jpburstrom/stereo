@@ -37,12 +37,13 @@
         };
 
         function buildPlaylist() {
-            console.log(settings.playlistElem);
             $(settings.playlistElem).each(function() {
                 pl = $("<ul class='playlist template-attachment' id='yuckboxLinksPlaylist'>").appendTo($(this));
                 $.each(yuckbox.songs, function(i, val) {
+                    if (val.playState) { playing = " playing"; } 
+                    else { playing = "" }
                     var title = val._iO.artist + " – " + val._iO.title;
-                    $('<li data-yuckbox-song="" data-yuckbox-id="'+ val.sID +'" class="noload item-' + i + ' single tracks yuckbox-playable"><span class="icon"/>'+title+'</li>').data(val._iO).appendTo(pl);
+                    $('<li data-yuckbox-song="" data-yuckbox-id="'+ val.sID +'" class="noload item-' + i + playing + ' single tracks yuckbox-playable"><span class="icon"/>'+title+'</li>').data(val._iO).appendTo(pl);
                 });
             });
         };
