@@ -43,7 +43,8 @@
                     if (val.playState) { playing = " playing"; } 
                     else { playing = "" }
                     var title = val.options.artist + " – " + val.options.title;
-                    $('<li data-yuckbox-song="" data-yuckbox-id="'+ val.sID +'" class="noload item-' + i + playing + ' single tracks yuckbox-playable"><span class="icon"/>'+title+'</li>').appendTo(pl);
+                    i += 1;
+                    $('<li data-yuckbox-song="" data-yuckbox-id="'+ val.sID +'" class="noload item-' + i + playing + ' multiple tracks yuckbox-playable"><span class="icon"/>'+title+'</li>').appendTo(pl);
                 });
             });
         };
