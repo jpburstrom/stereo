@@ -145,6 +145,11 @@ YuckBox = function(options) {
         return true;
     };
 
+    this.sort = function(fn) {
+        fn && (self.songs = self.songs.sort(fn));
+        self.sIndex = $.inArray(self.currentSong, self.songs);
+    }
+
     this._prevNext = function (pn, play) {
         if (self.songs.length > 1) {
             i = (self.sIndex + pn) % self.songs.length;
