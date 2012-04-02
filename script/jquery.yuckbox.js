@@ -16,6 +16,7 @@ YuckBox = function(options) {
     this.options = {};
     this.playing = false;
     this.baseURI = "";
+    this.seeking = false;
 
     this.load = function() { 
         self.currentSong.load(); 
@@ -25,7 +26,7 @@ YuckBox = function(options) {
             self.currentSong.pause();
             return;
         }
-        if(self._setSongFromURI(id) || typeof(id) === "undefined") {
+        if (typeof(id) === "undefined" || self._setSongFromURI(id) ) {
             if (self.playing) {
                 this.playing.stop();
             }
@@ -34,7 +35,9 @@ YuckBox = function(options) {
     };
     this.stop = function() { ( self.currentSong && self.currentSong.stop().setPosition(0)); };
     this.togglePause = function() { (self.currentSong && self.currentSong.togglePause()) };
-    this.pause = function() { (self.currentSong && self.currentSong.pause()) };
+    this.pause = function() { 
+        (self.currentSong && self.currentSong.pause());
+    };
     this.resume = function() { self.currentSong && self.currentSong.resume() };
 
 
@@ -100,7 +103,7 @@ YuckBox = function(options) {
                 break;
             }
         }
-        if (!in_array) {
+        if (in_array === false) {
             var baseURI = (typeof(s.baseURI) == "undefined" || false === s.baseURI) ? self.baseURI : s.baseURI;
             var options = $.extend( { 
                 id : "yuckbox-" + self.songs.length,  //default
@@ -139,9 +142,10 @@ YuckBox = function(options) {
             } 
             else if (!self.playing) {
                 self._setSong(in_array);
+                self.playing = self.currentSong;//First we set the current song as playing, needed for fast clicks...
                 self.play();
             } else {
-                self.togglePause();
+                self.pause();
             }
         } else if (!self.playing && !self.currentSong) {
             self._setSong(in_array);
@@ -220,7 +224,11 @@ YuckBox = function(options) {
         },    //sound finished playing
         pause : function() {
             self.playing = false;
-            $(document).trigger("pause.yuckbox", this);
+            if (self.seeking) {
+                $(document).trigger("seek.yuckbox", this);
+            } else {
+                $(document).trigger("pause.yuckbox", this);
+            }
         },     //pause
         play : function() {
             self.playing = this;

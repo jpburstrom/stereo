@@ -50,6 +50,7 @@
         handleMouseDown = function(e) {
             // a sound link was clicked
             self.dragActive = true;
+            yuckbox.seeking = true;
             yuckbox.pause();
             setPosition(e);
             $(document).on('mousemove', handleMouseMove);
@@ -124,6 +125,7 @@
         
         stopDrag = function(e) {
             if (self.dragActive) {
+                yuckbox.seeking = false;
                 yuckbox.songs[yuckbox.sIndex].resume(); //XXX
                 $(document).off('mousemove', handleMouseMove);
                 self.dragActive = false;
