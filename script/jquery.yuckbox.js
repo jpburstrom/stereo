@@ -160,7 +160,7 @@ YuckBox = function(options) {
 
     this._prevNext = function (pn, play) {
         if (self.songs.length > 1) {
-            i = (self.sIndex + pn) % self.songs.length;
+            i = (self.sIndex + pn + self.songs.length) % self.songs.length;
             if (self.playing || play) {
                 self.songs[self.sIndex].stop();
                 self.songs[i].play();
@@ -204,7 +204,7 @@ YuckBox = function(options) {
     }
 
     this._setSong = function(index) {
-        self.sIndex = index;
+        self.sIndex = parseInt(index);
         self.currentSong = (self.songs[self.sIndex] != null) ? self.songs[self.sIndex] : null;
         $(document).trigger("currentchanged.yuckbox", self.currentSong);
     }
