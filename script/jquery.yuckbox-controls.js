@@ -168,7 +168,7 @@
                 link = (snd.options.info_url) ? $("<a href='"+ snd.options.info_url +"'/>") : $();
 
                 self.find(".label")
-                    .not(":has(a)").wrap(link).end()
+                    .filter(".wrapped").unwrap().end().addClass("wrapped").wrap(link).end()
                     .children(".artist,.album").not(":empty").not(":first").prepend(" – ");
 
                 $(document).trigger("newlabel.yuckbox", snd);
