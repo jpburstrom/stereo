@@ -98,11 +98,12 @@
 
             // Set Loading
             $(settings.body).addClass('loading');
+            //$(document).scrollTop(0);
 
             // Start Fade Out
             // Animating to opacity to 0 still keeps the element's height intact
             // Which prevents that annoying pop bang issue when loading in new content
-            $(settings.content).animate({opacity:0},800);
+            $(settings.content).animate({opacity:0},400);
             
             // Ajax Request the Traditional Page
             $.ajax({

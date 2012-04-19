@@ -42,7 +42,7 @@
                 $.each(yuckbox.songs, function(i, val) {
                     if (val.playState) { playing = " playing"; } 
                     else { playing = "" }
-                    var title = val.options.artist + " – " + val.options.title;
+                    var title = (val.options.artist + " – " + val.options.title).replace("&amp;", "&");
                     i += 1;
                     $('<li data-yuckbox-song="" data-yuckbox-id="'+ val.sID +'" class="noload item-' + i + playing + ' multiple tracks yuckbox-playable"><span class="icon"/>'+title+'</li>').appendTo(pl);
                 });
@@ -89,7 +89,7 @@
             } else if (playAction) {
                 playElement($(this));
             }
-            ev.preventDefault();
+            //ev.preventDefault();
             
         })
         .on("newpageload.yuckbox", function(ev) {
