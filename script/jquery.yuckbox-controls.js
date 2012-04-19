@@ -155,11 +155,11 @@
                 loaded.css("width", 0);
                 self.addClass("playing").removeClass("paused error")
             }).on("load.yuckbox", function(ev, snd, success) {
-                if (!success) {
+                if (!success && self.playing) {
                     self.preload = false;
                     self.removeClass("playing paused preload").addClass("error");
-                    self.find(".title").html("Oops!");
-                    self.find(".artist").html("We can't play that song.");
+                    self.find(".title").html("Oops! We can't play that song.");
+                    self.find(".artist").html("");
                 } 
             }).on("currentchanged.yuckbox", function(ev, snd) {
                 self.find(".artist").html(snd.options.artist);
@@ -168,7 +168,7 @@
                 link = (snd.options.info_url) ? $("<a href='"+ snd.options.info_url +"'/>") : $();
 
                 self.find(".label")
-                    .filter(".wrapped").unwrap().end().addClass("wrapped").wrap(link).end()
+                    .filter(".wrapped").unwrap().end().addClass("wrapped").wrap(link)
                     .children(".artist,.album").not(":empty").not(":first").prepend(" – ");
 
                 $(document).trigger("newlabel.yuckbox", snd);
