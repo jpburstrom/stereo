@@ -271,6 +271,32 @@ class Services_Soundcloud
     }
 
     /**
+     * Retrieve access token through credentials flow
+     *
+     * @param string $username Username
+     * @param string $password Password
+     *
+     * @return mixed
+     *
+     * @access public
+     */
+    function credentialsFlow($username, $password)
+    {
+        $postData = array(
+            'client_id' => $this->_clientId,
+            'client_secret' => $this->_clientSecret,
+            'username' => $username,
+            'password' => $password,
+            'grant_type' => 'password'
+        );
+
+        return $this->_request($this->getAccessTokenUrl(), array(
+            CURLOPT_POST           => true, 
+            CURLOPT_POSTFIELDS     => $postData,
+        ));
+    }
+
+    /**
      * Retrieve access token
      *
      * @param string $code        Optional OAuth code returned from the service provider
