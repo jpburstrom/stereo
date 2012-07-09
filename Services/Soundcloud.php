@@ -290,10 +290,19 @@ class Services_Soundcloud
             'grant_type' => 'password'
         );
 
-        return $this->_request($this->getAccessTokenUrl(), array(
-            CURLOPT_POST           => true, 
-            CURLOPT_POSTFIELDS     => $postData,
-        ));
+        $options = array(CURLOPT_POST => true, CURLOPT_POSTFIELDS => $postData);
+        $response = json_decode(
+            $this->_request($this->getAccessTokenUrl(), $options),
+            true
+        );
+
+        if (array_key_exists('access_token', $response)) {
+            $this->_accessToken = $response['access_token'];
+
+            return $response;
+        } else {
+            return false;
+        }
     }
 
     /**
