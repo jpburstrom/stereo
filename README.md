@@ -6,6 +6,10 @@ A wrapper for the SoundCloud API written in PHP with support for authentication 
 
 The wrapper got a real overhaul with version 2.0. The current version was written with [PEAR](http://pear.php.net/) in mind and can easily by distributed as a PEAR package.
 
+## Requirements
+
+* PHP >= 5.3 (with [cURL](http://se2.php.net/curl) support)
+
 ## Getting started
 
 Check out the [getting started](https://github.com/mptre/php-soundcloud/wiki/OAuth-2) wiki entry for further reference on how to get started. Also make sure to check out the [demo application](https://github.com/mptre/ci-soundcloud) for some example code.
