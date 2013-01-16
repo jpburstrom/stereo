@@ -925,7 +925,7 @@ class Services_Soundcloud
             $this->_lastHttpResponseHeaders = $this->_parseHttpHeaders(
                 substr($data, 0, $info['header_size'])
             );
-        	$this->_lastHttpResponseBody = substr($data, $info['header_size']);
+            $this->_lastHttpResponseBody = substr($data, $info['header_size']);
         } else {
             $this->_lastHttpResponseHeaders = array();
             $this->_lastHttpResponseBody = $data;
