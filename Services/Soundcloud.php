@@ -921,13 +921,16 @@ class Services_Soundcloud
 
         curl_close($ch);
 
-        $this->_lastHttpResponseHeaders = $this->_parseHttpHeaders(
-            substr($data, 0, $info['header_size'])
-        );
-        if(array_key_exists(CURLOPT_HEADER, $options) && !$options[CURLOPT_HEADER])
-    		$this->_lastHttpResponseBody = $data;
-		else
+        if (array_key_exists(CURLOPT_HEADER, $options) && $options[CURLOPT_HEADER]) {
+            $this->_lastHttpResponseHeaders = $this->_parseHttpHeaders(
+                substr($data, 0, $info['header_size'])
+            );
         	$this->_lastHttpResponseBody = substr($data, $info['header_size']);
+        } else {
+            $this->_lastHttpResponseHeaders = array();
+            $this->_lastHttpResponseBody = $data;
+        }
+
         $this->_lastHttpResponseCode = $info['http_code'];
 
         if ($this->_validResponseCode($this->_lastHttpResponseCode)) {
