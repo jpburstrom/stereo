@@ -717,10 +717,10 @@ class Services_Soundcloud
     public function updatePlaylist($playlistId, $trackIds, $optionalPostData = null)
     {
         $url = $this->_buildUrl('playlists/' . $playlistId);
-
         $postData = array();
+
         foreach ($trackIds as $trackId) {
-            $postData[] = 'playlist[tracks][][id]=' . $trackId;
+            array_push($postData, 'playlist[tracks][][id]=' . $trackId);
         }
 
         if (is_array($optionalPostData)) {
