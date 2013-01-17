@@ -8,7 +8,7 @@ The wrapper got a real overhaul with version 2.0. The current version was writte
 
 ## Requirements
 
-* PHP >= 5.3 (with [cURL](http://se2.php.net/curl) support)
+* PHP >= 5.0.0 (with [cURL](http://se2.php.net/curl) support)
 
 ## Getting started
 
