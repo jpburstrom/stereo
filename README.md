@@ -14,6 +14,13 @@ The wrapper got a real overhaul with version 2.0. The current version was writte
 
 Check out the [getting started](https://github.com/mptre/php-soundcloud/wiki/OAuth-2) wiki entry for further reference on how to get started. Also make sure to check out the [demo application](https://github.com/mptre/ci-soundcloud) for some example code.
 
+## Composer
+
+There's an unofficial [mirror](https://github.com/internalsystemerror/php-soundcloud) of this project with [Composer](http://getcomposer.org/) support. To install just run the following command from your project root:
+
+```bash
+$ composer require ise/php-soundcloud 3.*
+```
 
 ## Examples
 
