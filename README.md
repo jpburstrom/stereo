@@ -147,7 +147,7 @@ try {
 
 ## Feedback and questions
 
-Found a bug or missing a feature? Don't hesitate to create a new issue here on GitHub. Or contact me [directly](https://github.com/mptre).
+Found a bug or missing a feature? Don't hesitate to create a new issue here on GitHub.
 
 Also make sure to check out the official [documentation](https://github.com/soundcloud/api/wiki/) and the join [Google Group](https://groups.google.com/group/soundcloudapi?pli=1) in order to stay updated.
 
