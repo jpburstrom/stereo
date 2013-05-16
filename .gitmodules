@@ -1,0 +1,9 @@
+[submodule "js/yuckbox"]
+	path = js/yuckbox
+	url = git@jpburstrom.unfuddle.com:jpburstrom/yuckbox2.git
+[submodule "scb"]
+	path = scb
+	url = https://github.com/scribu/wp-scb-framework.git
+[submodule "p2p-core"]
+	path = p2p-core
+	url = https://github.com/AppThemes/wp-posts-to-posts-core.git
