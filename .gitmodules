@@ -7,3 +7,6 @@
 [submodule "p2p-core"]
 	path = p2p-core
 	url = https://github.com/AppThemes/wp-posts-to-posts-core.git
+[submodule "lib/php-soundcloud"]
+	path = lib/php-soundcloud
+	url = https://github.com/mptre/php-soundcloud.git
