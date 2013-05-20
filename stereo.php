@@ -5,7 +5,7 @@
  * Author: Johannes Burström
  */
 
-require dirname( __FILE__ ) . "/scb/load.php";
+require dirname( __FILE__ ) . "/lib/scb/load.php";
 
 scb_init('stereo_init');
 
@@ -20,7 +20,7 @@ function stereo_load_p2p_core() {
 
 	define( 'P2P_TEXTDOMAIN', 'stereo' );
 
-	require_once dirname( __FILE__ ) . '/p2p-core/init.php';
+	require_once dirname( __FILE__ ) . '/lib/p2p-core/init.php';
 
 	// TODO: can't use activation hook
 	add_action( 'admin_init', array( 'P2P_Storage', 'install' ) );
