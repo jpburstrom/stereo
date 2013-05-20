@@ -15,27 +15,22 @@ class StereoCustomPost {
         add_action('init', array(&$this, 'create_post_type'));
 		add_action("wp_insert_post", array(&$this, "wp_insert_post"), 10, 2);
 
-        //add_action('admin_print_scripts', array(&$this, 'my_admin_scripts'));
-        //add_action('admin_print_styles', array(&$this, 'my_admin_styles'));
-        //
+		add_action( 'admin_enqueue_scripts', array( &$this, 'my_admin_scripts' ) );
         
     }
+
     function my_admin_scripts() {
         global $current_screen;
         if ($current_screen->post_type == 'stereo_playlist') {
-            wp_enqueue_script('media-upload');
-            wp_enqueue_script('thickbox');
-            wp_enqueue_script('ui-sortable');
+            //wp_enqueue_script('media-upload');
+            //wp_enqueue_script('thickbox');
+            //wp_enqueue_script('ui-sortable');
+		
+            wp_enqueue_script( 'stereo-admin-cptjs', plugin_dir_url(__FILE__) . 'js/cpt.js' );
+            wp_enqueue_style( 'stereo-admin-cpt', plugin_dir_url(__FILE__) . 'css/cpt.css' );
         }
     }
 
-    function my_admin_styles() {
-        global $current_screen;
-        if ($current_screen->post_type == 'stereo_playlist') {
-        }
-    }
-
-    
 
    //Set up post type 
     public function create_post_type() 

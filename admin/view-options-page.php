@@ -1,10 +1,10 @@
     <div class="wrap">
         <div class="icon32" id="icon-options-general"></div>
-        <h2> <?php _e( 'Yuckbox Options' ) ?> </h2>
+        <h2> <?php _e( 'Stereo Options', 'stereo' ) ?> </h2>
 		
 		<form action="options.php" method="post">
 	
-            <?php settings_fields( 'yuckbox_options' ); ?>
+            <?php settings_fields( 'stereo_options' ); ?>
             <div class="ui-tabs">
                 <ul class="ui-tabs-nav">
             
@@ -16,7 +16,7 @@
             <?php do_settings_sections( $_GET['page'] ); ?>
             
             </div>
-                <p class="submit"><input name="Submit" type="submit" class="button-primary" value="<?php  _e( 'Save Changes' ) ?>" /></p>
+                <p class="submit"><input name="Submit" type="submit" class="button-primary" value="<?php  _e( 'Save Changes', 'stereo' ) ?>" /></p>
 		
         </form>
 	
