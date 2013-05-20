@@ -87,6 +87,7 @@ class StereoOptions {
 	 * @since 1.0
 	 */
 	public function display_page() {
+
         include('view-options-page.php');
 	}
 	
@@ -105,9 +106,11 @@ class StereoOptions {
 	 * @since 1.0
 	 */
 	public function display_about_section() {
+?>
+    <p><strong>Stereo</strong> - A music player and track manager. <p>
+    <p>Copyright 2013 johannes@ljud.org</p>
 		
-		// This displays on the "About" tab. Echo regular HTML here, like so:
-		// echo '<p>Copyright 2011 me@example.com</p>';
+<?php
 		
 	}
 	
@@ -223,7 +226,20 @@ class StereoOptions {
 			'type'    => 'text',
 			'section' => 'advanced'
 		);
-		
+		$this->settings['playlist_slug'] = array(
+			'title'   => __( 'Playlist rewrite slug' ),
+			'desc'    => __( 'Slug to use for URL rewrites' ),
+			'std'     => 'playlist',
+			'type'    => 'text',
+			'section' => 'advanced'
+		);
+		$this->settings['local_support'] = array(
+			'section' => 'advanced',
+			'title'   => __( 'Uploaded files support' ),
+			'desc'    => __( 'Allow streaming of uploaded files' ),
+			'type'    => 'checkbox',
+			'std'     => 0 // Set to 1 to be checked by default, 0 to be unchecked by default.
+		);
         /*
 		$this->settings['example_textarea'] = array(
 			'title'   => __( 'Example Textarea Input' ),
@@ -364,13 +380,13 @@ class StereoOptions {
 		
 	}
 	
+
 	/**
 	* Validate settings
 	*
 	* @since 1.0
 	*/
 	public function validate_settings( $input ) {
-		
 		if ( ! isset( $input['reset_theme'] ) ) {
 			$options = get_option( 'stereo_options' );
 			
