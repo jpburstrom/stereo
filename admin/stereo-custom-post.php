@@ -21,7 +21,7 @@ class StereoCustomPost {
 
     function my_admin_scripts() {
         global $current_screen;
-        if ($current_screen->post_type == 'stereo_playlist') {
+        if ($current_screen->post_type == 'stereo_playlist' && $current_screen->base == 'post') {
             //wp_enqueue_script('media-upload');
             //wp_enqueue_script('thickbox');
             //wp_enqueue_script('ui-sortable');
@@ -32,45 +32,45 @@ class StereoCustomPost {
     }
 
 
-   //Set up post type 
+    //Set up post type 
     public function create_post_type() 
     {
         $s = stereo_option("playlist_singular");
         $p = stereo_option("playlist_plural");
 
-          register_post_type( 'stereo_playlist',
+        register_post_type( 'stereo_playlist',
             array(
-              'labels' => array(
-                'name' => $p,
-                'singular_name' => $s,
-                'add_new' => __( 'Add New' ),
-                'add_new_item' => __( 'Add New ' ) . $s,
-                'edit' => __( 'Edit' ),
-                'edit_item' => __( 'Edit ' ) . $s,
-                'new_item' => __( 'New ' ) . $s,
-                'view' => __( 'View ' ) . $s,
-                'view_item' => __( 'View ' ) . $s,
-                'search_items' => __( 'Search ' ) . $p,
-                'not_found' => sprintf(__( 'No %s found' ), strtolower($p)),
-                'not_found_in_trash' => sprintf(__( 'No %s found in Trash' ), strtolower($p)),
-                'parent' => __( 'Parent ' ) . $s
-                
-              ),
-              'public' => true,
-              'rewrite' => array('slug' => stereo_option("playlist_slug")),
-              'supports' => array("editor", "title", "page-attributes", 'thumbnail')
-            )
-          );
+                'labels' => array(
+                    'name' => $p,
+                    'singular_name' => $s,
+                    'add_new' => __( 'Add New' ),
+                    'add_new_item' => __( 'Add New ' ) . $s,
+                    'edit' => __( 'Edit' ),
+                    'edit_item' => __( 'Edit ' ) . $s,
+                    'new_item' => __( 'New ' ) . $s,
+                    'view' => __( 'View ' ) . $s,
+                    'view_item' => __( 'View ' ) . $s,
+                    'search_items' => __( 'Search ' ) . $p,
+                    'not_found' => sprintf(__( 'No %s found' ), strtolower($p)),
+                    'not_found_in_trash' => sprintf(__( 'No %s found in Trash' ), strtolower($p)),
+                    'parent' => __( 'Parent ' ) . $s
 
-          register_post_type( 'stereo_track',
-            array(
-              'public' => true,
-              'labels' => array( 'name' => "Track" ),
-              //'show_ui' => false,
-              'supports' => array("editor", "title", "page-attributes", 'thumbnail'),
-              'hierarchical' => true
+                ),
+                'public' => true,
+                'rewrite' => array('slug' => stereo_option("playlist_slug")),
+                'supports' => array("editor", "title", "page-attributes", 'thumbnail')
             )
-          );
+        );
+
+        $options = array(
+            'public' => true,
+            'labels' => array( 'name' => "Track" ),
+            'supports' => array("editor", "title", "page-attributes", 'thumbnail'),
+            'hierarchical' => true
+        );
+        $options['show_ui'] = (1 == stereo_option('show_track_ui'));
+
+        register_post_type( 'stereo_track', $options);
     }
 
     //Set up custom boxes for post type

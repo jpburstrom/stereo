@@ -233,6 +233,13 @@ class StereoOptions {
 			'type'    => 'text',
 			'section' => 'advanced'
 		);
+		$this->settings['show_track_ui'] = array(
+			'section' => 'advanced',
+			'title'   => __( 'Show Track UI' ),
+			'desc'    => __( 'If Tracks should be visible in the main menu (good for debugging)' ),
+			'type'    => 'checkbox',
+			'std'     => 0 // Set to 1 to be checked by default, 0 to be unchecked by default.
+		);
 		$this->settings['local_support'] = array(
 			'section' => 'advanced',
 			'title'   => __( 'Uploaded files support' ),
