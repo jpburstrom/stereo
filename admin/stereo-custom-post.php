@@ -187,12 +187,9 @@ class StereoCustomPost {
 		if ($post->post_type == "stereo_playlist")
 		{
 
-            foreach ($_POST['stereo_track_number'] as $key => $number) {
-                $args = $this->prepare_track_postdata($key);
-                if ($args['post_title']) {
-                    $this->create_track($post_id, $args);
-                }
-            }
+            $this->add_update_tracks($_POST['stereo_track_number']);
+
+            $this->delete_tracks($_POST['stereo_delete_track']);
 
             //
 
@@ -266,6 +263,47 @@ class StereoCustomPost {
         return $post_id;
     }
 
+    /**
+     * Add or update tracks from an array of track numbers
+     *
+     * @uses StereoCustomPost::prepare_track_postdata
+     *
+     * @param $tracknumbers Array of track numbers 
+     */
+
+    function add_update_tracks($tracknumbers)
+    {
+        if ($tracknumbers) {
+            foreach ($tracknumbers as $key => $number) {
+                $args = $this->prepare_track_postdata($key);
+                if ($args['post_title']) {
+                    $this->create_track($post_id, $args);
+                }
+            }
+        }
+    }
+
+    /**
+     * Delete tracks
+     *
+     * @param $ids array of stereo_track post ids
+     */
+
+    function delete_tracks($ids)
+    {   
+        foreach ($ids as $id) {
+            if ('stereo_track' == get_post_type($id))
+                //Bypass trash functionality
+                wp_delete_post($id, true);
+        }
+    }    
+
+    /**
+     * Prepare an array of track data for $key, from $_POST
+     *
+     * @param $key Track index key
+     * @return array Track data 
+     */
     function prepare_track_postdata($key) 
     {
         $args = array();
