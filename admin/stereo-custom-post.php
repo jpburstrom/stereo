@@ -9,6 +9,10 @@ class StereoCustomPost {
 
         //Variables
 
+        if ($clientid = stereo_option("soundcloud_id")) {
+            $this->soundcloud = new Services_SoundCloud($clientid, null);
+        }
+
         //actions
         //add_action('parse_request', array(&$this, 'events_request_filter'), 10);
         add_action('admin_head', array(&$this, 'admin_head'));
@@ -85,14 +89,20 @@ class StereoCustomPost {
         <?php $this->import_button() ?>
         <a id="stereo_add_track" class="button button-large stereo-add-track">Add track</a>
         <input type="hidden" id="stereo_track_count" name="stereo_track_count">
-        <div id="stereo_soundcloud_import_container">
+        <div class="hide-if-js" id="stereo_soundcloud_import_container">
             <h4><?php _e("Import SoundCloud Tracks") ?></h4>
             <label for="stereo_sc_sets">Sets</label>
-            <select id="stereo_sc_sets"></select>
+            <select id="stereo_sc_sets">
+                <option></option>
+                <?php foreach ($this->get_soundcloud_sets() as $id => $set): ?>
+                    <option value="<?php echo $id ?>" data-stereo_tracks='<?php echo $set[1]?>'><?php echo $set[0] ?> </option>
+                <?php endforeach; ?>
+            </select>
             <label for="stereo_sc_tracks">Tracks</label>
             <select id="stereo_sc_tracks">
-                <option></option>
-                <option>My track</option>
+                <?php foreach ($this->get_soundcloud_tracks() as $id => $set): ?>
+                    <option value="<?php echo $id ?>" data-stereo_tracks='<?php echo $set[1]?>'><?php echo $set[0] ?> </option>
+                <?php endforeach; ?>
             </select>
             <a href="#" class="stereo-cancel">Cancel</a>
         </div>
@@ -102,9 +112,9 @@ class StereoCustomPost {
                 <span class="stereo-track-number"></span><input class="stereo-track-number-input" name="stereo_track_number[]" type="hidden" value=""/>
                 <input type="text" placeholder="Track name" class="stereo-track-name" name="stereo_track_name[]"/>
                 <input type="hidden" name="stereo_track_ID[]"/>
+                <input type="hidden" class="stereo-track-uri" name="stereo_track_uri[]"/>
                 <ul class="stereo-metadata"> 
                     <li class="metadata">
-                        Meta over here
                     </li>
                     <li class="actions">
                         <a class="stereo-delete-track" href="#">Delete track</a>
@@ -122,8 +132,9 @@ class StereoCustomPost {
                 <span class="stereo-track-number"><?php echo $post->menu_order ?> </span><input class="stereo-track-number-input" name="stereo_track_number[]" type="hidden" value="<?php echo $post->menu_order ?>"/>
                 <input type="text" placeholder="Track name" value="<?php the_title(); ?>" class="stereo-track-name" name="stereo_track_name[]"/>
                 <input type="hidden" class="stereo-track-id" value="<?php the_ID(); ?>" name="stereo_track_ID[]"/>
+                <input type="hidden" class="stereo-track-uri" name="stereo_track_uri[]"/>
                 <ul class="stereo-metadata"> 
-                    <li class="metadata"> </li>
+                    <li data-stereo_track="<?php the_ID() ?>" data-stereo_data="<?php echo $this->track_data_json() ?>" class="metadata"></li>
                     <li class="actions">
                         <a class="stereo-delete-track" href="#">Delete track</a>
 <?php //<a class="stereo-replace-file" href="#">Replace file</a>?>
@@ -308,10 +319,82 @@ class StereoCustomPost {
     {
         $args = array();
         $args['ID'] = $_POST['stereo_track_ID'][$key];
-        $args['uri'] = $_POST['stereo_track_uri'][$key];
+        $args['post_excerpt'] = $_POST['stereo_track_uri'][$key];
         $args['post_title'] = $_POST['stereo_track_name'][$key];
         $args['menu_order'] = $_POST['stereo_track_number'][$key];
         return $args;
+    }
+
+    function track_data_json($id=null)
+    {
+        if (! isset($id)) {
+            $id = get_the_ID();
+        }
+        $post = get_post($id);
+
+        $d = array();
+        $d['uri'] = $post->post_excerpt || false;
+        $d['filename'] = basename($d['uri']) || false;
+        $d['title'] = get_the_title($id);
+        return json_encode($d);
+    }
+
+    function get_soundcloud_users()
+    {
+        return array_map("trim", explode(",", stereo_option('soundcloud_users')));
+    }
+
+    function get_soundcloud_tracks()
+    {
+        $tracks = array();
+        foreach ($this->get_soundcloud_users() as $user) {
+            $data = json_decode($this->get_soundcloud_query("users/$user/tracks"));
+            if ($data) {
+                foreach ($data as $track) {
+                    $tmp = array();
+                    $tmp['uri'] = "soundcloud://tracks/$track->id";
+                    $tmp['title'] = $track->title;
+                    $tmp = (object) $tmp;
+                    $tracks[$track->id] = array($track->title, json_encode($tmp));
+                }
+            }
+        }
+        return $tracks;
+    }
+
+    function get_soundcloud_sets()
+    {
+        $sets = array();
+        foreach ($this->get_soundcloud_users() as $user) {
+            $data = json_decode($this->get_soundcloud_query("users/$user/playlists"));
+            if ($data) {
+                foreach ($data as $set) {
+                    $tdata = array();
+                    foreach ($set->tracks as $track) {
+                        $tmp = array();
+                        $tmp['uri'] = "soundcloud://tracks/$track->id";
+                        $tmp['title'] = $track->title;
+                        $tdata[] = (object) $tmp;
+                    }
+                    $tdata = (object) $tdata;
+                    $sets[$set->id] = array($set->title, json_encode($tdata));
+                    
+                }
+            }
+        }
+        return $sets;
+    }
+
+    function get_soundcloud_query($query)
+    {
+        $query_label = "stereo_sc_query_$query";
+        $data = get_transient($query_label);
+        if (false === $data) {
+            $data = $this->soundcloud->get($query);
+            set_transient( $query_label, $data, 60*5 );
+        }
+
+        return $data;
     }
 
 

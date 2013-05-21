@@ -50,13 +50,27 @@ jQuery(document).ready(function($) {
         ev.preventDefault();
     });
 
-    $(".stereo-cancel").click(function(ev) {
-        $(this).parent().hide(200);
-        ev.preventDefault();
+    $("#stereo_sc_sets").change(function(ev) {
+        $.each($(this).children(":selected").data("stereo_tracks"), function() {
+            var $track = add_track_gui();
+            $track.find(".stereo-track-name").val(this.title);
+            $track.find(".stereo-track-uri").val(this.uri);
+            //TODO: populate with more values
+        });
     });
 
     $("#stereo_sc_tracks").change(function() {
-        import_soundcloud_track($(this).val());
+        var data = $(this).children(":selected").data("stereo_tracks");
+        var $track = add_track_gui();
+        $track.find(".stereo-track-name").val(data.title);
+        $track.find(".stereo-track-uri").val(data.uri);
+        //TODO: populate with more values, 
+        //TODO merge with sets function above
+    });
+
+    $(".stereo-cancel").click(function(ev) {
+        $(this).parent().hide(200);
+        ev.preventDefault();
     });
 
     $(document).on("click", ".stereo-delete-track", function(ev) {
