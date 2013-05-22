@@ -3,7 +3,12 @@
  * Plugin name: Stereo
  * Description: Your WordPress Music Player
  * Author: Johannes Burström
+ *
+ *
  */
+
+
+define('STEREO_PLUGIN_DIR', dirname( __FILE__) . "/" );
 
 require dirname( __FILE__ ) . "/lib/scb/load.php";
 
@@ -35,7 +40,7 @@ function stereo_connection_types() {
 	) );
 }
 
-require("admin/stereo-options.php");
-//ID3, save & edit attachment metadata
-require("admin/stereo-attachments.php");
-require("admin/stereo-custom-post.php");
+if (is_admin()) {
+    require_once("admin/init.php");
+
+}
