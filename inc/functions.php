@@ -29,6 +29,17 @@ function get_stereo_track_meta( $trackid ) {
     return get_post_meta($trackid, '_stereo', true);
 }
 
+/**
+ * Get streaming link for track
+ */
+function get_stereo_streaming_link( $trackid=false) {
+    global $post;
+    if (false === $trackid) {
+        $trackid = $post->ID;
+    }
+    return site_url( trailingslashit(stereo_option('streaming_slug')) . trailingslashit($trackid) );
+}
+
 
 /*
  * Init and return SoundCloud class
