@@ -41,6 +41,7 @@ function stereo_connection_types() {
 	) );
 }
 
+require('inc/info.php');
 require('inc/stream.php');
 require('inc/functions.php');
 
