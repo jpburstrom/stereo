@@ -26,9 +26,8 @@ class StereoCustomPost {
             //wp_enqueue_script('media-upload');
             //wp_enqueue_script('thickbox');
             //wp_enqueue_script('ui-sortable');
-		
-            wp_enqueue_script( 'stereo-admin-cptjs', plugin_dir_url(__FILE__) . 'js/cpt.js' );
-            wp_enqueue_style( 'stereo-admin-cpt', plugin_dir_url(__FILE__) . 'css/cpt.css' );
+            wp_enqueue_script( 'stereo-admin-cptjs', STEREO_PLUGIN_URL . 'admin/js/cpt.js' );
+            wp_enqueue_style( 'stereo-admin-cpt', STEREO_PLUGIN_URL . 'admin/css/cpt.css' );
         }
     }
 

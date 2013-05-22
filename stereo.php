@@ -9,8 +9,9 @@
 
 
 define('STEREO_PLUGIN_DIR', dirname( __FILE__) . "/" );
+define('STEREO_PLUGIN_URL', plugin_dir_url( __FILE__)  );
 
-require dirname( __FILE__ ) . "/lib/scb/load.php";
+require STEREO_PLUGIN_DIR . "lib/scb/load.php";
 
 scb_init('stereo_init');
 
@@ -25,7 +26,7 @@ function stereo_load_p2p_core() {
 
 	define( 'P2P_TEXTDOMAIN', 'stereo' );
 
-	require_once dirname( __FILE__ ) . '/lib/p2p-core/init.php';
+	require_once STEREO_PLUGIN_DIR . 'lib/p2p-core/init.php';
 
 	// TODO: can't use activation hook
 	add_action( 'admin_init', array( 'P2P_Storage', 'install' ) );

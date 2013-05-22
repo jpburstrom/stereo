@@ -6,7 +6,7 @@
  */
 
 if (!class_exists("getID3")) {
-    include_once("getid3/getid3.php");
+    include_once(STEREO_PLUGIN_DIR . "admin/lib/getid3/getid3.php");
 }
 
 class StereoAttachment {
