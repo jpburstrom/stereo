@@ -40,7 +40,7 @@
         </li>
     </script>
     <ul id="stereo_tracks">
-    <?php while ( $connected->have_posts() ) : $connected->the_post(); $meta = get_post_meta($post->ID, '_stereo', true); ?>
+    <?php while ( $connected->have_posts() ) : $connected->the_post(); $meta = get_stereo_track_meta($post->ID); ?>
         <li class="stereo-track postarea">
             <span class="handle"> </span>
             <span class="stereo-track-number"><?php echo $post->menu_order ?> </span><input class="stereo-track-number-input" name="stereo_track_number[]" type="hidden" value="<?php echo $post->menu_order ?>"/>

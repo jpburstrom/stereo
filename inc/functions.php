@@ -20,6 +20,14 @@ function stereo_option( $option ) {
     return $options[$option];
 }
 
+/**
+ * Get metadata for track
+ *
+ * @uses get_post_meta
+ */
+function get_stereo_track_meta( $trackid ) {
+    return get_post_meta($trackid, '_stereo', true);
+}
 
 
 /*
