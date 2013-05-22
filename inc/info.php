@@ -3,14 +3,48 @@
  * Rewrites
  */
 
-/*
- * Handle main info rewrite rules
- */
+class StereoPlaylistInfo {
+    var $name =     "";
+    var $artwork =  "";
+
+    function __construct($playlist) {
+        $this->name = $playlist->post_title;
+        $a = wp_get_attachment_image_src(get_post_thumbnail_id($playlist->ID), stereo_option("artwork_size"));
+        $this->artwork = array(
+            "url" => $a[0],
+            "width" => $a[1],
+            "height" => $a[2]
+        );
+    }
+}
 
 class StereoTrackInfo {
+
     var $name =     "", 
-        $playlist = "",
-        $artwork =  "";
+        $stream_url = "",
+        $playlist = null;
+
+    /**
+     * Constructor
+     * @param $track  stereo_track post object
+     */
+    function __construct($track) 
+    {
+        $this->name = $track->post_title;
+        $this->stream_url = $track->post_excerpt;
+
+        $playlist = new WP_Query( array(
+            'connected_direction' => 'to',
+            'connected_type' => 'playlist_to_tracks',
+            'connected_items' => $track,
+            'nopaging' => true,
+        ));
+        if ($playlist->found_posts == 1) {
+            $playlist = $playlist->posts[0];
+            $this->playlist = new StereoPlaylistInfo($playlist);
+        }
+
+    }
 }
 
 class StereoInfoRewrite {
@@ -27,7 +61,8 @@ class StereoInfoRewrite {
 
     function add_rewrite_rules()
     {
-        add_rewrite_rule('^stream/([^/]*)/info/?', 'index.php?stereo_id=$matches[2]&stereo_info=true','top');
+        $stream = stereo_option('streaming_slug');
+        add_rewrite_rule('^' . $stream . '/([^/]*)/info/?', 'index.php?stereo_id=$matches[1]&stereo_info=true','top');
     }
 
     function stereo_query_vars( $query_vars )
@@ -45,14 +80,18 @@ class StereoInfoRewrite {
             return;
         }
 
-        $this->info($id);
+        $this->info($query->query_vars['stereo_id']);
 
         header('HTTP/1.1 404 Not Found');
         die();
     }
 
     function info($id) {
-        echo "here we should add info";
+        $q = new WP_Query(array("post_status" => "publish", "post_type" => "stereo_track", "post__in" => array($id)) );
+        if ($q->found_posts == 1) {
+            $track = new StereoTrackInfo($q->posts[0]);
+        }
+        echo json_encode($track);
         die();
 
     }
