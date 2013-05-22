@@ -2,8 +2,6 @@
 
 class StereoCustomPost {
 
-    var $meta_fields = array(
-    );
 
     function __construct() {
 
@@ -77,7 +75,6 @@ class StereoCustomPost {
     public function metaboxes() 
     { 
 		global $post;
-		$custom = get_post_custom($post->ID);
 
         $connected = p2p_type( 'playlist_to_tracks' )->get_connected( $post, array('orderby' => 'menu_order', 'order' => 'ASC') );
 
@@ -103,6 +100,11 @@ class StereoCustomPost {
             "stereo_playlist", "normal", "low");
     }
 
+    function nonce_field() 
+    {
+        wp_nonce_field( plugin_basename( __FILE__ ), 'stereo_playlist' ); 
+    }
+
     //Insert all meta values from the $this->meta_fields variable
 	function wp_insert_post($post_id, $post = null)
     {
@@ -122,44 +124,13 @@ class StereoCustomPost {
 
             $this->add_update_tracks($_POST['stereo_track_number']);
 
-            $this->delete_tracks($_POST['stereo_delete_track']);
+            if (isset($_POST['stereo_delete_track']))
+                $this->delete_tracks($_POST['stereo_delete_track']);
 
-            //
-
-			// Loop through the POST data
-			foreach ($this->meta_fields as $key => $values)
-			{
-				$value = @$_POST[$key];
-				if (empty($value))
-				{
-					delete_post_meta($post_id, $key);
-					continue;
-				}
-
-				// If value is a string it should be unique
-				if (!is_array($value))
-				{
-					// Update meta
-					if (!update_post_meta($post_id, $key, $value))
-					{
-						// Or add the meta data
-						add_post_meta($post_id, $key, $value);
-					}
-				}
-				else
-				{
-					// If passed along is an array, we should remove all previous data
-					delete_post_meta($post_id, $key);
-					
-					// Loop through the array adding new values to the post meta as different entries with the same name
-					foreach ($value as $entry)
-						add_post_meta($post_id, $key, $entry);
-				}
-			}
 		}
 	}
 
-    function create_track($playlist_id, $args) 
+    function create_track($playlist_id, $args, $metadata) 
     {
         // Initialize the post ID to -1. This indicates no action has been taken.
         $post_id = -1;
@@ -187,9 +158,9 @@ class StereoCustomPost {
         //Success, here we go
         
         //Insert metadata
-        
-        //Set track thumbnail
 
+        update_post_meta($post_id, "_stereo", $metadata);
+        
         //Link track with playlist
         p2p_type( 'playlist_to_tracks' )->connect( $playlist_id, $post_id, array('date' => current_time('mysql') ));
 
@@ -209,8 +180,9 @@ class StereoCustomPost {
         if ($tracknumbers) {
             foreach ($tracknumbers as $key => $number) {
                 $args = $this->prepare_track_postdata($key);
+                $meta = $this->prepare_track_metadata($key);
                 if ($args['post_title']) {
-                    $this->create_track($post_id, $args);
+                    $this->create_track($post_id, $args, $meta);
                 }
             }
         }
@@ -241,10 +213,25 @@ class StereoCustomPost {
     {
         $args = array();
         $args['ID'] = $_POST['stereo_track_ID'][$key];
-        $args['post_excerpt'] = $_POST['stereo_track_uri'][$key];
         $args['post_title'] = $_POST['stereo_track_name'][$key];
         $args['menu_order'] = $_POST['stereo_track_number'][$key];
         return $args;
+    }
+
+    /**
+     * Prepare an array of track metadata for $key, from $_POST
+     *
+     * @param $key Track index key
+     * @return array Track data 
+     */
+    function prepare_track_metadata($key) 
+    {
+        $meta_fields = array( "fileid", "host" );
+        $metadata = array();
+        foreach ($meta_fields as $field) {
+            $metadata[$field] = $_POST["stereo_track_$field"][$key];
+        }
+        return $metadata;
     }
 
     function track_data_json($id=null)
