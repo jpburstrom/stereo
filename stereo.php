@@ -40,7 +40,10 @@ function stereo_connection_types() {
 	) );
 }
 
+require('inc/stream.php');
+require('inc/functions.php');
+
 if (is_admin()) {
     require_once("admin/init.php");
-
 }
+
