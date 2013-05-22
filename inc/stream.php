@@ -51,7 +51,7 @@ class StereoStream {
 
     function add_rewrite_rules()
     {
-        add_rewrite_rule('^stream/(wp|sc)/([^/]*)/?', 'index.php?stereo_provider=$matches[1]&stereo_id=$matches[2]','top');
+        add_rewrite_rule('^stream/([^/]*)/?', 'index.php?&stereo_id=$matches[1]','top');
     }
 
     function stereo_query_vars( $query_vars )
@@ -63,10 +63,10 @@ class StereoStream {
 
     function pre_get_posts($query) 
     {
-        if ( !$query->is_main_query() ) {
+        if ( !$query->is_main_query()) {
             return;
         }
-        if ( !isset ( $query->query_vars['stereo_provider'] )) {
+        if ( !isset ( $query->query_vars['stereo_id'] )) {
             //Here we add a cookie on non-streaming pages
             $this->add_cookie();
             return;
@@ -77,15 +77,15 @@ class StereoStream {
             die();
         }
 
-        switch ($query->query_vars['stereo_provider']) {
-        case 'wp':
-            $this->wp_streaming($query->query_vars['stereo_id']);
-            break;
-        case 'sc':
-            $this->sc_streaming($query->query_vars['stereo_id']);
-            break;
-        }
+        $this->streaming($id);
+
         header('HTTP/1.1 404 Not Found');
+        die();
+    }
+
+    function streaming($id)
+    {
+        echo "here we should add streaming";
         die();
     }
 
