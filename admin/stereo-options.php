@@ -89,7 +89,7 @@ class StereoOptions {
 	 */
 	public function display_page() {
 
-        include('view-options-page.php');
+        include('views/options-page.php');
 	}
 	
 	/**
