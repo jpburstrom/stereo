@@ -439,11 +439,4 @@ class StereoOptions {
 
 $stereo_options = new StereoOptions();
 
-function stereo_option( $option ) {
-	$options = get_option( 'stereo_options' );
-	if ( isset( $options[$option] ) )
-		return $options[$option];
-	else
-		return false;
-}
 ?>
