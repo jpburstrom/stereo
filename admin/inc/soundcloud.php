@@ -25,11 +25,7 @@ class StereoSoundCloud
             $data = json_decode($this->get_query("users/$user/tracks"));
             if ($data) {
                 foreach ($data as $track) {
-                    $tmp = array();
-                    $tmp['uri'] = "soundcloud://tracks/$track->id";
-                    $tmp['title'] = $track->title;
-                    $tmp = (object) $tmp;
-                    $tracks[$track->id] = array($track->title, json_encode($tmp));
+                    $tracks[$track->id] = array($track->title, json_encode($this->_prepare_track_data($track)));
                 }
             }
         }
@@ -48,10 +44,7 @@ class StereoSoundCloud
                 foreach ($data as $set) {
                     $tdata = array();
                     foreach ($set->tracks as $track) {
-                        $tmp = array();
-                        $tmp['uri'] = "soundcloud://tracks/$track->id"; //FIXME
-                        $tmp['title'] = $track->title;
-                        $tdata[] = (object) $tmp;
+                        $tdata[] = $this->_prepare_track_data($track);
                     }
                     $tdata = (object) $tdata;
                     $sets[$set->id] = array($set->title, json_encode($tdata));
@@ -60,6 +53,13 @@ class StereoSoundCloud
             }
         }
         return $sets;
+    }
+
+    private function _prepare_track_data($track) {
+        $tmp = array();
+        $tmp['id'] = $track->id; 
+        $tmp['title'] = $track->title;
+        return (object) $tmp;
     }
 
     function get_query($query)

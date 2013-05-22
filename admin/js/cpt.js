@@ -15,24 +15,13 @@ jQuery(document).ready(function($) {
         $item = $("#stereo_tracks").append($("#stereo_track_template").html()).children().last();
         recount($item, count);
         return $item;
-     }
-     import_soundcloud_track = function(id) {
-         //FIXME: do things with ID here..
-        var track, $item;
-        if (!id) {
-            return;
-        }
-        track = { name: "hello hello" };
-
-        if (track) {
-            $item = add_track_gui();
-            $item.find(".stereo-track-name").val(track.name);
-            //Populate the other things
-        }
-
-
-
-
+     },
+     add_sc_track = function(data) {
+        var $item = add_track_gui();
+        $item.find(".stereo-track-name").val(data.title);
+        $item.find(".stereo-track-host").val("sc");
+        $item.find(".stereo-track-fileid").val(data.id);
+        return $item;
      };
 
     jQuery("#stereo_tracks").sortable({
@@ -52,20 +41,12 @@ jQuery(document).ready(function($) {
 
     $("#stereo_sc_sets").change(function(ev) {
         $.each($(this).children(":selected").data("stereo_tracks"), function() {
-            var $track = add_track_gui();
-            $track.find(".stereo-track-name").val(this.title);
-            $track.find(".stereo-track-uri").val(this.uri);
-            //TODO: populate with more values
+            add_sc_track(this);
         });
     });
 
     $("#stereo_sc_tracks").change(function() {
-        var data = $(this).children(":selected").data("stereo_tracks");
-        var $track = add_track_gui();
-        $track.find(".stereo-track-name").val(data.title);
-        $track.find(".stereo-track-uri").val(data.uri);
-        //TODO: populate with more values, 
-        //TODO merge with sets function above
+        add_sc_track($(this).children(":selected").data("stereo_tracks"));
     });
 
     $(".stereo-cancel").click(function(ev) {
