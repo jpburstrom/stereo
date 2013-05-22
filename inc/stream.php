@@ -51,7 +51,8 @@ class StereoStream {
 
     function add_rewrite_rules()
     {
-        add_rewrite_rule('^stream/([^/]*)/?', 'index.php?&stereo_id=$matches[1]','top');
+        $stream = stereo_option('streaming_slug');
+        add_rewrite_rule('^' . $stream . '/([^/]*)/?', 'index.php?&stereo_id=$matches[1]','top');
     }
 
     function stereo_query_vars( $query_vars )

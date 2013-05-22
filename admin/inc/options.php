@@ -88,6 +88,7 @@ class StereoOptions {
 	 * @since 1.0
 	 */
 	public function display_page() {
+        flush_rewrite_rules( );
 
         include('views/options-page.php');
 	}
@@ -260,6 +261,13 @@ class StereoOptions {
 			'type'    => 'text',
 			'section' => 'advanced'
 		);
+		$this->settings['streaming_slug'] = array(
+			'title'   => __( 'Streaming rewrite slug' ),
+			'desc'    => __( 'Slug to use for streaming (make sure it doesn\'t collide with other permalinks)' ),
+			'std'     => 'stream',
+			'type'    => 'text',
+			'section' => 'advanced'
+		);
 		$this->settings['show_track_ui'] = array(
 			'section' => 'advanced',
 			'title'   => __( 'Show Track UI' ),
@@ -274,6 +282,19 @@ class StereoOptions {
 			'type'    => 'checkbox',
 			'std'     => 0 // Set to 1 to be checked by default, 0 to be unchecked by default.
 		);
+        $choices = array();
+        foreach (get_intermediate_image_sizes() as $choice) {
+            $choices[$choice] = $choice;
+        }
+		$this->settings['artwork_size'] = array(
+			'section' => 'advanced',
+			'title'   => __( 'Artwork thumbnail size ' ),
+			'desc'    => __( 'Choose a size for the artwork thumbnail' ),
+			'type'    => 'select',
+			'std'     => 'thumbnail',
+            'choices' => $choices
+		);
+		
         /*
 		$this->settings['example_textarea'] = array(
 			'title'   => __( 'Example Textarea Input' ),
@@ -409,7 +430,7 @@ class StereoOptions {
 	*/
 	public function styles() {
 		
-		wp_register_style( 'stereo-admin', plugin_dir_url(__FILE__) . '/css/admin.css' );
+		wp_register_style( 'stereo-admin', STEREO_PLUGIN_URL . 'admin/css/admin.css' );
 		wp_enqueue_style( 'stereo-admin' );
 		
 	}
