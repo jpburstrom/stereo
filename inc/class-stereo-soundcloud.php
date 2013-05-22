@@ -7,12 +7,7 @@ class StereoSoundCloud
     
     function __construct()
     {
-
-        if ($clientid = stereo_option("soundcloud_id")) {
-            $secret = stereo_option("soundcloud_secret");
-            if (!$secret) $secret = null;
-            $this->sc = new Services_SoundCloud($clientid);
-        }
+        $this->sc = stereo_init_sc();
     }
 
     function get_users()
@@ -20,6 +15,9 @@ class StereoSoundCloud
         return array_map("trim", explode(",", stereo_option('soundcloud_users')));
     }
 
+    /**
+     * Get all tracks for all users
+     */
     function get_tracks()
     {
         $tracks = array();
@@ -38,6 +36,9 @@ class StereoSoundCloud
         return $tracks;
     }
 
+    /**
+     * Get all sets for all users
+     */
     function get_sets()
     {
         $sets = array();
@@ -48,7 +49,7 @@ class StereoSoundCloud
                     $tdata = array();
                     foreach ($set->tracks as $track) {
                         $tmp = array();
-                        $tmp['uri'] = "soundcloud://tracks/$track->id";
+                        $tmp['uri'] = "soundcloud://tracks/$track->id"; //FIXME
                         $tmp['title'] = $track->title;
                         $tdata[] = (object) $tmp;
                     }
@@ -72,6 +73,18 @@ class StereoSoundCloud
 
         return $data;
     }
+
+    /**
+     * Get track by ID
+     */
+    function get_track($id)
+    {
+        $track = $this->sc->get("tracks/$id");
+
+        return $track;
+
+    }
+
 
 }
 
