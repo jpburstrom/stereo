@@ -51,7 +51,7 @@ class StereoStream {
 
     function add_rewrite_rules()
     {
-        add_rewrite_rule('^stream/(wp|sc)/([^/]*)/?', STEREO_PLUGIN_DIR . 'index.php?stereo_provider=$matches[1]&stereo_id=$matches[2]','top');
+        add_rewrite_rule('^stream/(wp|sc)/([^/]*)/?', 'index.php?stereo_provider=$matches[1]&stereo_id=$matches[2]','top');
     }
 
     function stereo_query_vars( $query_vars )
