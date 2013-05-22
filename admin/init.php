@@ -6,8 +6,6 @@
  * (c) Johannes Burström 2013
  */
 
-require_once( STEREO_PLUGIN_DIR . "/lib/php-soundcloud/Services/Soundcloud.php" );
-
 require_once( STEREO_PLUGIN_DIR . "/inc/class-stereo-soundcloud.php");
 
 require_once("stereo-options.php");
