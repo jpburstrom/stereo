@@ -28,6 +28,7 @@ class StereoOptions {
 		
 		if ( ! get_option( 'stereo_options' ) )
 			$this->initialize_settings();
+
 		
 	}
 	
@@ -212,6 +213,32 @@ class StereoOptions {
 		/* General Settings
 		===========================================*/
 		
+		$this->settings['soundcloud_users'] = array(
+			'title'   => __( 'SoundCloud User(s)' ),
+			'desc'    => __( 'Your SoundCloud User(s) (Multiple users comma-separated: <code>User1, User2</code>)' ),
+			'std'     => '',
+			'type'    => 'text',
+			'section' => 'general'
+		);
+
+		$this->settings['soundcloud_id'] = array(
+			'title'   => __( 'SoundCloud Client ID' ),
+			'desc'    => __( 'Your SoundCloud Client ID (Register your app <a href="http://soundcloud.com/you/apps/new" target="_blank">here</a>)' ),
+			'std'     => 'CLIENT_ID',
+			'type'    => 'text',
+			'section' => 'general'
+		);
+
+        /* For now we don't need this.
+		$this->settings['soundcloud_secret'] = array(
+			'title'   => __( 'SoundCloud Secret' ),
+			'desc'    => __( 'Your SoundCloud Secret (Register your app <a href="http://soundcloud.com/you/apps/new" target="_blank">here</a>)' ),
+			'std'     => 'CLIENT_SECRET',
+			'type'    => 'text',
+			'section' => 'general'
+        );
+         */
+
 		$this->settings['playlist_singular'] = array(
 			'title'   => __( 'Playlist singular name' ),
 			'desc'    => __( 'Name of the custom post type (could be Playlist, Set, Album...)' ),
