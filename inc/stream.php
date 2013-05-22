@@ -78,7 +78,7 @@ class StereoStream {
             die();
         }
 
-        $this->streaming($id);
+        $this->streaming($query->query_vars['stereo_id']);
 
         header('HTTP/1.1 404 Not Found');
         die();
@@ -86,8 +86,15 @@ class StereoStream {
 
     function streaming($id)
     {
-        echo "here we should add streaming";
-        die();
+        $track = get_stereo_track_meta($id);
+        switch ($track['host']) {
+        case 'wp':
+            $this->wp_streaming($track['fileid']);
+            break;
+        case 'sc':
+            $this->sc_streaming($track['fileid']);
+            break;
+        }
     }
 
     function wp_streaming($id)
