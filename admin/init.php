@@ -6,11 +6,11 @@
  * (c) Johannes Burström 2013
  */
 
-require_once( STEREO_PLUGIN_DIR . "/inc/class-stereo-soundcloud.php");
+require_once( "inc/soundcloud.php");
 
-require_once("stereo-options.php");
-require_once("stereo-attachments.php");
-require_once("stereo-custom-post.php");
-require_once("functions.php");
+require_once("inc/options.php");
+require_once("inc/attachments.php");
+require_once("inc/custom-post.php");
+require_once("inc/functions.php");
 
 
