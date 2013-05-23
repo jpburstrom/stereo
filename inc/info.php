@@ -103,9 +103,9 @@ class StereoInfoRewrite {
         $q = new WP_Query(array("post_status" => "publish", "post_type" => "stereo_track", "post__in" => array($id)) );
         if ($q->found_posts == 1) {
             $track = new StereoTrackInfo($q->posts[0], get_stereo_track_meta($id));
+            echo json_encode($track);
+            die();
         }
-        echo json_encode($track);
-        die();
 
     }
 }
