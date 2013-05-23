@@ -80,7 +80,10 @@ class StereoInfoRewrite {
             return;
         }
 
-        $this->info($query->query_vars['stereo_id']);
+
+        if ( is_numeric ( $query->query_vars['stereo_id'] )) {
+            $this->info($query->query_vars['stereo_id']);
+        }
 
         header('HTTP/1.1 404 Not Found');
         die();

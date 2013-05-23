@@ -78,7 +78,9 @@ class StereoStream {
             die();
         }
 
-        $this->streaming($query->query_vars['stereo_id']);
+        if ( is_numeric ( $query->query_vars['stereo_id'] )) {
+            $this->streaming($query->query_vars['stereo_id']);
+        }
 
         header('HTTP/1.1 404 Not Found');
         die();
