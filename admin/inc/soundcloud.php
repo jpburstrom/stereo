@@ -89,8 +89,7 @@ class StereoSoundCloud
      */
     function get_track($id)
     {
-        $track = $this->sc->get("tracks/$id");
-
+        $track = $this->get_query("tracks/$id");
         return $track;
 
     }
