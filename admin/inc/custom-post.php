@@ -240,11 +240,44 @@ class StereoCustomPost {
     function prepare_track_metadata($key) 
     {
         $meta_fields = array( "fileid", "host" );
-        $metadata = array();
+        $metadata = array(
+            "artist" => false,
+            "album" => false,
+            "year" => false,
+            "genre" => false
+        );
         foreach ($meta_fields as $field) {
             $metadata[$field] = $_POST["stereo_track_$field"][$key];
         }
+        switch ($metadata['host']) {
+        case 'wp': 
+            $this->_do_wp_metadata($metadata);
+            break;
+        case 'sc':
+            $this->_do_sc_metadata($metadata);
+            break;
+        }
         return $metadata;
+    }
+
+    private function _do_wp_metadata(&$out)
+    {
+        $att = get_stereo_attachment_meta($out['fileid']);
+
+        if ($att) {
+            foreach($att as $k => $v) {
+                $out[$k] = $v;
+            }
+        }
+    }
+
+    private function _do_sc_metadata(&$out)
+    {
+        $data = json_decode(stereo_sc()->get_track($out['fileid']));
+        $out['artist'] = ""; //XXX This is a bit sketchy, later on provide an editable field?
+        $out['album'] = ""; //This too
+        $out['year'] = $data->release_year;
+        $out['genre'] = $data->genre;
     }
 
     /**
