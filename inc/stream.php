@@ -1,7 +1,11 @@
 <?php 
 /**
- * Rewrites
+ * Stereo
+ * Johannes Burström 2013
+ *
+ * Track streaming API endpoint 
  */
+
 
 /*
  * Handle main streaming rewrite rules

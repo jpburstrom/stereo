@@ -1,10 +1,11 @@
 <?php
 /**
- * Stereo admin init
- * Load everything else
+ * Stereo
+ * Johannes Burström 2013
  *
- * (c) Johannes Burström 2013
+ * Admin init
  */
+
 
 define('STEREO_WP_SRC', true);
 

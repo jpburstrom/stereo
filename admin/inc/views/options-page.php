@@ -1,3 +1,15 @@
+<?php 
+/**
+ * Stereo
+ * Johannes Burström 2013
+ *
+ * Admin template include
+ */
+
+if ( !defined( 'ABSPATH' ) )
+    die( '-1' );
+?>
+
     <div class="wrap">
         <div class="icon32" id="icon-options-general"></div>
         <h2> <?php _e( 'Stereo Options', 'stereo' ) ?> </h2>

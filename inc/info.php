@@ -1,7 +1,12 @@
 <?php 
 /**
- * Rewrites
+ * Stereo
+ * Johannes Burström 2013
+ *
+ * Track info API endpoint
+ * 
  */
+
 
 class StereoPlaylistInfo {
     var $name =     "";

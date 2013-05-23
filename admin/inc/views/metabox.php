@@ -1,3 +1,15 @@
+<?php 
+/**
+ * Stereo
+ * Johannes Burström 2013
+ *
+ * Admin template include
+ */
+
+if ( !defined( 'ABSPATH' ) )
+    die( '-1' );
+?>
+
 <div id="stereo_container">
     <?php $this->metabox_toolbar() ?>
     <input type="hidden" id="stereo_track_count" name="stereo_track_count">

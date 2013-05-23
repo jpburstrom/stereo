@@ -1,10 +1,11 @@
 <?php 
 /**
- * Commmon functions
  * Stereo
+ * Johannes Burström 2013
  *
- * (c) Johannes Burström 2013
+ * Common functions 
  */
+
 
 /**
  * Get stereo option

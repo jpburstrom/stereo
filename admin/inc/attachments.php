@@ -1,10 +1,11 @@
 <?php 
 /**
- * StereoAttachment
+ * Stereo
+ * Johannes Burström 2013
  *
- * Filters & goodies for audio attachments
- *
+ * Attachment upload filters
  */
+
 
 if (!class_exists("getID3")) {
     require(STEREO_PLUGIN_DIR . "admin/lib/getid3/getid3.php");

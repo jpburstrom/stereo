@@ -1,4 +1,12 @@
 <?php 
+/**
+ * Stereo
+ * Johannes Burström 2013
+ *
+ * StereoCustomPost 
+ * Custom post types backend
+ */
+
 
 class StereoCustomPost {
 
