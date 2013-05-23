@@ -13,4 +13,4 @@ require("inc/attachments.php");
 require("inc/custom-post.php");
 require("inc/functions.php");
 
-
+stereo_cpt();
