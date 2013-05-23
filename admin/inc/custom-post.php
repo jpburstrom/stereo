@@ -135,7 +135,7 @@ class StereoCustomPost {
 		if ($post->post_type == "stereo_playlist")
 		{
 
-            $this->add_update_tracks($_POST['stereo_track_number']);
+            $this->add_update_tracks($post_id, $_POST['stereo_track_number']);
 
             if (isset($_POST['stereo_delete_track']))
                 $this->delete_tracks($_POST['stereo_delete_track']);
@@ -160,7 +160,7 @@ class StereoCustomPost {
                 'post_title'	=>	'Nameless Track',
                 'post_status'	=>	'publish',
                 'post_type'		=>	'stereo_track',
-                'post_content'  =>  'Hello world!' 
+                'post_content'  =>  '' 
             ), $args)
         );
 
@@ -188,7 +188,7 @@ class StereoCustomPost {
      * @param $tracknumbers Array of track numbers 
      */
 
-    function add_update_tracks($tracknumbers)
+    function add_update_tracks($post_id, $tracknumbers)
     {
         if ($tracknumbers) {
             foreach ($tracknumbers as $key => $number) {
@@ -215,6 +215,20 @@ class StereoCustomPost {
                 wp_delete_post($id, true);
         }
     }    
+
+    /**
+     * Update metadata for track
+     *
+     * @param $id  track post id
+     */
+
+    function update_track_metadata($id)
+    {
+        $metadata = get_stereo_track_meta($id);
+        $this->_do_track_metadata($metadata);
+        update_post_meta($id, "_stereo", $metadata);
+
+    }
 
     /**
      * Prepare an array of track data for $key, from $_POST
@@ -249,6 +263,12 @@ class StereoCustomPost {
         foreach ($meta_fields as $field) {
             $metadata[$field] = $_POST["stereo_track_$field"][$key];
         }
+        $this->_do_track_metadata($metadata);
+        return $metadata;
+    }
+
+    private function _do_track_metadata(&$metadata)
+    {
         switch ($metadata['host']) {
         case 'wp': 
             $this->_do_wp_metadata($metadata);
@@ -257,7 +277,6 @@ class StereoCustomPost {
             $this->_do_sc_metadata($metadata);
             break;
         }
-        return $metadata;
     }
 
     private function _do_wp_metadata(&$out)
@@ -324,6 +343,4 @@ class StereoCustomPost {
 
 
 }
-
-$wp_stereo = new StereoCustomPost();
 
