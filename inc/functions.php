@@ -49,4 +49,16 @@ function get_stereo_streaming_link( $trackid=false) {
     $out = ($meta['fileid']) ?  site_url( trailingslashit(stereo_option('streaming_slug')) . trailingslashit($trackid) ) : '';
     return $out;
 }
+            
+function stereo_init_sc() 
+{
+    require_once( STEREO_PLUGIN_DIR . "/lib/php-soundcloud/Services/Soundcloud.php" );
 
+    if ($clientid = stereo_option("soundcloud_id")) {
+        //$secret = stereo_option("soundcloud_secret");
+        if (!$secret) $secret = null;
+        $sc = new Services_SoundCloud($clientid, "");
+        return $sc;
+    }
+    return false;
+}

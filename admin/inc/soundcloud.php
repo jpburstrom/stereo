@@ -3,20 +3,12 @@
  * Soundcloud helper class 
  **/
 
-require_once( STEREO_PLUGIN_DIR . "/lib/php-soundcloud/Services/Soundcloud.php" );
-
 class StereoSoundCloud
 {
     
     function __construct()
     {
-        if ($clientid = stereo_option("soundcloud_id")) {
-            //$secret = stereo_option("soundcloud_secret");
-            if (!$secret) $secret = null;
-            $sc = new Services_SoundCloud($clientid, "");
-            $this->sc = $sc;
-        }
-            
+        $this->sc = stereo_init_sc();
     }
 
     function get_users()
