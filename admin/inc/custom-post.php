@@ -11,6 +11,7 @@ class StereoCustomPost {
         //actions
         //add_action('parse_request', array(&$this, 'events_request_filter'), 10);
         add_action('admin_head', array(&$this, 'admin_head'));
+        add_action('add_meta_boxes', array(&$this, 'add_meta_boxes'));
         add_action('init', array(&$this, 'create_post_type'));
 		add_action("wp_insert_post", array(&$this, "wp_insert_post"), 10, 2);
 
@@ -26,6 +27,8 @@ class StereoCustomPost {
             //wp_enqueue_script('ui-sortable');
             wp_enqueue_script( 'stereo-admin-cptjs', STEREO_PLUGIN_URL . 'admin/js/cpt.js' );
             wp_enqueue_style( 'stereo-admin-cpt', STEREO_PLUGIN_URL . 'admin/css/cpt.css' );
+
+            wp_enqueue_style( 'stereo-admin-icons', STEREO_PLUGIN_URL . 'css/icons.css' );
         }
     }
 
@@ -94,10 +97,20 @@ class StereoCustomPost {
     }
 
 
-    //Add meta box to post type. Why this needs to be called from admin_head I don't know.
     public function admin_head() {
+?>
+        <script type="text/javascript">
+            var stereo_sc_id = "<?php echo stereo_option('soundcloud_id') ?>";
+        </script>
+<?php
+    }
+
+    //Add meta box to post type. Why this needs to be called from admin_head I don't know.
+    public function add_meta_boxes() {
         add_meta_box("stereo_meta", "Manage " . stereo_option("playlist_singular"), array(&$this, "metaboxes"),
             "stereo_playlist", "normal", "low");
+
+        
     }
 
     function nonce_field() 
@@ -232,6 +245,19 @@ class StereoCustomPost {
             $metadata[$field] = $_POST["stereo_track_$field"][$key];
         }
         return $metadata;
+    }
+
+    /**
+     * Echo a <audio> tag for current track
+     */
+
+    function the_audio() 
+    {
+        if ($src = get_stereo_streaming_link()):
+?>
+        <audio class="stereo-preview" src="<?php echo $src ?>"></audio>
+<?php
+        endif;
     }
 
     function track_data_json($id=null)

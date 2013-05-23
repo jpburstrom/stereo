@@ -2,7 +2,13 @@
     border:1px solid black;
     overflow:hidden;
 }
-.handle {
+
+.stereo-track .actions {
+    float:right;
+
+}
+
+.stereo-track .handle {
     background:url('handle.png') 3px 3px no-repeat;
     display:block;
     float:left;
@@ -47,10 +53,26 @@
     float:left;
     padding-right:0.5em;
     font-size:0.8em;
-    line-height:0.8;
+    line-height:2;
 }
 .stereo-add-file {
     display:block;
     float:left;
+}
+
+.stereo-play, .stereo-stop {
+    position:relative;
+    top:2px;
+    font-size:16px;
+    line-height:1;
+    color:black;
+    text-decoration:none;
+}
+.stereo-play:hover, .stereo-stop:hover {
+    color:black;
+}
+
+.stereo-play:active, .stereo-stop:active {
+    outline:0;
 }
 

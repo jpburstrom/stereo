@@ -29,13 +29,15 @@
             <input type="hidden" class="stereo-track-fileid" name="stereo_track_fileid[]"/>
             <ul class="stereo-metadata"> 
                 <li class="metadata">
+                    <audio class="stereo-preview"></audio>
+                    <a href="#" class="stereo-play icon-play-1 hide-if-js" title="Play"></a>
+                    <a href="#" class="stereo-stop icon-stop-1 hide-if-js" title="Stop"></a>
                 </li>
                 <li class="actions">
-                    <a class="stereo-delete-track" href="#">Delete track</a>
+                    <span class="submitbox"><a class="stereo-delete-track submitdelete" href="#">Delete track</a></span>
     <?php //<a class="stereo-replace-file" href="#">Replace file</a>?>
                 </li>
             </ul>
-            <a class="button button-large stereo-add-file">Add file...</a>
             <span class="handle right"> </span>
         </li>
     </script>
@@ -49,13 +51,17 @@
             <input type="hidden" class="stereo-track-host" name="stereo_track_host[]" value="<?php echo $meta["host"] ?>"/>
             <input type="hidden" class="stereo-track-fileid" name="stereo_track_fileid[]" value="<?php echo $meta["fileid"] ?>"/>
             <ul class="stereo-metadata"> 
-                <li data-stereo_track="<?php the_ID() ?>" data-stereo_data="<?php echo $this->track_data_json() ?>" class="metadata"></li>
+                <li class="metadata">
+                    <?php $this->_the_icon($meta); ?>
+                    <?php $this->_the_audio(); ?>
+                    <a href="#" class="stereo-play icon-play-1 hide-if-js" title="Play"></a>
+                    <a href="#" class="stereo-stop icon-stop-1 hide-if-js" title="Stop"></a>
+                </li>
                 <li class="actions">
-                    <a class="stereo-delete-track" href="#">Delete track</a>
+                    <span class="submitbox"><a class="stereo-delete-track submitdelete" href="#">Delete track</a></span>
     <?php //<a class="stereo-replace-file" href="#">Replace file</a>?>
                 </li>
             </ul>
-            <a class="button button-large stereo-add-file">Add file...</a>
             <span class="handle right"> </span>
         </li>
     <?php endwhile; ?>

@@ -59,6 +59,7 @@ class StereoSoundCloud
         $tmp = array();
         $tmp['id'] = $track->id; 
         $tmp['title'] = $track->title;
+        $tmp['stream_url'] = $track->stream_url;
         return (object) $tmp;
     }
 

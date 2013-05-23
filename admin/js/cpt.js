@@ -17,12 +17,29 @@ jQuery(document).ready(function($) {
         return $item;
      },
      add_sc_track = function(data) {
-        var $item = add_track_gui();
+        var $item = add_track_gui(),
+            url = data.stream_url + "?client_id=" + stereo_sc_id;
         $item.find(".stereo-track-name").val(data.title);
         $item.find(".stereo-track-host").val("sc");
         $item.find(".stereo-track-fileid").val(data.id);
+        bindAudioEvents.apply($item.find(".stereo-preview").attr("src", url ));
         return $item;
-     };
+     },
+     bindAudioEvents = function() {
+        $(this).on("loadeddata", function() {
+            var min = Math.floor(this.duration/60);
+            var sec = Math.floor(this.duration % 60);
+            $(this).parent().append( "<span class='duration'>" + min + ":" + sec + "</span>").find(".stereo-play").show();
+
+        });
+        $(this).on("error", function() {
+            $(this).parent().append( "<span class='error'>Error loading file</span");
+        });
+     },
+     basename = function(path) {
+         return path.split('/').reverse()[0];
+     }
+     ;
 
     jQuery("#stereo_tracks").sortable({
         //connectWith: '.metabox-holder',
@@ -44,7 +61,7 @@ jQuery(document).ready(function($) {
             add_sc_track(this);
         });
     });
-
+    
     $("#stereo_sc_tracks").change(function() {
         add_sc_track($(this).children(":selected").data("stereo_tracks"));
     });
@@ -57,10 +74,26 @@ jQuery(document).ready(function($) {
     $(document).on("click", ".stereo-delete-track", function(ev) {
         var $track = $(this).parents(".stereo-track");
         var id = $track.find(".stereo-track-id").val();
-        $track.remove();
-        recountAll.apply($("#stereo_tracks")[0]);
-        $("<input type='hidden' name='stereo_delete_track[]'>").val(id).appendTo("#stereo_container");
         ev.preventDefault();
+        $track.hide(200, function() { 
+            (this).remove();
+        
+            recountAll.apply($("#stereo_tracks")[0]);
+            $("<input type='hidden' name='stereo_delete_track[]'>").val(id).appendTo("#stereo_container");
+        
+        });
+    });
+
+    $(document).on("click", ".stereo-play", function(ev) {
+        ev.preventDefault();
+        $(this).parent().find("audio")[0].play();
+        $(this).hide();
+        $(this).siblings(".stereo-stop").show();
+    }).on("click", ".stereo-stop", function(ev) {
+        ev.preventDefault();
+        $(this).parent().find("audio")[0].pause();
+        $(this).hide();
+        $(this).siblings(".stereo-play").show();
     });
 
 
@@ -98,5 +131,7 @@ jQuery(document).ready(function($) {
         // Finally, open the modal
         file_frame.open();
     });
+
+    $('.stereo-preview').each( bindAudioEvents );
 
 });
