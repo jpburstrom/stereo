@@ -30,6 +30,14 @@ function get_stereo_track_meta( $trackid ) {
 }
 
 /**
+ * Get metadata for audio attachment
+ */
+
+function get_stereo_attachment_meta( $attachment_id ) {
+    return get_post_meta($id, "_stereo_metadata", true);
+}
+
+/**
  * Get streaming link for track
  */
 function get_stereo_streaming_link( $trackid=false) {
@@ -43,21 +51,3 @@ function get_stereo_streaming_link( $trackid=false) {
 }
 
 
-/*
- * Init and return SoundCloud class
- *
- * @return Services_SoundCloud | bool  false if unsuccessful connection
- */
-
-function stereo_init_sc() 
-{
-    require_once( STEREO_PLUGIN_DIR . "/lib/php-soundcloud/Services/Soundcloud.php" );
-
-    if ($clientid = stereo_option("soundcloud_id")) {
-        //$secret = stereo_option("soundcloud_secret");
-        if (!$secret) $secret = null;
-        $sc = new Services_SoundCloud($clientid, "");
-        return $sc;
-    }
-    return false;
-}
