@@ -31,11 +31,6 @@ require STEREO_PLUGIN_DIR . "lib/scb/load.php";
 
 scb_init('stereo_init');
 
-function stereo_init() {
-	add_action( 'plugins_loaded', 'stereo_load_p2p_core', 20 );
-	add_action( 'init', 'stereo_connection_types' );
-}
-
 function stereo_load_p2p_core() {
 	if ( function_exists( 'p2p_register_connection_type' ) )
 		return;
@@ -57,11 +52,18 @@ function stereo_connection_types() {
 	) );
 }
 
-require('inc/info.php');
-require('inc/stream.php');
-require('inc/functions.php');
+function stereo_init() {
+	add_action( 'plugins_loaded', 'stereo_load_p2p_core', 20 );
+	add_action( 'init', 'stereo_connection_types' );
 
-if (is_admin()) {
-    require_once("admin/init.php");
+    require('inc/info.php');
+    require('inc/stream.php');
+    require('inc/widget.php');
+    require('inc/functions.php');
+
+    if (is_admin()) {
+        require_once("admin/init.php");
+    }
+
 }
 
