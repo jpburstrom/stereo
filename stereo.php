@@ -60,6 +60,7 @@ function stereo_connection_types() {
 require('inc/info.php');
 require('inc/stream.php');
 require('inc/functions.php');
+require('inc/soundcloud.php');
 
 if (is_admin()) {
     require_once("admin/init.php");
