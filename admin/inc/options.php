@@ -20,7 +20,8 @@ class StereoOptions {
 		
 		$this->sections['general']      = __( 'General Settings' );
 		$this->sections['advanced']      = __( 'Advanced Settings' );
-		$this->sections['reset']        = __( 'Reset to Defaults' );
+		$this->sections['tools']        = __( 'Tools' );
+		$this->sections['reset']        = __( 'Reset Options' );
 		$this->sections['about']        = __( 'About' );
 		
 		add_action( 'admin_menu', array( &$this, 'add_pages' ) );
@@ -40,6 +41,7 @@ class StereoOptions {
 	public function add_pages() {
 		
 		$admin_page = add_options_page( 'Stereo', 'Stereo', 'manage_options', 'stereo_options', array( &$this, 'display_page' ) );
+		add_submenu_page( null, 'Update Tracks', 'Update Tracks', 'manage_options', 'stereo_update_tracks', array( &$this, 'update_tracks' ) );
 		
 		add_action( 'admin_print_scripts-' . $admin_page, array( &$this, 'scripts' ) );
 		add_action( 'admin_print_styles-' . $admin_page, array( &$this, 'styles' ) );
@@ -92,6 +94,18 @@ class StereoOptions {
 
         include('views/options-page.php');
 	}
+
+	/**
+	 * Display update tracks page
+	 *
+	 */
+    public function update_tracks() {
+        $posts = get_posts('posts_per_page=-1&post_type=stereo_track');
+        foreach ($posts as $post) {
+            stereo_cpt()->update_track_metadata($post->ID);
+        }
+        echo "Update tracks";
+    }
 	
 	/**
 	 * Description for section
@@ -111,6 +125,20 @@ class StereoOptions {
 ?>
         <?php include("views/about.php"); ?>
 		
+<?php
+		
+	}
+
+	/**
+	 * Description for Tools section
+	 *
+	 * @since 1.0
+	 */
+	public function display_tools_section() {
+?>
+        <h4>Update track metadata</h4> 
+        <p class="description">Press the button to update all track metadata from the files: Artist, Genre etc. This will not overwrite track titles.</p>
+        <p><a class="button button-large" href="options-general.php?page=stereo_update_tracks">Update tracks</a></p>
 <?php
 		
 	}
@@ -360,11 +388,11 @@ class StereoOptions {
 		
 		$this->settings['reset_theme'] = array(
 			'section' => 'reset',
-			'title'   => __( 'Reset theme' ),
+			'title'   => __( 'Reset options' ),
 			'type'    => 'checkbox',
 			'std'     => 0,
 			'class'   => 'warning', // Custom class for CSS
-			'desc'    => __( 'Check this box and click "Save Changes" below to reset theme options to their defaults.' )
+			'desc'    => __( 'Check this box and click "Save Changes" below to reset options to their defaults.' )
 		);
 		
 	}
@@ -396,10 +424,13 @@ class StereoOptions {
 		register_setting( 'stereo_options', 'stereo_options', array ( &$this, 'validate_settings' ) );
 		
 		foreach ( $this->sections as $slug => $title ) {
-			if ( $slug == 'about' )
+			if ( $slug == 'about' ) {
 				add_settings_section( $slug, $title, array( &$this, 'display_about_section' ), 'stereo_options' );
-			else
+            } else if ( $slug == 'tools' ) {
+				add_settings_section( $slug, $title, array( &$this, 'display_tools_section' ), 'stereo_options' );
+            } else {
 				add_settings_section( $slug, $title, array( &$this, 'display_section' ), 'stereo_options' );
+            }
 		}
 		
 		$this->get_settings();
