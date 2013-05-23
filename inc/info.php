@@ -21,17 +21,22 @@ class StereoPlaylistInfo {
 class StereoTrackInfo {
 
     var $name =     "", 
-        $stream_url = "",
-        $playlist = null;
+        $playlist, 
+        $artist = "",
+        $album = "",
+        $year = "",
+        $genre = "",
+        $stream_url = "";
 
     /**
      * Constructor
      * @param $track  stereo_track post object
      */
-    function __construct($track) 
+    function __construct($track, $data) 
     {
         $this->name = $track->post_title;
-        $this->stream_url = $track->post_excerpt;
+        //This should be regenerated every time, yes
+        $this->stream_url = get_stereo_streaming_link($track->ID);
 
         $playlist = new WP_Query( array(
             'connected_direction' => 'to',
@@ -43,8 +48,13 @@ class StereoTrackInfo {
             $playlist = $playlist->posts[0];
             $this->playlist = new StereoPlaylistInfo($playlist);
         }
+        unset ($data['fileid'], $data['host']);
+        foreach ($data as $k => $v) {
+            $this->$k = $v;
+        }
 
     }
+
 }
 
 class StereoInfoRewrite {
@@ -92,34 +102,11 @@ class StereoInfoRewrite {
     function info($id) {
         $q = new WP_Query(array("post_status" => "publish", "post_type" => "stereo_track", "post__in" => array($id)) );
         if ($q->found_posts == 1) {
-            $track = new StereoTrackInfo($q->posts[0]);
+            $track = new StereoTrackInfo($q->posts[0], get_stereo_track_meta($id));
         }
         echo json_encode($track);
         die();
 
-    }
-    function wp_info($id)
-    {
-        if (wp_get_attachment_url($id)) {
-            $info = new StereoTrackInfo();
-            echo json_encode($info);
-            die();
-        }
-    }
-
-    function sc_info($id) 
-    {
-        $sc = stereo_init_sc();
-        if (false !== $sc) {
-            try {
-                $track = json_decode($sc->get("tracks/$id"));
-            } catch (Exception $e) {
-                header("HTTP/1.1 {$e->getHttpCode()}");
-                die();
-            }
-            echo "this is the SC info";
-            die();
-        }
     }
 }
 
