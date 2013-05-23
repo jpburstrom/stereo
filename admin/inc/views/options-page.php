@@ -1,6 +1,12 @@
     <div class="wrap">
         <div class="icon32" id="icon-options-general"></div>
         <h2> <?php _e( 'Stereo Options', 'stereo' ) ?> </h2>
+        <form class="stereo-donate" action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+        <input type="hidden" name="cmd" value="_s-xclick">
+        <input type="hidden" name="hosted_button_id" value="QQTQLT2TZ59BA">
+        <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+        <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+        </form>
 		
 		<form action="options.php" method="post">
 	
@@ -19,7 +25,7 @@
                 <p class="submit"><input name="Submit" type="submit" class="button-primary" value="<?php  _e( 'Save Changes', 'stereo' ) ?>" /></p>
 		
         </form>
-	
+        
 	<script type="text/javascript">
 		jQuery(document).ready(function($) {
 			var sections = [];
@@ -39,7 +45,9 @@
 			});
 			$(".ui-tabs").tabs({
 				fx: { opacity: "toggle", duration: "fast" }
-			});
+			}).bind("tabsshow", function(event, ui) { 
+                window.location.hash = ui.tab.hash;
+            })
 			
 			$("input[type=text], textarea").each(function() {
 				if ($(this).val() == $(this).attr("placeholder") || $(this).val() == "")
@@ -59,6 +67,7 @@
 			});
 			
 			$(".wrap h3, .wrap table").show();
+
 			
 			// This will make the "warning" checkbox class really stand out when checked.
 			// I use it here for the Reset checkbox.
