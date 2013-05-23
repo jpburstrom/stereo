@@ -34,7 +34,7 @@ function get_stereo_track_meta( $trackid ) {
  */
 
 function get_stereo_attachment_meta( $attachment_id ) {
-    return get_post_meta($id, "_stereo_metadata", true);
+    return get_post_meta($attachment_id, "_stereo_metadata", true);
 }
 
 /**
@@ -49,5 +49,4 @@ function get_stereo_streaming_link( $trackid=false) {
     $out = ($meta['fileid']) ?  site_url( trailingslashit(stereo_option('streaming_slug')) . trailingslashit($trackid) ) : '';
     return $out;
 }
-
 
