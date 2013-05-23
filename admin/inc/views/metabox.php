@@ -1,6 +1,7 @@
 <div id="stereo_container">
     <?php $this->metabox_toolbar() ?>
     <input type="hidden" id="stereo_track_count" name="stereo_track_count">
+    <?php if (true === STEREO_SC_SRC): ?>
     <div class="hide-if-js" id="stereo_soundcloud_import_container">
         <h4><?php _e("Import from SoundCloud") ?></h4>
         <label for="stereo_sc_sets">Sets</label>
@@ -19,6 +20,7 @@
         </select>
         <a href="#" class="stereo-cancel">Cancel</a>
     </div>
+    <?php endif; ?>
     <script id="stereo_track_template" type="text/html">
         <li class="stereo-track postarea">
             <span class="handle"> </span>
