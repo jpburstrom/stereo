@@ -79,20 +79,20 @@ class StereoCustomPost {
     { 
 		global $post;
 
-        $connected = p2p_type( 'playlist_to_tracks' )->get_connected( $post, array('orderby' => 'menu_order', 'order' => 'ASC') );
+        $connected = p2p_type( 'playlist_to_tracks' )->get_connected( $post, array('posts_per_page' => -1, 'orderby' => 'menu_order', 'order' => 'ASC') );
 
         include ( 'views/metabox.php' );
         
     }
 
-    public function import_button() 
+    public function metabox_toolbar() 
     {
 ?>
-        <p><a id="stereo_local_import" class="stereo-local stereo-import button button-large ">Import MP3 Uploads</a></p>
-<?php
-        
-?>
-        <p><a id="stereo_soundcloud_import" class="stereo-sc stereo-import button button-large ">Import tracks from SoundCloud</a></p>
+        <div class="metabox-toolbar">
+            <a id="stereo_local_import" class="stereo-local stereo-import button button-large "><i class="icon icon-wordpress"></i> Add Media Library tracks</a>
+            <a id="stereo_soundcloud_import" class="stereo-sc stereo-import button button-large "><i class="icon icon-soundcloud"></i> Add SoundCloud tracks </a>
+            <a id="stereo_add_track" class="button button-large stereo-add-track">Add empty track</a>
+        </div>
 <?php
     }
 
@@ -251,13 +251,28 @@ class StereoCustomPost {
      * Echo a <audio> tag for current track
      */
 
-    function the_audio() 
+    private function _the_audio() 
     {
         if ($src = get_stereo_streaming_link()):
 ?>
-        <audio class="stereo-preview" src="<?php echo $src ?>"></audio>
+        <audio preload="none" class="stereo-preview" src="<?php echo $src ?>"></audio>
 <?php
         endif;
+    }
+
+    private function _the_icon($meta)
+    {
+        switch ($meta['host']) {
+        case 'wp':
+            echo "<span title='Hosted locally' class='host-icon icon-wordpress'></span>";
+
+            break;
+        case 'sc':
+            echo "<span title='Hosted by SoundCloud' class='host-icon icon-soundcloud'></span>";
+
+            break;
+        }
+
     }
 
     function track_data_json($id=null)

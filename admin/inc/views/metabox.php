@@ -1,6 +1,5 @@
 <div id="stereo_container">
-<?php $this->import_button() ?>
-    <a id="stereo_add_track" class="button button-large stereo-add-track">Add track</a>
+    <?php $this->metabox_toolbar() ?>
     <input type="hidden" id="stereo_track_count" name="stereo_track_count">
     <div class="hide-if-js" id="stereo_soundcloud_import_container">
         <h4><?php _e("Import from SoundCloud") ?></h4>
@@ -29,9 +28,11 @@
             <input type="hidden" class="stereo-track-fileid" name="stereo_track_fileid[]"/>
             <ul class="stereo-metadata"> 
                 <li class="metadata">
-                    <audio class="stereo-preview"></audio>
-                    <a href="#" class="stereo-play icon-play-1 hide-if-js" title="Play"></a>
-                    <a href="#" class="stereo-stop icon-stop-1 hide-if-js" title="Stop"></a>
+                    <span class="stereo-player">
+                        <audio preload="none" class="stereo-preview"></audio>
+                        <a href="#" class="stereo-play icon-play-1" title="Play"></a>
+                        <a href="#" class="stereo-stop icon-pause-1" title="Stop"></a>
+                    </span>
                 </li>
                 <li class="actions">
                     <span class="submitbox"><a class="stereo-delete-track submitdelete" href="#">Delete track</a></span>
@@ -43,7 +44,7 @@
     </script>
     <ul id="stereo_tracks">
     <?php while ( $connected->have_posts() ) : $connected->the_post(); $meta = get_stereo_track_meta($post->ID); ?>
-        <li class="stereo-track postarea">
+        <li class="stereo-track postarea <?php if (!$meta['fileid']) echo 'nofile'?> ">
             <span class="handle"> </span>
             <span class="stereo-track-number"><?php echo $post->menu_order ?> </span><input class="stereo-track-number-input" name="stereo_track_number[]" type="hidden" value="<?php echo $post->menu_order ?>"/>
             <input type="text" placeholder="Track name" value="<?php the_title(); ?>" class="stereo-track-name" name="stereo_track_name[]"/>
@@ -53,9 +54,11 @@
             <ul class="stereo-metadata"> 
                 <li class="metadata">
                     <?php $this->_the_icon($meta); ?>
-                    <?php $this->_the_audio(); ?>
-                    <a href="#" class="stereo-play icon-play-1 hide-if-js" title="Play"></a>
-                    <a href="#" class="stereo-stop icon-stop-1 hide-if-js" title="Stop"></a>
+                    <span class="stereo-player">
+                        <?php $this->_the_audio(); ?>
+                        <a href="#" class="stereo-play icon-play-1" title="Play"></a>
+                        <a href="#" class="stereo-stop icon-pause-1" title="Stop"></a>
+                    </span>
                 </li>
                 <li class="actions">
                     <span class="submitbox"><a class="stereo-delete-track submitdelete" href="#">Delete track</a></span>
@@ -66,6 +69,7 @@
         </li>
     <?php endwhile; ?>
     </ul>
+    <a class="stereo-delete-tracks submitdelete hide-if-js" id="stereo_delete_tracks" href="#">Delete all tracks</a>
     <?php $this->nonce_field() ?>
 </div>
 
