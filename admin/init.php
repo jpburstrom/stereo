@@ -7,9 +7,10 @@
  */
 
 
-require_once("inc/options.php");
-require_once("inc/attachments.php");
-require_once("inc/custom-post.php");
-require_once("inc/functions.php");
+require('inc/soundcloud.php');
+require("inc/options.php");
+require("inc/attachments.php");
+require("inc/custom-post.php");
+require("inc/functions.php");
 
 
