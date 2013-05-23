@@ -81,6 +81,25 @@
 			// Browser compatibility
 			if ($.browser.mozilla) 
 			         $("form").attr("autocomplete", "off");
+
+            $("#stereo_update_tracks").on("click", function(ev) {
+                var $msg, $self = $(this);
+                ev.preventDefault();
+                if ($self.attr("disabled") == "disabled")
+                    return;
+                $self.attr("disabled", "disabled");
+                $msg = $(" <span class='msg'></span>").appendTo($self.parent());
+                $msg.text(" Updating...");
+                window.onbeforeunload = function() { return "Please wait until tracks are updated"; }
+                $.post(ajaxurl, { action: 'stereo_update_tracks' }, function(data) {
+                    $self.siblings(".msg").text(" " + data);
+                    $self.siblings('.msg').fadeOut(3000, function() {
+                        $(this).remove();
+                        $self.removeAttr("disabled");
+                    });
+                    window.onbeforeunload = null;
+                });
+            });
 		});
 	</script>
 </div>

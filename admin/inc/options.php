@@ -26,6 +26,7 @@ class StereoOptions {
 		
 		add_action( 'admin_menu', array( &$this, 'add_pages' ) );
 		add_action( 'admin_init', array( &$this, 'register_settings' ) );
+        add_action( 'wp_ajax_stereo_update_tracks', array( &$this, 'update_tracks') );
 		
 		if ( ! get_option( 'stereo_options' ) )
 			$this->initialize_settings();
@@ -41,7 +42,6 @@ class StereoOptions {
 	public function add_pages() {
 		
 		$admin_page = add_options_page( 'Stereo', 'Stereo', 'manage_options', 'stereo_options', array( &$this, 'display_page' ) );
-		add_submenu_page( null, 'Update Tracks', 'Update Tracks', 'manage_options', 'stereo_update_tracks', array( &$this, 'update_tracks' ) );
 		
 		add_action( 'admin_print_scripts-' . $admin_page, array( &$this, 'scripts' ) );
 		add_action( 'admin_print_styles-' . $admin_page, array( &$this, 'styles' ) );
@@ -93,6 +93,7 @@ class StereoOptions {
         flush_rewrite_rules( );
 
         include('views/options-page.php');
+
 	}
 
 	/**
@@ -104,7 +105,8 @@ class StereoOptions {
         foreach ($posts as $post) {
             stereo_cpt()->update_track_metadata($post->ID);
         }
-        echo "Update tracks";
+        echo "Tracks updated";
+        die();
     }
 	
 	/**
@@ -138,7 +140,7 @@ class StereoOptions {
 ?>
         <h4>Update track metadata</h4> 
         <p class="description">Press the button to update all track metadata from the files: Artist, Genre etc. This will not overwrite track titles.</p>
-        <p><a class="button button-large" href="options-general.php?page=stereo_update_tracks">Update tracks</a></p>
+        <p><a id="stereo_update_tracks" class="button button-large" href="options-general.php?page=stereo_update_tracks">Update tracks</a></p>
 <?php
 		
 	}
