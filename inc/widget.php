@@ -15,7 +15,16 @@ class StereoWidget extends scbWidget {
             'StereoWidget', // Name
             array( 'description' => __( 'Player widget for Stereo tracks', 'stereo' ), ) // Args
         );
+
+        add_action( 'wp_enqueue_scripts', array(&$this, 'enqueue_scripts') );
 	}
+
+    function enqueue_scripts() {
+        if( is_active_widget( '', '', $this->id_base ) ) { // check if search widget is used
+            wp_enqueue_style('stereo-widget' );
+            wp_enqueue_script('stereo-widget'); #XXX
+        }
+    }
 
 	public function content( $instance ) {
         include("views/widget-player.php");
@@ -55,3 +64,5 @@ class StereoWidget extends scbWidget {
 add_action( 'widgets_init', function(){
      register_widget( 'StereoWidget' );
 });
+
+

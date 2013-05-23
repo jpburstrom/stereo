@@ -58,6 +58,7 @@ function stereo_init() {
 
     require('inc/info.php');
     require('inc/stream.php');
+    require('inc/assets.php');
     require('inc/widget.php');
     require('inc/functions.php');
 
