@@ -62,3 +62,9 @@
 .wrap h3, .wrap table {
 	display: none;
 }
+
+.stereo-donate {
+    display:block;
+    float:right;
+    margin-top:16px;
+}

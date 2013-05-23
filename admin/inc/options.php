@@ -109,8 +109,7 @@ class StereoOptions {
 	 */
 	public function display_about_section() {
 ?>
-    <p><strong>Stereo</strong> - A music player and track manager. <p>
-    <p>Copyright 2013 johannes@ljud.org</p>
+        <?php include("views/about.php"); ?>
 		
 <?php
 		
