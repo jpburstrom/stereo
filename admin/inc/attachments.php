@@ -89,6 +89,7 @@ class StereoAttachment {
             wp_update_post( $attachment );
         }
 
+        unset ($data['title']);
         update_post_meta($id, "_stereo_metadata", $data);
 
         return $metadata;
