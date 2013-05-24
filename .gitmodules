@@ -1,0 +1,6 @@
+[submodule "src/vendor/soundmanager2"]
+	path = src/vendor/soundmanager2
+	url = https://github.com/scottschiller/SoundManager2.git
+[submodule "src/vendor/history"]
+	path = src/vendor/history
+	url = https://github.com/browserstate/history.js.git
