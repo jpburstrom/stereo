@@ -1,151 +1,64 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
-<head>
-<title>SoundManager 2 Demo: Play MP3 Links on a page</title>
-<style type="text/css">
-
-/* 
-
- -------------------------------------------------------------
-
- In-page demo CSS - see external CSS for actual relevant stuff.
-
- --------------------------------------------------------------
-
- */
-
-#soundmanager-debug {
- /* SM2 debug container (optional, makes debug more useable) */
- position:absolute;position:fixed;*position:absolute;bottom:10px;right:10px;width:50em;height:18em;overflow:auto;background:#fff;margin:1em;padding:1em;border:1px solid #999;font-family:"lucida console",verdana,tahoma,"sans serif";font-size:x-small;line-height:1.5em;opacity:0.9;filter:alpha(opacity=90);
-}
-
-body {
-width:50%;
-margin: 0 auto;
- font:75% normal verdana,arial,tahoma,"sans serif";
-}
-
-#primary {
-    min-height:60px;
-}
-#primary a {
-    text-decoration: none;
-}
-#primary ul {
-    padding:0;
-    margin:0;
-}
-
-#primary ul li {
-    display:block;
-    float:left;
-    padding-right: 10px;
-}
-#primary ul li li {
-    float:none;
-    padding:0;
-}
-
-.menu-item a { color:black; }
-.current-menu-ancestor a { color:blue; }
-.current-menu-parent a { color:green; }
-.current-menu-item a { color:red; }
-.current-menu-item ul a { color:black; }
-
-#content, #sidebar {
-    width:30%;
-    float:left;
-    font-size:2em;
-    border:1px solid black;
-    padding:5%;
-    margin-right:20px;
-}
-
-
-
-</style>
-<link rel="stylesheet" type="text/css" href="css/yuckbox.css" />
-<!--<link rel="stylesheet" type="text/css" href="css/inlineplayer.css" />
-<link rel="stylesheet" type="text/css" href="../flashblock/flashblock.css" />-->
-<script type='text/javascript' src='http://mik.bik/sk/wp-includes/js/jquery/jquery.js?ver=1.7.1'></script>
-<script type="text/javascript" src="script/soundmanager2.js"></script>
-<script type="text/javascript" src="script/jquery.yuckbox.js"></script>
-<script type="text/javascript" src="script/jquery.yuckbox-links.js"></script>
-<script type="text/javascript" src="script/jquery.yuckbox-controls.js"></script>
-<script type="text/javascript" src="script/history/bundled/html5/jquery.history.js"></script>
-<script type="text/javascript" src="script/jquery.yuckbox-history.js"></script>
-
-
-<script type="text/javascript">
-    soundManager.debugMode = false; // disable or enable debug output
-    soundManager.preferFlash = false; // use HTML5 audio for MP3/MP4, if available
-    soundManager.useFlashBlock = true;
-    soundManager.url = 'swf/'; // path to directory containing SM2 SWF
-    // optional: enable MPEG-4/AAC support (requires flash 9)
-    soundManager.flashVersion = 9;
-
-    var songs = [ { artist: "Test artist", album: "Test album",  title: "Rain", id: "rain.mp3" }, {title: "Walking", id: "walking.mp3"}];
-    jQuery(document).ready(function($) {
-        $("#yuckboxUI").yuckboxControls();
-        //Demo things
-        $(".prev").html("&laquo;");
-        $(".next").html("&raquo;");
-        $(".stop").html("#");
-        $("#content,#sidebar").yuckboxHistory(
-            { rootUrl : History.getBasePageUrl() }
-        );
-    });
-    soundManager.onready(function() {
-        yuckbox.baseURI = "_mp3/"
-        yuckbox.init()
-        yuckbox.addSongs(songs);
-        yuckbox.play();
-    });
-</script>
-</head>
-
-<body>
-
-
- <h1>Yuckbox 2 Demo page</h1>
+<!doctype html>
+  <!--[if IE 7]><html class="no-js lt-ie9 lt-ie8"><![endif]-->
+  <!--[if IE 8]><html class="no-js lt-ie9"><![endif]-->
+  <!--[if gt IE 8]><!--><html class="no-js"><!--<![endif]-->
  
-        <div id="primary" class="nav">
+  <head> 
+    <meta charset="UTF-8"> 
+    
+        <title>Stereo</title>
 
-            <ul id="menu-primary" class="menu"><li id="menu-item-29" class="menu-item current-menu-ancestor"><a href="test.php?get=6">News</a>
-<ul class="sub-menu">
-	<li id="menu-item-28" class="menu-item current-menu-ancestor current-menu-parent"><a href="test.php?get=7">Biography</a>
-	<ul class="sub-menu">
-		<li id="menu-item-27" class="menu-item current-menu-item menu-slug-discography"><a href="test.php?get=8">Discography</a></li>
-	</ul>
-</li>
-</ul>
-</li>
+        <link rel="stylesheet" href="css/stereo.css">
+        <link rel="stylesheet" href="css/demo.css">
 
-<li id="menu-item-26" class="menu-item "><a href="test.php?get=1">Projects</a></li>
-<li id="menu-item-25" class="menu-item "><a href="test.php?get=2">Scores/Writings</a></li>
-<li id="menu-item-24" class="menu-item "><a href="test.php?get=3">Calendar</a></li>
-<li id="menu-item-23" class="menu-item "><a href="test.php?get=4">Press</a></li>
-<li id="menu-item-22" class="menu-item "><a href="test.php?get=5">Contact</a></li>
-</ul>        </div>
- 
- <p>Below is a classic player UI</p>
- <div id="yuckboxUI"></div>
+    </head>
+    <body>
+        <header>
+        <h1>Stereo</h1>
+        <h2>Your Friendly Music Player</h2>
+        </header>
+        <article>
+            <section id="introduction">
+            <p><em>Stereo</em> is a javascript music player.</p>
+            </section>
+            <section id="controls">
+                <h3>Controls</h3>
+                <p>These are the controls:</p>
+                <ol>
+                    <li><em>Buttons</em> for controlling the playback</li>
+                    <li>A <em>label</em> for displaying track info</li>
+                    <li><em>Time display</em> to show time</li>
+                    <li><em>Progress bars</em>, for load and play progress</li>
+                </ol>
+                <div id="stereo_controls"></div>
+                <p>All elements are created dynamically from a default or customized template.</p>
+            </section>
+            <section id="links">
+                <h3>Links</h3>
+                <p>The internal playlist can be created in two ways: through the JS API or by using a jQuery plugin. 
+                The jQuery plugin looks for matching links and/or &lt;audio&gt; elements. The urls from the <code>href</code> and <code>src</code>
+                attributes are added to the internal playlist. The urls can either be relative to a <code>Stereo.options.urlRoot</code> url, or absolute (including <code>http://</code>), or a mix of both.</p>
+            </section>
+            <section id="history">
+                <h3>History</h3>
+                <p>If history is enabled, all links on the page will be hijacked and ajax-loaded, to prevent playback from stopping when navigating on the page. Optionally all external links and PDF files can be set to open in a new window/tab. This will only happen when the player is on.
+                </p>
 
-<p>Here's a link playing a certain song.</p>
- <div class="section">
-     <p><span class="yuckbox-link" data-yuckbox-song='{ "id": "walking.mp3"}'>Play Walking</span></p>
- </div>
- <p>The link can be any kind of element, but will need a <code>data-yuckbox-song</code> attribute in the form of a js object with at least an <code>id</code>. If id doesn't already exist in yuckbox, it will be appended to the playlist. <p>If you want your links to be playable without javascript, you could just use an ordinary <code>a href=""</code>, while adding the <code>data-yuckbox-song</code> attribute.
- <div id="content">
- <a href="test.php">Test</a>
- </div>
- <div id="sidebar">
-     test igen
- </div>
+            </section>
+        </article>
 
 
-</div>
+        
+        <script src="src/vendor/jquery-1.9.1.js" ></script>
+        <script src="src/vendor/underscore.js" ></script>
+        <script src="src/vendor/backbone.js" ></script>
+        <script src="src/vendor/soundmanager2/script/soundmanager2.js"></script>
+        <script src="src/stereo.js"></script>
+        <script>
+            soundManager.setup({
+                url: "src/vendor/soundmanager2/swf"
+            })
+        </script>
+    </body>
 
-</body>
 </html>
