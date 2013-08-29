@@ -62,18 +62,19 @@
 
                 App.history.on('route:newPage', this.onNewPage);
 
-                this.$el.on('click', 'a:not(' + elements.join(',') + ')', this.navigateLink)
+
+                this.$el.on('click', 'a:nomedia:internalLink:not(' + elements.join(',') + ')', this.navigateLink)
                     // Add a small element to use for spinner
                     .append('<div class="stereo-spinner"/>');
             },
             navigateLink: function(ev) {
                 var href = ev.currentTarget.href;
-                //FIXME - false
-                if ( ev.which == 2 || ev.metaKey || ev.shiftKey || false === App.player.isPlaying() ) { 
+                ev.stopPropagation();
+                ev.preventDefault();
+                if ( ev.which == 2 || ev.metaKey || ev.shiftKey || true === App.player.isPlaying() ) { 
                     w.location = href;
                     return false; 
                 }
-                ev.preventDefault();
 
                 $(App.options.history.container).addClass("stereo-loading");
                 App.history.navigate(href.replace(App.options.history.siteURL, ''), { trigger: true });
@@ -82,6 +83,7 @@
             },
             onNewPage: function(url) {
                 if (!url) return;
+                console.log("hello");
                 $.ajax({
                     url: url,
                     data: {
@@ -94,13 +96,13 @@
                         // Prepare
                         
                         var $data, $dataBody, contentHtml, $scripts;
-                        
                         //Check that the response is a html file, otherwise redirect
                         if ('text/html' != response.getResponseHeader('Content-Type')) {
                             w.location = url;
                             return;
                         }
 
+                        console.log("Data loading...");
                         //Get the treated data
                         $data = $($.trim(documentHtml(data)));
 
@@ -185,15 +187,17 @@
     });
 
     // Creating custom :external selector
-    $.expr[':'].internal = function(obj){
+    $.expr[':'].internalLink = function(obj){
         //True if internal link
-        return (obj.hostname != w.location.hostname) && !obj.href.match(/^mailto\:/);
+        var int = (obj.nodeName == "A") && (obj.hostname == w.location.hostname) && !obj.href.match(/^mailto\:/);
+        return int;
     };
     // Creating custom :nomedia selector, works for html and php files, add your own extensions if you want
     $.expr[':'].nomedia = function(obj){
+        console.log(obj.nodeName);
         //Select links with no extension,
         //Or links with html/php extensions
-        return ! obj.href.match(/\.([a-z]{2,4}$)/i) || obj.href.match(/\.([psx]?htm[l]?|php[34]?)/gi) ;
+        return (obj.nodeName == "A") && (! obj.href.match(/\.([a-z]{2,4}$)/i) || obj.href.match(/\.([psx]?htm[l]?|php[34]?)/gi)) ;
     };
     
 
