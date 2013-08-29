@@ -26,6 +26,7 @@ test("Check Stereo object", function() {
 });
 
 soundManager.onready(function() {
+
     test("Song checks", function() {
         var s = new Stereo.Song(testFilePath, { id: "song-checks" } ) ;
         s.play();
@@ -94,34 +95,37 @@ soundManager.onready(function() {
         Stereo.player.play();
     });
     */
-    asyncTest("getSong", function() {
+    asyncTest("getSong/getSongSafe", function() {
         var s;
         start();
         Stereo.playlist.add( testFilePath, { id: "myid3" } );
         equal(Stereo.playlist.length, 1, "Length is 1");
         equal(Stereo.playlist.first().id, testFilePath, "Id is correct");
         Stereo.player.set('song', false);
-        s = Stereo.player.getSong();
+        s = Stereo.player.getSongSafe();
         equal(s.id, Stereo.player.get('song'));
         equal(Stereo.player.getSong().id, testFilePath);
+        Stereo.player.set('song', false);
+        s = Stereo.player.getSong();
+        equal(Stereo.player.get('song'), false);
     });
 
     asyncTest("PlaylistItem View Play", function() {
-        var v, s, $f = $("#qunit-fixture");
+        var v, s, $f = $("#playlistItem");
         Stereo.playlist.reset();
         Stereo.playlist.add([testFilePath, "dummy"]);
-        s = Stereo.player.getSong();
+        s = Stereo.player.getSongSafe();
         v = new Stereo.View.PlaylistItem({
-            songid: s.id,
-            el: "#qunit-fixture"
+            url: s.id,
+            el: "#playlistItem"
         });
 
         s.once('play', function() {
             setTimeout(function() {
                 start();
-                ok($f.hasClass('active'), "Has active on play");
                 ok($f.hasClass('playing'), "Has playing on play");
                 Stereo.playlist.reset();
+                Stereo.player.stop();
             }, 0);
         });
 
@@ -133,9 +137,9 @@ soundManager.onready(function() {
         var v, s, $f = $("#qunit-fixture");
         Stereo.playlist.reset();
         Stereo.playlist.add([testFilePath, "dummy"]);
-        s = Stereo.player.getSong();
+        s = Stereo.player.getSongSafe();
         v = new Stereo.View.PlaylistItem({
-            songid: s.id,
+            url: s.id,
             el: "#qunit-fixture"
         });
 
@@ -143,7 +147,6 @@ soundManager.onready(function() {
             setTimeout(function() {
                 start();
                 equal(Stereo.player.get('playState'), 2);
-                ok($f.hasClass('active'), "Has active on pause");
                 ok($f.hasClass('paused'), "Has paused on pause");
                 Stereo.playlist.reset();
             }, 0);
@@ -162,16 +165,15 @@ soundManager.onready(function() {
         var v, s, $f = $("#qunit-fixture");
         Stereo.playlist.reset();
         Stereo.playlist.add([testFilePath, "dummy"]);
-        s = Stereo.player.getSong();
+        s = Stereo.player.getSongSafe();
         v = new Stereo.View.PlaylistItem({
-            songid: s.id,
+            url: s.id,
             el: "#qunit-fixture"
         });
 
         s.once('play', function() {
             setTimeout(function() {
                 start();
-                ok($f.hasClass('active'), "Has active on stop");
                 ok($f.hasClass('stopped'), "Has stopped on stop");
                 Stereo.playlist.reset();
             }, 0);
@@ -186,9 +188,9 @@ soundManager.onready(function() {
         var v, s, $f = $("#qunit-fixture");
         Stereo.playlist.reset();
         Stereo.playlist.add([testFilePath, "dummy"]);
-        s = Stereo.player.getSong();
+        s = Stereo.player.getSongSafe();
         v = new Stereo.View.PlaylistItem({
-            songid: s.id,
+            url: s.id,
             el: "#qunit-fixture"
         });
 
@@ -209,9 +211,9 @@ soundManager.onready(function() {
         var v, s, $f = $("#qunit-fixture");
         Stereo.playlist.reset();
         Stereo.playlist.add(testFilePath);
-        s = Stereo.player.getSong();
+        s = Stereo.player.getSongSafe();
         v = new Stereo.View.PlaylistItem({
-            songid: s.id,
+            url: s.id,
             el: "#qunit-fixture"
         });
 
@@ -228,9 +230,9 @@ soundManager.onready(function() {
         var v, s, $f = $("#qunit-fixture");
         Stereo.playlist.reset();
         Stereo.playlist.add(testFilePath);
-        s = Stereo.player.getSong();
+        s = Stereo.player.getSongSafe();
         v = new Stereo.View.PlaylistItem({
-            songid: s.id,
+            url: s.id,
             el: "#qunit-fixture"
         });
 
@@ -254,11 +256,11 @@ soundManager.onready(function() {
         s1 = Stereo.playlist.at(0);
         s2 = Stereo.playlist.at(1);
         v1 = new Stereo.View.PlaylistItem({
-            songid: s1.id,
+            url: s1.id,
             el: "#qunit-fixture #s1"
         });
         v2 = new Stereo.View.PlaylistItem({
-            songid: s2.id,
+            url: s2.id,
             el: "#qunit-fixture #s2"
         });
 
@@ -267,7 +269,7 @@ soundManager.onready(function() {
         });
         s2.once('play', function() {
             start();
-            ok(v1.options.songid == s1.id);
+            ok(v1.options.url == s1.id);
             ok(s1.id === testFilePath);
             ok(s2.id === testFilePath + "?v=2");
             equal(s2.id, Stereo.player.get('song'));
@@ -331,41 +333,38 @@ test("Playlist checks", function() {
     var p = new Stereo.Playlist([new Stereo.Song("A"), new Stereo.Song("B"), new Stereo.Song("C")]);
     equal(p.length, 3, "Check playlist length");
 
+    /*
     p.setRepeat(false);
     ok(true, "When repeat is off:");
     strictEqual(p.getPrev(0), false, "Check prev from zero is false");
     strictEqual(p.getPrev(1), "A", "Check prev from one is A");
     strictEqual(p.getNext(1), "C", "Check next from one is C");
     strictEqual(p.getNext(2), false, "Check next from two is false");
+    */
 
-    p.setRepeat(true);
+    //p.setRepeat(true);
     ok(true, "When repeat is on:");
     strictEqual(p.getPrev(0), "C", "Check prev from zero is two, with repeat");
     strictEqual(p.getPrev(1), "A", "Check prev from one is zero, with repeat");
     strictEqual(p.getNext(1), "C", "Check next from one is two, with repeat");
     strictEqual(p.getNext(2), "A", "Check next from two is zero, with repeat");
 
+    /*
     p.setRepeat(false);
     ok(true, "When repeat is off:");
     strictEqual(p.getPrevById("A"), false, "Check prev from A is false");
     strictEqual(p.getPrevById("B"), "A", "Check prev from B is zero");
     strictEqual(p.getNextById("B"), "C", "Check next from B is two");
     strictEqual(p.getNextById("C"), false, "Check next from C is false");
+    */
 
-    p.setRepeat(true);
-    ok(true, "When repeat is on:");
+    //p.setRepeat(true);
     strictEqual(p.getPrevById("A"), "C", "Check prev from A is C");
     strictEqual(p.getNextById("C"), "A", "Check next from C is A");
 
-    p.setRepeat(false);
-    strictEqual(p.getPrevById("bobobobo"), "A", "Check prev from gibberish is A");
-    strictEqual(p.getNextById("bobobobo"), "A", "Check next from gibberish is A");
-    p.setRepeat(true);
-    ok(true, "When repeat is on:");
     strictEqual(p.getPrevById("bobobobo"), "A", "Check prev from gibberish is A");
     strictEqual(p.getNextById("bobobobo"), "A", "Check next from gibberish is A");
 
-    ok(true, "When repeat is on:");
     strictEqual(p.getPrevById(false), "A", "Check prev from false is A");
     strictEqual(p.getNextById(false), "A", "Check next from false is A");
 
@@ -397,3 +396,23 @@ test("Testing URI functions", function() {
 
 });
 
+
+$(function() {
+    test("Testing Stereo.init", function() {
+        $('#qunit-fixture').append('<div id="target"></div>');
+        var f;
+        Stereo.init({
+            controls: {
+                id: "#controls"
+            }
+        });
+        f = $("#controls");
+
+        ok(f.hasClass("stereo-controls"), "Has class");
+        ok(f.find('.stereo-buttons').length == 1, 'Has buttons');
+        ok(f.find('.stereo-label').length == 1, 'Has label');
+        ok(f.find('.stereo-time').length == 1, 'Has time');
+        ok(f.find('.stereo-position').length == 1, 'Has position');
+    });
+
+});

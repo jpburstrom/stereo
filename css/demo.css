@@ -95,3 +95,9 @@ code {
     background-color:#e3e3e3;
     padding:0 2px;
 }
+
+ul.playlist {
+    list-style:none;
+    margin-left:0;
+    padding-left:0;
+}

@@ -11,16 +11,17 @@
 
     "use strict";
 
-    var App;
+    if (typeof(w.Stereo) != "undefined") {
+        return;
+    }
 
-    w.Stereo = w.Stereo || {};
-    App = w.Stereo;
+    var App = { 
+        options: {}
+    };
 
-    App.e = _.clone(Backbone.Events);
 
     (function() {
 
-        //Taken from backbone
         var urlError = function() {
             throw new Error('A "url" property or function must be specified');
         };
@@ -210,16 +211,14 @@
 
         App.Playlist = b.Collection.extend({
             model: App.Song,
-            _repeat: true,
+            _repeat: false,
             _index: -1,
-            /*
             setRepeat: function(b) {
                 this._repeat = (b === true);
             },
             getRepeat: function() {
                 return this._repeat;
             },
-            */
             /**
             * Get id of previous song, given an index
             * If collection is empty, return false
@@ -273,7 +272,6 @@
 
 
     App.Player = b.Model.extend({
-        _playStateLabels: ['stopped', 'playing', 'paused', 'loading'],
         playlist: App.playlist,
         initialize: function() {
             //Internal play state, use isPlaying etc instead
@@ -294,42 +292,36 @@
             });
         },
         play: function() { 
-            this._play(this.getSongSafe());
+            var s = this.getSong();
+            if (s) {
+                this.set('playState', 1);
+                s.play();
+            }
         },
         pause: function() { 
-            var s = this.getSongSafe();
+            var s = this.getSong();
             if (s) {
                 this.set('playState', 2);
                 s.pause();
             }
         },
         stop: function() { 
-            var s = this.getSongSafe();
-            this._stop(this.getSongSafe());
-        },
-
-        /**
-         * Things to do when a song is finished
-         */
-        onFinish: function() {
-            this.next();
-            if (false === this.get('song')) {
+            var s = this.getSong();
+            if (s) {
                 this.set('playState', 0);
+                s.stop();
             }
-
         },
 
         /**
-         * Convenient functionz
-         * @param string id Song to play
+         * Convenient
          */
-        playPause: function(id) {
+        playPause: function(s) {
             var p = this.get('playState');
-            //
-            if (id && id != this.get('song')) {
+            if (s && s != this.get('song')) {
                 if (p > 0) this.stop();
                 p = 0;
-                this.setSong(id);
+                this.setSong(s);
             }
             if (p == 1) {
                 this.pause();
@@ -355,68 +347,31 @@
         },
 
         /**
-         * Play a song s, set playState and set up event listening
-         * @param song s
-         */
-        _play: function(s) {
-            if (s) {
-                this.listenToOnce(s, 'finish', this.onFinish );
-                this.set('playState', 1);
-                s.play();
-            } else {
-                this.set('playState', 0);
-            }
-        },
-
-        /**
-         * Stop a song s, set playState and remove event listening
-         * @param song s
-         */
-        _stop: function(s) {
-            if (s) {
-                this.set('playState', 0);
-                this.stopListening(s);
-                s.stop();
-            }
-        },
-
-        /**
          * Set previous/next song, continuing to play if playstate > 0
          * @param int dir Direction (prev is < 0)
          */
         _prevNext: function(dir) {
-            var s, o;
-            this._stop(this.getSong());
+            var s;
             if (dir < 0) {
                 s = this.playlist.getPrevById(this.get('song'));
             } else {
                 s = this.playlist.getNextById(this.get('song'));
             }
-            //This will stop and unsubscribe
+            if (this.get('playState') === 0) {
+                this.set('song', s);
+                return;
+            }
+
+            this.stop();
             this.set('song', s);
-            //..and let's play the new song
-            this._play(this.getSong());
-
+            this.play();
         },
         /**
-         * Get song
-         *
-         * If song doesn't exist, returns false
-         *
-         * @return Song|bool
-         */
-        getSong: function() {
-            return this.playlist.get(this.get('song')) || false;
-        },
-
-        /**
-         * Get current song. 
-         * If song doesn't exist, get the first available song from the playlist
-         * and update the song attribute
+         * Get current song, and update the song attribute
          *
          * @return Song
          */
-        getSongSafe: function() {
+        getSong: function() {
             var s;
             s = this.playlist.get(this.get('song'));
             if (!s) {
@@ -428,21 +383,10 @@
             }
 
         },
-        /**
-         * Set song attribute
-         * If id doesn't exist in playlist, set it to false
-         *
-         * @param string id
-         */
         setSong: function(id) {
             var s = this.playlist.get(id);
             s = (s) ? s.id : false;
             this.set('song', s);
-        },
-
-        getPlayStateLabel: function(state) {
-            state = (state === undefined) ? this.get('playState') : state;
-            return this._playStateLabels[state];
         }
     });
 
@@ -452,9 +396,8 @@
 
     App.View.Buttons = b.View.extend({
 
-        template: App.Tmpl.button,
+        template: _.template(""), //Empty template, should be overridden
         model: App.player,
-        className: 'stereo-buttons',
 
         events: {
             "click .prev": function() { this.model.prev(); },
@@ -466,19 +409,59 @@
 
         initialize: function() {
             this.listenTo(this.model, 'change', this.render);
-            this.render();
         },
 
-        render: function() {
-            this.$el.html(this.template());
+        render: function(redraw) {
+            //TODO
             return this;
         }
 
     });
 
+    App.View.PlaylistItem = b.View.extend({
+        defaults: function() {
+            return {
+                songid: false
+            };
+        },
+        //template: _.template("<%= id %>"), //Empty template, should be overridden
+        model: App.player,
+
+        events: {
+            "click": function() {  this.model.playPause(this.options.songid); }
+        },
+
+        initialize: function() {
+            this.options = _.extend(this.defaults(), this.options);
+            if (this.options.template) {
+                this.template = this.options.template;
+            }
+            this.listenTo(this.model, 'change', this.render);
+        },
+
+        render: function(redraw) {
+            if (this.model.hasChanged('song') && this.model.get('song') != this.options.songid) {
+                this.$el.removeClass('stopped playing paused active');
+            } 
+            if (this.model.hasChanged("playState") && this.model.get('song') == this.options.songid) {
+                switch(this.model.get('playState')) {
+                    case 0:
+                        this.$el.addClass("active stopped").removeClass("playing paused");
+                        break;
+                    case 1:
+                        this.$el.addClass("active playing").removeClass("stopped paused");
+                        break;
+                    case 2:
+                        this.$el.addClass("active paused").removeClass("stopped playing");
+                        break;
+                }
+            }
+            return this;
+        }
+    });
+
     App.View.Label = b.View.extend({
-        template: App.Tmpl.label,
-        className: 'stereo-label',
+        template: _.template(""), //Empty template, should be overridden
         model: App.player,
         song:false,
 
@@ -505,12 +488,10 @@
         },
 
         render: function(empty) {
-            /*
             if (empty) 
                 this.$el.html(this.template({}));
             else
                 this.$el.html(this.template(this.song.info.attributes));
-                */
 
             return this;
         }
@@ -533,24 +514,18 @@
                 }
                 this.song = this.model.getSong();
                 if (!this.song) {
-                    this.empty();
+                    this.render(true);
                 } else {
-                    this.listenTo(this.song, 'whileloading', this.render);
-                    this.listenTo(this.song, 'whileplaying', this.render);
+                    this.listenTo(this.song, 'change', this.render);
                 }
             }
         },
 
-        empty: function() {
-        },
-
         render: function(empty) {
-            /*
             if (empty) 
                 this.$el.html(this.template({}));
             else
                 this.$el.html(this.template(this.song.info.attributes));
-                */
 
             return this;
         }
@@ -558,163 +533,70 @@
     });
 
     App.View.Position = App.View.ContinousSongData.extend({
-        //TODO: fix drag things
-        initialize: function() {
-            this.data = {};
-            this.listenTo(this.model, 'change', this.changeSong);
-        },
-        className: 'stereo-position',
-        template: App.Tmpl.position
+        template: _.template("") //Should be fixed
     });
 
     App.View.Time = App.View.ContinousSongData.extend({
-        className: 'stereo-time',
-        template: App.Tmpl.time
+        template: _.template("") //Should be fixed
     });
 
-    App.View.ClassChanger = b.View.extend({
-        _doChangeClass: function(url) {
-            if (url && this.model.hasChanged('song')) {
-                if (this.model.get('song') != url) {
-                    this.el.className = this.className;
-                } else {
-                    this.$el.addClass("active");
-                }
-            }
-            
-            if (this.model.hasChanged("playState") && (!url || this.model.get('song') == url)) {
-                this.$el.removeClass(this.model.getPlayStateLabel(this.model.previous('playState')))
-                    .addClass(this.model.getPlayStateLabel());
-            }
-        }
-    });
-
-    App.View.Controls = App.View.ClassChanger.extend({
-        className: 'stereo-controls',
-        views: {},
-        initialize: function() {
-            var self = this;
-            this.model = App.player;
-            this.$el.addClass(this.className);
-            _.each(self.options.order, function(thing) {
-                self.views[thing] = new App.View[thing]();
-                self.views[thing].render();
-                self.$el.append(self.views[thing].$el);
-            });
-            this.listenTo(this.model, 'change', this.changeClass);
-            return this;
-        },
-
-        changeClass: function() {
-            this._doChangeClass();
-            return this;
-        }
-    });
-
-    App.View.PlaylistItem = App.View.ClassChanger.extend({
-
-        initialize: function() {
-            this.model = App.player;
-            this.className = this.className || this.el.className;
-            if (!this.options.url) {
-                this.options.url = this.$el.data('stereo-url').toString();
-            }
-            this.options = _.extend(this.defaults(), this.options);
-            if (this.options.template) {
-                this.template = this.options.template;
-            }
-            this.listenTo(this.model, 'change', this.changeClass);
-        },
-
-        defaults: function() {
-            return {
-                url: false
-            };
-        },
-
-        events: {
-            "click": function(ev) {  
-                ev.preventDefault();
-                if (!this.model.playlist.get(this.options.url)) {
-                    this.model.playlist.add(this.options.url);
-                }
-                this.model.playPause(this.options.url); 
-            }
-        },
-
-        changeClass: function() {
-            this._doChangeClass(this.options.url);
-        }
-    });
-
-    App.views = {};
-
-    if (!App.options) App.options = {}; 
-
-    _.extend(App.options, {
-        urlRoot: "./_mp3/",
-        infoURL: "./demo/api.php/tracks/",
-        playlist: {
-            onload: false, //('all'|id) //Fallback to all songs or playlist id
-            repeat: true,
-            shuffle: false //Shuffle loaded files
-        },
-        controls: {
-            //Pass an id of the control container, which should exist in the source
-            elements: "#stereo_controls",
-            //Choose which components, and their source order
-            order: ['Buttons', 'Label', 'Position', 'Time']
-        },
-        links: {
-            elements: "[data-stereo-url]"
-        }
-    });
-
-    App.init = function(options) {
-
-        var rebuildViews = function(elements, items, constructor) {
-            _.each(App.views.links, function(el) {
-                //Shouldn't be a problem to remove these, since we're on a new page
-                el.remove();
-            });
-            //items is passed by reference, so empty it like this:
-            items.length = 0;
-
-            $(elements).each(constructor);
-        };
-
-        options = $.extend(true, {}, App.options, options); 
-
-        //If controls, make controls
-        //Controls should be in a steady 
-        if (options.controls && options.controls.elements) {
-            App.views.controls = [];
-            rebuildViews(options.controls.elements, App.views.controls, function() {
-                App.views.controls.push( new App.View.Controls({ 
-                    el: this,
-                    order: options.controls.order
-                }));
-            });
-        }
-
-        if (options.links && options.links.elements) {
-            //Rebuild links on init and history reload
-            App.views.links = [];
-            App.e.on("init history:load-finish", function(success_or_object) {
-                if (false !== success_or_object) {
-                    rebuildViews(options.links.elements, App.views.links, function() {
-                        App.views.links.push(new App.View.PlaylistItem({
-                            el: this
-                        }));
-                    });
-                }
-            });
-        }
-
-        App.e.trigger("init", options);
-    };
-
-    
+    w.Stereo = App;
 
 })(window, Backbone, _, jQuery);
 
+;this["Stereo"] = this["Stereo"] || {};
+this["Stereo"]["Tmpl"] = this["Stereo"]["Tmpl"] || {};
+
+this["Stereo"]["Tmpl"]["button"] = function(obj) {
+obj || (obj = {});
+var __t, __p = '', __e = _.escape;
+with (obj) {
+__p += '<button class="prev"></button>\n<button class="stop"></button>\n<button class="play"></button>\n<button class="next"></button>\n';
+
+}
+return __p
+};
+
+this["Stereo"]["Tmpl"]["label"] = function(obj) {
+obj || (obj = {});
+var __t, __p = '', __e = _.escape;
+with (obj) {
+__p += '<span class="title">' +
+((__t = ( title )) == null ? '' : __t) +
+'</span>\n<span class="artist">' +
+((__t = ( artist )) == null ? '' : __t) +
+'</span>\n<span class="playlist"' +
+((__t = ( playlist )) == null ? '' : __t) +
+'</span>\n';
+
+}
+return __p
+};
+
+this["Stereo"]["Tmpl"]["position"] = function(obj) {
+obj || (obj = {});
+var __t, __p = '', __e = _.escape;
+with (obj) {
+__p += '<span class="progress">\n<span class="meter loaded">' +
+((__t = ( loadpos )) == null ? '' : __t) +
+'</span>\n<span class="meter played">' +
+((__t = ( playpos )) == null ? '' : __t) +
+'</span>\n</span>\n';
+
+}
+return __p
+};
+
+this["Stereo"]["Tmpl"]["time"] = function(obj) {
+obj || (obj = {});
+var __t, __p = '', __e = _.escape;
+with (obj) {
+__p += '<span class="time">\n    <span class="min">' +
+((__t = ( min )) == null ? '' : __t) +
+'</span>\n    <span class="sec">' +
+((__t = ( sec )) == null ? '' : __t) +
+'</span>\n</span>\n';
+
+}
+return __p
+};
