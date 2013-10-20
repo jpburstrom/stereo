@@ -20,7 +20,6 @@ if (true === STEREO_SC_SRC) {
 }
 require("inc/options.php");
 require("inc/attachments.php");
-require("inc/custom-post.php");
 require("inc/functions.php");
 
 stereo_cpt();

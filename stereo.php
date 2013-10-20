@@ -57,6 +57,7 @@ function stereo_init() {
 	add_action( 'init', 'stereo_connection_types' );
 
     require('inc/info.php');
+    require("inc/custom-post.php");
     require('inc/stream.php');
     require('inc/assets.php');
     require('inc/widget.php');
@@ -65,6 +66,8 @@ function stereo_init() {
     if (is_admin()) {
         require_once("admin/init.php");
     }
+
+    stereo_cpt();
 
 }
 
