@@ -7,6 +7,5 @@
  */
 
 ?>
-
-This is the widget player.
-
+<ul id="stereo_controls">
+</ul>
