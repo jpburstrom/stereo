@@ -15,7 +15,6 @@ class StereoAttachment {
     
     private $id3data = array();
     private $fields = array(
-        "title" => "text", 
         "artist" => "text", 
         "album" => "text", 
         "track_number" => "int", 
