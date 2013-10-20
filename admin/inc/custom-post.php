@@ -97,7 +97,9 @@ class StereoCustomPost {
     {
 ?>
         <div class="metabox-toolbar">
+            <?php if (true === STEREO_WP_SRC): ?>
             <a id="stereo_local_import" class="stereo-local stereo-import button button-large "><i class="icon icon-wordpress"></i> Add Media Library tracks</a>
+            <?php endif; ?>
             <?php if (true === STEREO_SC_SRC): ?>
             <a id="stereo_soundcloud_import" class="stereo-sc stereo-import button button-large "><i class="icon icon-soundcloud"></i> Add SoundCloud tracks </a>
             <?php endif; ?>

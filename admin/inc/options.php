@@ -309,7 +309,7 @@ class StereoOptions {
 			'title'   => __( 'Uploaded files support' ),
 			'desc'    => __( 'Allow streaming of uploaded files' ),
 			'type'    => 'checkbox',
-			'std'     => 0 // Set to 1 to be checked by default, 0 to be unchecked by default.
+			'std'     => 1 // Set to 1 to be checked by default, 0 to be unchecked by default.
 		);
         $choices = array();
         foreach (get_intermediate_image_sizes() as $choice) {

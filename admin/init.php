@@ -7,10 +7,12 @@
  */
 
 
-define('STEREO_WP_SRC', true);
+if (stereo_option('local_support')) {
+    define('STEREO_WP_SRC', true);
+}
 
 if (stereo_option('soundcloud_id')) {
-    define('STEREO_SC_SRC', false);
+    define('STEREO_SC_SRC', true);
 }
 
 if (true === STEREO_SC_SRC) {
