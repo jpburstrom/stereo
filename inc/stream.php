@@ -56,12 +56,11 @@ class StereoStream {
     function add_rewrite_rules()
     {
         $stream = stereo_option('streaming_slug');
-        add_rewrite_rule('^' . $stream . '/([^/]*)/?', 'index.php?&stereo_id=$matches[1]','top');
+        add_rewrite_rule('^' . $stream . '/stream/([^/]*)/?', 'index.php?&stereo_id=$matches[1]','top');
     }
 
     function stereo_query_vars( $query_vars )
     {
-        $query_vars[] = 'stereo_provider';
         $query_vars[] = 'stereo_id';
         return $query_vars;
     }
