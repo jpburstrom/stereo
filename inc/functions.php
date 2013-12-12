@@ -52,6 +52,15 @@ function get_stereo_streaming_link( $trackid=false) {
     $out = ($meta['fileid']) ?  site_url( trailingslashit(stereo_option('streaming_slug')) . "stream/" . trailingslashit($trackid) ) : '';
     return $out;
 }
+
+function the_stereo_playlist () {
+    global $post;
+    $slug = $post->post_name;
+    $connected = p2p_type( 'playlist_to_tracks' )->get_connected( $post, array('posts_per_page' => -1, 'orderby' => 'menu_order', 'order' => 'ASC') );
+?>
+    <?php include("views/playlist.php") ?>
+<?php
+}
             
 function stereo_init_sc() 
 {
