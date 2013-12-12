@@ -83,3 +83,64 @@ function stereo_init_custom_post_type()
 
 }
 
+if (true != stereo_option('taxonomy_tags')) {
+
+    add_action( 'admin_menu', 'stereo_remove_tagsdiv');
+    function stereo_remove_tagsdiv() {
+        remove_meta_box('tagsdiv-stereo_category', 'stereo_playlist', 'normal');
+    }
+
+    add_action( 'add_meta_boxes', 'stereo_add_tagsdiv');
+    function stereo_add_tagsdiv() {
+        add_meta_box( 'stereo-stereo_category', stereo_option("playlist_taxonomy_plural"),'stereo_category_metabox','stereo_playlist' ,'side','core');
+    }  
+
+
+
+    function stereo_category_metabox($post) {  
+
+        $taxonomy = 'stereo_category';  
+
+        // all terms of ctax
+        $all_ctax_terms = get_terms($taxonomy,array('hide_empty' => 0)); 
+
+        // all the terms currenly assigned to the post
+        $all_post_terms = get_the_terms( $post->ID,$taxonomy );  
+
+        // name for each input, notice the extra []
+        $name = 'tax_input[' . $taxonomy . '][]';  
+
+        // make an array of the ids of all terms attached to the post
+        $array_post_term_ids = array();
+        if ($all_post_terms) {
+            foreach ($all_post_terms as $post_term) {
+                $post_term_id = $post_term->term_id;
+                $array_post_term_ids[] = $post_term_id;
+            }
+        }
+
+    ?>
+
+    <div id="taxonomy-<?php echo $taxonomy; ?>" class="categorydiv"> 
+
+            <input type="hidden" name="<?php echo $name; ?>" value="0" />
+
+            <ul>
+    <?php   foreach($all_ctax_terms as $term){
+        if (in_array($term->term_id, $array_post_term_ids)) {
+            $checked = "checked = ''";
+        }
+        else {
+            $checked = "";
+        }
+        $id = $taxonomy.'-'.$term->term_id;
+        echo "<li id='$id'>";
+        echo "<input type='checkbox' name='{$name}'id='in-$id'"
+            . $checked ."value='$term->slug' /><label> $term->name</label><br />";
+        echo "</li>";
+    }?>
+           </ul>
+    </div>
+    <?php
+    }
+}

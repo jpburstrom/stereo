@@ -56,12 +56,12 @@ function stereo_init() {
 	add_action( 'plugins_loaded', 'stereo_load_p2p_core', 20 );
 	add_action( 'init', 'stereo_connection_types' );
 
+    require('inc/functions.php');
     require('inc/info.php');
-    require("inc/custom-post.php");
     require('inc/stream.php');
     require('inc/assets.php');
     require('inc/widget.php');
-    require('inc/functions.php');
+    require("inc/custom-post.php");
 
     if (is_admin()) {
         require_once("admin/init.php");

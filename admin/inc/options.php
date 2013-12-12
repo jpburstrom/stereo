@@ -311,6 +311,13 @@ class StereoOptions {
 			'type'    => 'text',
 			'section' => 'advanced'
 		);
+		$this->settings['taxonomy_tags'] = array(
+			'section' => 'advanced',
+			'title'   => __( 'Taxonomy have tags' ),
+            'desc'    => __( 'If checked, write taxonomy terms as tags. If not checked, choose among already existing terms.' ),
+			'type'    => 'checkbox',
+			'std'     => 0 // Set to 1 to be checked by default, 0 to be unchecked by default.
+		);
 		$this->settings['streaming_slug'] = array(
 			'title'   => __( 'Streaming rewrite slug' ),
 			'desc'    => __( 'Slug to use for streaming (make sure it doesn\'t collide with other permalinks)' ),
