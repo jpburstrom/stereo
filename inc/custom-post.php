@@ -135,8 +135,8 @@ if (true != stereo_option('taxonomy_tags')) {
         }
         $id = $taxonomy.'-'.$term->term_id;
         echo "<li id='$id'>";
-        echo "<input type='checkbox' name='{$name}'id='in-$id'"
-            . $checked ."value='$term->slug' /><label> $term->name</label><br />";
+        echo "<input type='checkbox' name='{$name}' id='in-$id'"
+            . $checked ."value='$term->slug' /><label for='in-$id'> $term->name</label><br />";
         echo "</li>";
     }?>
            </ul>
