@@ -148,6 +148,8 @@ class StereoInfoRewrite {
         $q = new WP_Query($options);
         if ($q->have_posts()) {
             $playlist = $q->posts[0];
+        } else {
+            return;
         }
         $connected = p2p_type( 'playlist_to_tracks' )->set_direction( 'from' )->get_connected( $playlist, array('posts_per_page' => -1, 'orderby' => 'menu_order', 'order' => 'ASC') );
         if ($connected->have_posts()): while ($connected->have_posts()): $connected->the_post(); 
