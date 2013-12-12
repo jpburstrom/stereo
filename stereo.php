@@ -67,7 +67,6 @@ function stereo_init() {
         require_once("admin/init.php");
     }
 
-    stereo_cpt();
 
 }
 

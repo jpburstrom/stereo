@@ -290,6 +290,27 @@ class StereoOptions {
 			'type'    => 'text',
 			'section' => 'advanced'
 		);
+		$this->settings['playlist_taxonomy_singular'] = array(
+			'title'   => __( 'Taxonomy singular name' ),
+			'desc'    => __( 'Name of the taxonomy (could be Group, Category, etc)' ),
+			'std'     => 'Playlist category',
+			'type'    => 'text',
+			'section' => 'advanced'
+		);
+		$this->settings['playlist_taxonomy_plural'] = array(
+			'title'   => __( 'Taxonomy plural name' ),
+			'desc'    => __( 'Plural name of the playlist taxonomy (could be Groups, Categories, etc)' ),
+			'std'     => 'Playlist categories',
+			'type'    => 'text',
+			'section' => 'advanced'
+		);
+		$this->settings['playlist_taxonomy_slug'] = array(
+			'title'   => __( 'Taxonomy rewrite slug' ),
+			'desc'    => __( 'Slug to use for URL rewrites' ),
+			'std'     => 'playlist_category',
+			'type'    => 'text',
+			'section' => 'advanced'
+		);
 		$this->settings['streaming_slug'] = array(
 			'title'   => __( 'Streaming rewrite slug' ),
 			'desc'    => __( 'Slug to use for streaming (make sure it doesn\'t collide with other permalinks)' ),
@@ -487,6 +508,8 @@ class StereoOptions {
 		return false;
 		
 	}
+
+
 	
 }
 

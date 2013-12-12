@@ -19,6 +19,7 @@ if (true === STEREO_SC_SRC) {
     require('inc/soundcloud.php');
 }
 require("inc/options.php");
+require("inc/stereo_custom_post.php");
 require("inc/attachments.php");
 require("inc/functions.php");
 

@@ -19,3 +19,15 @@ function stereo_sc() {
     return $sc;
 }
 
+/**
+ * Get StereoCustomPost instance
+ *
+ * @return StereoCustomPost instance
+ */
+function stereo_cpt() {
+    static $wp_stereo;
+    if (!$wp_stereo) {
+        $wp_stereo = new StereoCustomPost();
+    }
+    return $wp_stereo;
+}
