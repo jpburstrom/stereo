@@ -55,7 +55,6 @@ function get_stereo_streaming_link( $trackid=false) {
 
 function the_stereo_playlist () {
     global $post;
-    $slug = $post->post_name;
     $connected = p2p_type( 'playlist_to_tracks' )->get_connected( $post, array('posts_per_page' => -1, 'orderby' => 'menu_order', 'order' => 'ASC') );
 ?>
     <?php include("views/playlist.php") ?>
