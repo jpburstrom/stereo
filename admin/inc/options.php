@@ -321,7 +321,7 @@ class StereoOptions {
 		$this->settings['streaming_slug'] = array(
 			'title'   => __( 'Streaming rewrite slug' ),
 			'desc'    => __( 'Slug to use for streaming (make sure it doesn\'t collide with other permalinks)' ),
-			'std'     => 'stream',
+			'std'     => 'stereo',
 			'type'    => 'text',
 			'section' => 'advanced'
 		);
