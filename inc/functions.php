@@ -40,6 +40,11 @@ function get_stereo_attachment_meta( $attachment_id ) {
     return get_post_meta($attachment_id, "_stereo_metadata", true);
 }
 
+
+function stereo_url($append="") {
+    return home_url( trailingslashit(stereo_option('streaming_slug')), $append);
+}
+
 /**
  * Get streaming link for track
  */
@@ -49,7 +54,7 @@ function get_stereo_streaming_link( $trackid=false) {
         $trackid = $post->ID;
     }
     $meta = get_stereo_track_meta($trackid);
-    $out = ($meta['fileid']) ?  site_url( trailingslashit(stereo_option('streaming_slug')) . "stream/" . trailingslashit($trackid) ) : '';
+    $out = ($meta['fileid']) ?  stereo_url("stream/" . trailingslashit($trackid) ) : '';
     return $out;
 }
 
