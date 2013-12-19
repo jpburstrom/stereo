@@ -264,7 +264,7 @@ class StereoCustomPost {
     private function _do_sc_metadata(&$out)
     {
         $data = json_decode(stereo_sc()->get_track($out['fileid']));
-        $out['artist'] = ""; //XXX This is a bit sketchy, later on provide an editable field?
+        $out['artist'] = $data->user->username; //XXX This is a bit sketchy, later on provide an editable field?
         $out['album'] = ""; //This too
         $out['year'] = $data->release_year;
         $out['genre'] = $data->genre;
