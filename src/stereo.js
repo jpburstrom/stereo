@@ -278,6 +278,7 @@
 
     App.Player = b.Model.extend({
         _playStateLabels: ['stopped', 'playing', 'paused', 'loading'],
+        _orphanSong: false,
         playlist: App.playlist,
         initialize: function() {
             //Internal play state, use isPlaying etc instead
@@ -296,6 +297,14 @@
                 if (o.snd)
                     o.destroySound(); 
             });
+            this.listenTo(this.playlist, 'reset', function(o, opt) {
+                if (this.get('playState') == 1) {
+                    var self = this;
+                    this._orphanSong = _.filter(opt.previousModels, function(m) {
+                        return m.id == self.get('song');
+                    })[0];
+                }
+            });
         },
         play: function() { 
             this._play(this.getSongSafe());
@@ -308,7 +317,6 @@
             }
         },
         stop: function() { 
-            var s = this.getSongSafe();
             this._stop(this.getSongSafe());
         },
 
@@ -316,6 +324,10 @@
          * Things to do when a song is finished
          */
         onFinish: function() {
+            if (this._orphanSong) {
+                this._stop(this._orphanSong);
+                this._orphanSong = false;
+            }
             this.next();
             if (false === this.get('song')) {
                 this.set('playState', 0);
@@ -382,6 +394,7 @@
                 this.stopListening(s);
                 s.stop();
             }
+            this._orphanSong = false;
         },
 
         /**
@@ -410,7 +423,8 @@
          * @return Song|bool
          */
         getSong: function() {
-            return this.playlist.get(this.get('song')) || false;
+            var s = (this._orphanSong !== false)  ? this._orphanSong : this.playlist.get(this.get('song'));
+            return s || false;
         },
 
         /**
@@ -421,8 +435,7 @@
          * @return Song
          */
         getSongSafe: function() {
-            var s;
-            s = this.playlist.get(this.get('song'));
+            var s = (this._orphanSong !== false)  ? this._orphanSong : this.playlist.get(this.get('song'));
             if (!s) {
                 s = this.playlist.getSafe(this.get('song'));
                 this.set('song', s);
@@ -706,6 +719,7 @@
             //Rebuild links on init and history reload
             App.views.links = [];
             App.e.on("init history:load-finish", function(success_or_object) {
+                App.playlist.reset();
                 if (false !== success_or_object) {
                     rebuildViews(options.links.elements, App.views.links, function() {
                         App.views.links.push(new App.View.PlaylistItem({
