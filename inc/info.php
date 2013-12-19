@@ -52,7 +52,7 @@ class StereoTrackInfo {
             ));
             if ($playlist->found_posts == 1) {
                 $playlist = $playlist->posts[0];
-            }
+            } 
         }
         $this->playlist = new StereoPlaylistInfo($playlist);
         unset ($data['fileid'], $data['host']);
@@ -100,66 +100,72 @@ class StereoInfoRewrite {
             return;
         }
 
-        if ( empty($query->query_vars['stereo_id']) || is_numeric ( $query->query_vars['stereo_id'] )) {
-            switch($query->query_vars['stereo_type']) {
-            case 'tracks': 
-                $this->tracks($query->query_vars['stereo_id']);
-                break;
-            case 'playlists':
-                $this->playlists($query->query_vars['stereo_id']);
-                break;
-            }
+        $ids = explode(",", $query->query_vars['stereo_id']);
+
+        switch($query->query_vars['stereo_type']) {
+        case 'tracks': 
+            $this->tracks($ids);
+            break;
+        case 'playlists':
+            $this->playlists($ids);
+            break;
         }
 
         header('HTTP/1.1 404 Not Found');
+        echo "404";
         die();
     }
 
     /**
      * Json output for a single or multiple tracks
      */
-    function tracks($id) {
+    function tracks($ids) {
         $options = array("post_status" => "publish", "post_type" => "stereo_track");
-        if ($id) 
-            $options['post__in'] = array($id);
+        if ($ids) 
+            $options['post__in'] = $ids;
         $q = new WP_Query($options);
         $tracks = array();
         if ($q->posts): foreach ($q->posts as $post): 
-        $tracks[] = new StereoTrackInfo($post, get_stereo_track_meta($post->ID));
+            $tracks[$post->ID] = new StereoTrackInfo($post, get_stereo_track_meta($post->ID));
         endforeach; 
         else: 
             //If no tracks, return and 404
             return;
         endif;
         //Single track = no array
-        if ($id) 
-            $tracks = $tracks[0];
+        if (sizeof($tracks) == 1 && sizeof($ids) == 1) 
+            $tracks = array_pop($tracks);
         echo json_encode($tracks);
         die();
 
     }
 
-    function playlists($id) {
-        if (!$id) {
+    function playlists($ids) {
+        if (!$ids) {
             return;
         }
         $options = array("post_status" => "publish", "post_type" => "stereo_playlist");
-        $options['post__in'] = array($id);
+        $options['post__in'] = $ids;
         $q = new WP_Query($options);
-        if ($q->have_posts()) {
-            $playlist = $q->posts[0];
-        } else {
+        if (!$q->have_posts()) {
             return;
         }
-        $connected = p2p_type( 'playlist_to_tracks' )->set_direction( 'from' )->get_connected( $playlist, array('posts_per_page' => -1, 'orderby' => 'menu_order', 'order' => 'ASC') );
-        if ($connected->have_posts()): while ($connected->have_posts()): $connected->the_post(); 
-            $tracks[] = new StereoTrackInfo($connected->post, get_stereo_track_meta($connected->post->ID), $playlist);
-        endwhile; 
-        else: 
-            //If no playlists, return and 404
-            return;
-        endif;
-        echo json_encode($tracks);
+        $tracklist = array();
+        foreach ($q->posts as $p) {
+            $tracks = array();
+            $connected = p2p_type( 'playlist_to_tracks' )->set_direction( 'from' )->get_connected( $p, 
+                array('posts_per_page' => -1, 'orderby' => 'menu_order', 'order' => 'ASC') );
+            if ($connected->have_posts()) {
+                while ($connected->have_posts()) {
+                    $connected->the_post(); 
+                    $tracks[] = new StereoTrackInfo($connected->post, get_stereo_track_meta($connected->post->ID), $p);
+                }
+            }
+            $tracklist[$p->ID] = $tracks;
+        }
+        if (sizeof($tracklist) == 1 && sizeof($ids) == 1) 
+            $tracklist = array_pop($tracklist);
+        echo json_encode($tracklist);
         die();
     }
 }
