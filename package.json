@@ -1,12 +1,12 @@
 {
-  "name": "Stereo",
+  "name": "stereo",
   "author": {
-      "name": "Johannes Burström",
-      "email": "johannes@ljud.org"
+    "name": "Johannes Burström",
+    "email": "johannes@ljud.org"
   },
   "version": "0.1.0",
   "devDependencies": {
-    "grunt": "~0.4.1",
+    "grunt": "~0.4.2",
     "grunt-contrib-jst": "~0.5.1",
     "grunt-contrib-concat": "~0.3.0",
     "grunt-contrib-uglify": "~0.2.2",

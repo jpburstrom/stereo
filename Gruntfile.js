@@ -2,6 +2,16 @@ module.exports = function(grunt) {
 
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
+        watch: {
+            scripts: {
+                files: ['src/*.js'],
+                tasks: ['jshint', 'concat'],
+                options: {
+                    spawn: false,
+                    livereload: true
+                }
+            }
+        },
         concat: {
             options: {
                 // define a string to put between each file in the concatenated output
@@ -9,7 +19,7 @@ module.exports = function(grunt) {
             },
             dist: {
                 // the files to concatenate
-                src: ['src/templates/compiled.js', 'src/stereo.js'],
+                src: ['src/vendor/soundmanager2/script/soundmanager2.js', 'src/templates/compiled.js', 'src/stereo.js'],
                 // the location of the resulting JS file
                 dest: 'dist/<%= pkg.name %>.js'
             }
@@ -25,7 +35,8 @@ module.exports = function(grunt) {
             },
             dist: {
                 files: {
-                    'dist/<%= pkg.name %>.min.js': ['<%= concat.dist.dest %>']
+                    'dist/<%= pkg.name %>.min.js': ['<%= concat.dist.dest %>'],
+                    'dist/wp-<%= pkg.name %>.min.js': ['<%= concat.wp.dest %>']
                 }
             }
         },
@@ -68,6 +79,6 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-jst');
 
     grunt.registerTask('test', ['jst', 'jshint', 'qunit']);
-    grunt.registerTask('default', ['jst', 'jshint', 'qunit', 'concat', 'uglify']);
+    grunt.registerTask('default', ['jst', 'jshint',  'concat', 'uglify']);
 
 };
