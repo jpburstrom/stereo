@@ -46,19 +46,23 @@
             },
 
             urlRoot: function () {
-                return App.options.infoURL;
+                return App.options.urlRoot + "tracks/";
             },
 
             /**
              * Get SongInfo attributes
              * Doesn't return info, but triggers a hasInfo event as soon as info is available
              */
-            getInfo: function() {
+            getInfo: function(cb) {
+                if (_.isFunction(cb)) {
+                    this.once('hasInfo', cb);
+                }
                 if (!this._isSynced) {
                     this.fetch();
                 } else {
                     this.trigger('hasInfo');
                 }
+
             }
 
         });
@@ -142,7 +146,7 @@
             },
 
             urlRoot: function () {
-                return App.options.urlRoot;
+                return App.options.urlRoot + App.options.streamingSlug;
             },
 
             /*
@@ -617,7 +621,7 @@
             this.model = App.player;
             this.className = this.className || this.el.className;
             if (!this.options.url) {
-                this.options.url = this.$el.data('stereo-url').toString();
+                this.options.url = this.$el.data('stereo-track').toString();
             }
             this.options = _.extend(this.defaults(), this.options);
             if (this.options.template) {
@@ -651,9 +655,9 @@
 
     if (!App.options) App.options = {}; 
 
-    _.extend(App.options, {
+    App.options = _.extend({
         urlRoot: "./_mp3/",
-        infoURL: "./demo/api.php/tracks/",
+        streamingSlug: "stream",
         playlist: {
             onload: false, //('all'|id) //Fallback to all songs or playlist id
             repeat: true,
@@ -666,14 +670,16 @@
             order: ['Buttons', 'Label', 'Position', 'Time']
         },
         links: {
-            elements: "[data-stereo-url]"
+            elements: "[data-stereo-track]"
+        },
+        sm: {
         }
-    });
+    }, App.options);
 
     App.init = function(options) {
 
         var rebuildViews = function(elements, items, constructor) {
-            _.each(App.views.links, function(el) {
+            _.each(items, function(el) {
                 //Shouldn't be a problem to remove these, since we're on a new page
                 el.remove();
             });
@@ -683,10 +689,9 @@
             $(elements).each(constructor);
         };
 
-        options = $.extend(true, {}, App.options, options); 
+        options = _.extend({}, App.options, options); 
 
         //If controls, make controls
-        //Controls should be in a steady 
         if (options.controls && options.controls.elements) {
             App.views.controls = [];
             rebuildViews(options.controls.elements, App.views.controls, function() {
@@ -706,6 +711,7 @@
                         App.views.links.push(new App.View.PlaylistItem({
                             el: this
                         }));
+                        App.playlist.add($(this).data("stereo-track").toString());
                     });
                 }
             });
@@ -714,7 +720,14 @@
         App.e.trigger("init", options);
     };
 
-    
+    w.soundManager.setup(App.options.sm);
+
+    w.soundManager.onload = function() {
+        if (App.options.doInit) {
+            App.init();
+        }
+    };
+
 
 })(window, Backbone, _, jQuery);
 
