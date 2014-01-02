@@ -118,6 +118,9 @@
                     onplay: function() {
                         self.trigger('play', this);
                     },
+                    onresume: function() {
+                        self.trigger('resume', this);
+                    },
                     onpause: function() {
                         self.trigger('pause', this);
                     },
@@ -377,7 +380,10 @@
         _play: function(s) {
             if (s) {
                 this.listenToOnce(s, 'finish', this.onFinish );
-                this.set('playState', 1);
+                this.set('playState', 3);
+                this.listenToOnce(s, 'play resume', function() {
+                    this.set('playState', 1);
+                });
                 s.play();
             } else {
                 this.set('playState', 0);
@@ -499,35 +505,25 @@
         model: App.player,
         song:false,
 
-        initialize: function() {
-            if (this.options.template) {
-                this.template = this.options.template;
-            }
+        initialize: function(options) {
             this.listenTo(this.model, 'change', this.changeSong);
         },
 
         changeSong: function() {
             if (this.model.hasChanged("song")) {
-                if (this.song) {
+                if (this.song !== false) {
                     this.stopListening(this.song);
                 }
                 this.song = this.model.getSong();
-                if (!this.song) {
-                    this.render(true);
-                } else {
-                    this.listenToOnce(this.song.info, 'hasInfo', this.render);
-                    this.song.info.getInfo();
-                }
+                this.listenToOnce(this.song.info, 'hasInfo', this.render);
+                this.song.info.getInfo();
             }
         },
 
-        render: function(empty) {
-            /*
-            if (empty) 
-                this.$el.html(this.template({}));
-            else
+        render: function() {
+            if (this.song !== false) {
                 this.$el.html(this.template(this.song.info.attributes));
-                */
+            }
 
             return this;
         }
@@ -609,11 +605,12 @@
     App.View.Controls = App.View.ClassChanger.extend({
         className: 'stereo-controls',
         views: {},
-        initialize: function() {
+        initialize: function(options) {
             var self = this;
             this.model = App.player;
+            console.log(this);
             this.$el.addClass(this.className);
-            _.each(self.options.order, function(thing) {
+            _.each(options.order, function(thing) {
                 self.views[thing] = new App.View[thing]();
                 self.views[thing].render();
                 self.$el.append(self.views[thing].$el);
@@ -630,37 +627,29 @@
 
     App.View.PlaylistItem = App.View.ClassChanger.extend({
 
-        initialize: function() {
+        initialize: function(options) {
             this.model = App.player;
             this.className = this.className || this.el.className;
-            if (!this.options.url) {
-                this.options.url = this.$el.data('stereo-track').toString();
+            if (!options.url) {
+                options.url = this.$el.data('stereo-track').toString();
             }
-            this.options = _.extend(this.defaults(), this.options);
-            if (this.options.template) {
-                this.template = this.options.template;
-            }
+            this.url = options.url;
+            this.template = options.template;
             this.listenTo(this.model, 'change', this.changeClass);
-        },
-
-        defaults: function() {
-            return {
-                url: false
-            };
         },
 
         events: {
             "click": function(ev) {  
                 ev.preventDefault();
-                if (!this.model.playlist.get(this.options.url)) {
-                    this.model.playlist.add(this.options.url);
+                if (!this.model.playlist.get(this.url)) {
+                    this.model.playlist.add(this.url);
                 }
-                this.model.playPause(this.options.url); 
+                this.model.playPause(this.url); 
             }
         },
 
         changeClass: function() {
-            this._doChangeClass(this.options.url);
+            this._doChangeClass(this.url);
         }
     });
 
@@ -704,7 +693,7 @@
 
         options = _.extend({}, App.options, options); 
 
-        //If controls, make controls
+        //Make controls. 
         if (options.controls && options.controls.elements) {
             App.views.controls = [];
             rebuildViews(options.controls.elements, App.views.controls, function() {
@@ -715,13 +704,22 @@
             });
         }
 
+        //
+        //Fill playlist with link urls, and connect views to the links.
         if (options.links && options.links.elements) {
-            //Rebuild links on init and history reload
             App.views.links = [];
+            //Rebuild links on init and history reload
             App.e.on("init history:load-finish", function(success_or_object) {
-                App.playlist.reset();
+                var do_reset = true;
                 if (false !== success_or_object) {
                     rebuildViews(options.links.elements, App.views.links, function() {
+                        //If we have links on the page, let's reset the playlist and
+                        //use these links as playlist instead. Since this is running in a
+                        //loop, only do it once.
+                        if (do_reset) {
+                            App.playlist.reset();
+                            do_reset = false;
+                        }
                         App.views.links.push(new App.View.PlaylistItem({
                             el: this
                         }));
