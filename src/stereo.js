@@ -586,18 +586,30 @@
     });
 
     App.View.ClassChanger = b.View.extend({
-        _doChangeClass: function(url) {
-            if (url && this.model.hasChanged('song')) {
-                if (this.model.get('song') != url) {
-                    this.el.className = this.className;
-                } else {
-                    this.$el.addClass("active");
-                }
+        _changeActive: function(url) {
+            if (this.model.get('song') != this.url) {
+                this.el.className = this.className;
+            } else {
+                this.$el.addClass("active");
             }
-            
-            if (this.model.hasChanged("playState") && (!url || this.model.get('song') == url)) {
+        },
+        _changePlayState: function() {
+            if (!this.url || this.model.get('song') == this.url) {
                 this.$el.removeClass(this.model.getPlayStateLabel(this.model.previous('playState')))
                     .addClass(this.model.getPlayStateLabel());
+            }
+        },
+
+        _initClass: function() {
+            this._changeActive();
+            this._changePlayState();
+        },
+        _doChangeClass: function(url) {
+            if (url && this.model.hasChanged('song')) {
+                this._changeActive(url);
+            }
+            if (this.model.hasChanged("playState")) {
+                this._changePlayState();
             }
         }
     });
@@ -615,6 +627,7 @@
                 self.$el.append(self.views[thing].$el);
             });
             this.listenTo(this.model, 'change', this.changeClass);
+            this._initClass();
             return this;
         },
 
@@ -635,6 +648,7 @@
             this.url = options.url;
             this.template = options.template;
             this.listenTo(this.model, 'change', this.changeClass);
+            this._initClass();
         },
 
         events: {
@@ -709,6 +723,7 @@
             App.views.links = [];
             //Rebuild links on init and history reload
             App.e.on("init history:load-finish", function(success_or_object) {
+                console.log("load finshi");
                 var do_reset = true;
                 if (false !== success_or_object) {
                     rebuildViews(options.links.elements, App.views.links, function() {
