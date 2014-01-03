@@ -303,9 +303,11 @@
             this.listenTo(this.playlist, 'reset', function(o, opt) {
                 if (this.get('playState') == 1) {
                     var self = this;
-                    this._orphanSong = _.filter(opt.previousModels, function(m) {
-                        return m.id == self.get('song');
-                    })[0];
+                    if (this._orphanSong === false) {
+                        this._orphanSong = _.filter(opt.previousModels, function(m) {
+                            return m.id == self.get('song');
+                        })[0];
+                    }
                 }
             });
         },
@@ -627,7 +629,7 @@
                 self.$el.append(self.views[thing].$el);
             });
             this.listenTo(this.model, 'change', this.changeClass);
-            this._initClass();
+            //this._initClass();
             return this;
         },
 
