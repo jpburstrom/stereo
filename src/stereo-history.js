@@ -17,20 +17,44 @@
 
     w.Stereo = w.Stereo || {};
     App = w.Stereo;
-    
+
+    //Overriding the navigate method
+    b.History.prototype.navigate = function(fragment, options) {
+
+        if (!b.History.started) return false;
+        if (!options || options === true) options = {trigger: !!options};
+
+        var url = this.root + (fragment = this.getFragment(fragment || ''));
+
+        // Don't strip the fragment of the query and hash for matching.
+        if (this.fragment === fragment) return;
+        this.fragment = fragment;
+
+        // Don't include a trailing slash on the root.
+        if (fragment === '' && url !== '/') url = url.slice(0, -1);
+
+        // If pushState is available, we use it to set the fragment as a real URL.
+        if (this._hasPushState) {
+            this.history[options.replace ? 'replaceState' : 'pushState']({}, w.document.title, url);
+            //Else redirect
+        } else {
+            return this.location.assign(url);
+        }
+        if (options.trigger) return this.loadUrl(fragment);
+    };
 
     App.HistoryRouter = b.Router.extend({
         initialize: function () {
             var that = this;
             $(function () {
 
+                //TODO: if App.options.history.enable
                 b.history.start({
                     pushState: true, 
                     hashChange:false, 
-                    //Take root from siteURL
-                    root: App.options.history.siteURL.replace(/^.*\/\/[^\/]*/, '')
+                    //Take root from urlRoot
+                    root: App.options.history.urlRoot.replace(/^.*\/\/[^\/]*/, '')
                 });
-
             });
         },
         routes: {
@@ -60,15 +84,17 @@
                     elements.push(App.options.history.ignore);
                 }
 
-                App.history.on('route:newPage', this.onNewPage);
+                App.e.on('load-start', this.onNewPage);
 
 
                 this.$el.on('click', 'a:nomedia:internalLink:not(' + elements.join(',') + ')', this.navigateLink)
                     // Add a small element to use for spinner
                     .append('<div class="stereo-spinner"/>');
             },
+
             navigateLink: function(ev) {
                 var href = ev.currentTarget.href;
+                console.log("navigateLink");
                 ev.stopPropagation();
                 ev.preventDefault();
                 if ( ev.which == 2 || ev.metaKey || ev.shiftKey || true === App.player.isPlaying() ) { 
@@ -77,13 +103,12 @@
                 }
 
                 $(App.options.history.container).addClass("stereo-loading");
-                App.history.navigate(href.replace(App.options.history.siteURL, ''), { trigger: true });
-                App.e.trigger("load-start");
+                App.historyRouter.navigate(href.replace(App.options.history.urlRoot, ''));
+                App.e.trigger("load-start", href);
 
             },
             onNewPage: function(url) {
                 if (!url) return;
-                console.log("hello");
                 $.ajax({
                     url: url,
                     data: {
@@ -97,9 +122,10 @@
                         
                         var $data, $dataBody, contentHtml, $scripts;
                         //Check that the response is a html file, otherwise redirect
-                        if ('text/html' != response.getResponseHeader('Content-Type')) {
+                        console.log(response.getResponseHeader('Content-Type'));
+                        if (response.getResponseHeader('Content-Type').indexOf('html') == -1) {
                             w.location = url;
-                            return;
+                            return false;
                         }
 
                         console.log("Data loading...");
@@ -136,6 +162,7 @@
 
                     },
                     error: function(jqXHR, textStatus, errorThrown){
+                        console.log("ERROER");
                         //document.location.href = url;
                         
                         //Trigger the finish event, success is false
@@ -155,7 +182,7 @@
     _.extend(App.options, {
         history: {
             //Full URL to index page
-            siteURL: 'http://mik.bik/_dev/yuckbox2/',
+            urlRoot: 'http://jb.dev',
             
             //Everything in container is affected by history
             container: 'body',
@@ -164,7 +191,10 @@
             elements: '#content',
 
             //Links to ignore, to load normally
-            ignore: ''
+            ignore: '',
+
+            enable: false
+
 
         }
     });
@@ -173,7 +203,7 @@
 
         if (options.history && options.history.elements) {
 
-            App.history = new App.HistoryRouter();
+            App.historyRouter = new App.HistoryRouter();
             App.views.history = [];
             $(options.history.container).each(function() {
                 App.views.history.push( new App.View.History({ 
@@ -194,7 +224,6 @@
     };
     // Creating custom :nomedia selector, works for html and php files, add your own extensions if you want
     $.expr[':'].nomedia = function(obj){
-        console.log(obj.nodeName);
         //Select links with no extension,
         //Or links with html/php extensions
         return (obj.nodeName == "A") && (! obj.href.match(/\.([a-z]{2,4}$)/i) || obj.href.match(/\.([psx]?htm[l]?|php[34]?)/gi)) ;
