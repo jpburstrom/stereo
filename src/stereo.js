@@ -608,7 +608,6 @@
         initialize: function(options) {
             var self = this;
             this.model = App.player;
-            console.log(this);
             this.$el.addClass(this.className);
             _.each(options.order, function(thing) {
                 self.views[thing] = new App.View[thing]();
