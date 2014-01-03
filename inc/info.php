@@ -9,11 +9,11 @@
 
 
 class StereoPlaylistInfo {
-    var $name =     "";
+    var $title =     "";
     var $artwork =  "";
 
     function __construct($playlist) {
-        $this->name = $playlist->post_title;
+        $this->title = $playlist->post_title;
         $a = wp_get_attachment_image_src(get_post_thumbnail_id($playlist->ID), stereo_option("artwork_size"));
         $this->artwork = $a ? array(
             "url" => $a[0],
@@ -25,7 +25,7 @@ class StereoPlaylistInfo {
 
 class StereoTrackInfo {
 
-    var $name =     "", 
+    var $title =     "", 
         $playlist, 
         $artist = "",
         $album = "",
@@ -39,7 +39,7 @@ class StereoTrackInfo {
      */
     function __construct($track, $data, $playlist=false) 
     {
-        $this->name = $track->post_title;
+        $this->title = $track->post_title;
         //This should be regenerated every time, yes
         $this->stream_url = get_stereo_streaming_link($track->ID);
 
