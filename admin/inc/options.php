@@ -18,10 +18,10 @@ class StereoOptions {
 		$this->settings = array();
 		$this->get_settings();
 		
-		$this->sections['general']      = __( 'General Settings' );
-		$this->sections['advanced']      = __( 'Advanced Settings' );
+		$this->sections['general']      = __( 'User settings' );
+		$this->sections['advanced']      = __( 'Admin' );
+		$this->sections['ajax']      = __( 'Ajax' );
 		$this->sections['tools']        = __( 'Tools' );
-		$this->sections['reset']        = __( 'Reset Options' );
 		$this->sections['about']        = __( 'About' );
 		
 		add_action( 'admin_menu', array( &$this, 'add_pages' ) );
@@ -351,6 +351,38 @@ class StereoOptions {
 			'std'     => 'thumbnail',
             'choices' => $choices
 		);
+
+        $this->settings['ajax_enable'] = array(
+            'section' => 'ajax',
+			'title'   => __( 'Enable ajax loading of pages' ),
+			'desc'    => __( 'If enabled, pages will be ajax-loaded when sound is playing.' ),
+			'type'    => 'checkbox',
+			'std'     => 1
+		);
+
+        $this->settings['ajax_elements'] = array(
+            'section' => 'ajax',
+			'title'   => __( 'Elements to reload' ),
+			'desc'    => __( 'jQuery selector(s) of elements to reload. This would be your primary content container, optional sidebar etc.' ),
+			'type'    => 'text',
+			'std'     => '#primary'
+		);
+
+        $this->settings['ajax_ignore'] = array(
+            'section' => 'ajax',
+			'title'   => __( 'Links to ignore' ),
+			'desc'    => __( 'The script is already ignoring images, external links and _blank target links. Fill in optional extra selectors to ignore here.' ),
+			'type'    => 'text',
+			'std'     => ''
+		);
+
+        $this->settings['ajax_scrollTime'] = array(
+            'section' => 'ajax',
+			'title'   => __( 'Time for scrolling animation' ),
+            'desc'    => __( 'On loading of a new page, the page will scroll in a semi-nice animation. Choose the time for the animation here.' ),
+			'type'    => 'text',
+			'std'     => '0'
+		);
 		
         /*
 		$this->settings['example_textarea'] = array(
@@ -417,7 +449,7 @@ class StereoOptions {
 		===========================================*/
 		
 		$this->settings['reset_theme'] = array(
-			'section' => 'reset',
+			'section' => 'tools',
 			'title'   => __( 'Reset options' ),
 			'type'    => 'checkbox',
 			'std'     => 0,
