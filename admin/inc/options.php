@@ -9,13 +9,13 @@ class StereoOptions {
 	/**
 	 * Construct
 	 *
-	 * @since 1.0
 	 */
 	public function __construct() {
 		
 		// This will keep track of the checkbox options for the validate_settings function.
 		$this->checkboxes = array();
 		$this->settings = array();
+		$this->dt_settings = array();
 		$this->get_settings();
 		
 		$this->sections['general']      = __( 'User settings' );
@@ -23,6 +23,8 @@ class StereoOptions {
 		$this->sections['ajax']      = __( 'Ajax' );
 		$this->sections['tools']        = __( 'Tools' );
 		$this->sections['about']        = __( 'About' );
+
+        $this->sections['default_tracks'] = __( 'Default tracks' );
 		
 		add_action( 'admin_menu', array( &$this, 'add_pages' ) );
 		add_action( 'admin_init', array( &$this, 'register_settings' ) );
@@ -42,9 +44,12 @@ class StereoOptions {
 	public function add_pages() {
 		
 		$admin_page = add_options_page( 'Stereo', 'Stereo', 'manage_options', 'stereo_options', array( &$this, 'display_page' ) );
+        $admin_page_tracks = add_submenu_page('edit.php?post_type=stereo_playlist', 'Default tracks', 'Default tracks', 'edit_posts', 'stereo_default_tracks', array(&$this, 'display_default_tracks'));
 		
 		add_action( 'admin_print_scripts-' . $admin_page, array( &$this, 'scripts' ) );
 		add_action( 'admin_print_styles-' . $admin_page, array( &$this, 'styles' ) );
+		add_action( 'admin_print_scripts-' . $admin_page_tracks, array( &$this, 'scripts' ) );
+		add_action( 'admin_print_styles-' . $admin_page_tracks, array( &$this, 'styles' ) );
 		
 	}
 	
@@ -81,7 +86,11 @@ class StereoOptions {
 		if ( $type == 'checkbox' )
 			$this->checkboxes[] = $id;
 		
-		add_settings_field( $id, $title, array( $this, 'display_setting' ), 'stereo_options', $section, $field_args );
+        if ($section == 'default_tracks') {
+            add_settings_field( $id, $title, array( $this, 'display_dt_setting' ), 'stereo_default_tracks', $section, $field_args );
+        } else {
+            add_settings_field( $id, $title, array( $this, 'display_setting' ), 'stereo_options', $section, $field_args );
+        }
 	}
 	
 	/**
@@ -93,6 +102,17 @@ class StereoOptions {
         flush_rewrite_rules( );
 
         include('views/options-page.php');
+
+	}
+
+
+	/**
+	 * Display options page
+	 *
+	 * @since 1.0
+	 */
+	public function display_default_tracks() {
+        include('views/options-default-tracks.php');
 
 	}
 
@@ -144,17 +164,21 @@ class StereoOptions {
 <?php
 		
 	}
+
+    public function display_dt_setting( $args = array() ) {
+        $this->display_setting($args, 'stereo_default_tracks');
+    }
 	
 	/**
 	 * HTML output for text field
 	 *
 	 * @since 1.0
 	 */
-	public function display_setting( $args = array() ) {
-		
+	public function display_setting( $args = array(), $option = 'stereo_options' ) {
+
 		extract( $args );
 		
-		$options = get_option( 'stereo_options' );
+		$options = get_option( $option );
 		
 		if ( ! isset( $options[$id] ) && $type != 'checkbox' )
 			$options[$id] = $std;
@@ -173,12 +197,12 @@ class StereoOptions {
 			
 			case 'checkbox':
 				
-				echo '<input class="checkbox' . $field_class . '" type="checkbox" id="' . $id . '" name="stereo_options[' . $id . ']" value="1" ' . checked( $options[$id], 1, false ) . ' /> <label for="' . $id . '">' . $desc . '</label>';
+				echo '<input class="checkbox' . $field_class . '" type="checkbox" id="' . $id . '" name="'.$option.'[' . $id . ']" value="1" ' . checked( $options[$id], 1, false ) . ' /> <label for="' . $id . '">' . $desc . '</label>';
 				
 				break;
 			
 			case 'select':
-				echo '<select class="select' . $field_class . '" name="stereo_options[' . $id . ']">';
+				echo '<select class="select' . $field_class . '" name="'.$option.'[' . $id . ']">';
 				
 				foreach ( $choices as $value => $label )
 					echo '<option value="' . esc_attr( $value ) . '"' . selected( $options[$id], $value, false ) . '>' . $label . '</option>';
@@ -193,7 +217,7 @@ class StereoOptions {
 			case 'radio':
 				$i = 0;
 				foreach ( $choices as $value => $label ) {
-					echo '<input class="radio' . $field_class . '" type="radio" name="stereo_options[' . $id . ']" id="' . $id . $i . '" value="' . esc_attr( $value ) . '" ' . checked( $options[$id], $value, false ) . '> <label for="' . $id . $i . '">' . $label . '</label>';
+					echo '<input class="radio' . $field_class . '" type="radio" name="'.$option.'[' . $id . ']" id="' . $id . $i . '" value="' . esc_attr( $value ) . '" ' . checked( $options[$id], $value, false ) . '> <label for="' . $id . $i . '">' . $label . '</label>';
 					if ( $i < count( $options ) - 1 )
 						echo '<br />';
 					$i++;
@@ -205,7 +229,7 @@ class StereoOptions {
 				break;
 			
 			case 'textarea':
-				echo '<textarea class="' . $field_class . '" id="' . $id . '" name="stereo_options[' . $id . ']" placeholder="' . $std . '" rows="5" cols="30">' . wp_htmledit_pre( $options[$id] ) . '</textarea>';
+				echo '<textarea class="' . $field_class . '" id="' . $id . '" name="'.$option.'[' . $id . ']" placeholder="' . $std . '" rows="5" cols="30">' . wp_htmledit_pre( $options[$id] ) . '</textarea>';
 				
 				if ( $desc != '' )
 					echo '<br /><span class="description">' . $desc . '</span>';
@@ -213,7 +237,7 @@ class StereoOptions {
 				break;
 			
 			case 'password':
-				echo '<input class="regular-text' . $field_class . '" type="password" id="' . $id . '" name="stereo_options[' . $id . ']" value="' . esc_attr( $options[$id] ) . '" />';
+				echo '<input class="regular-text' . $field_class . '" type="password" id="' . $id . '" name="'.$option.'[' . $id . ']" value="' . esc_attr( $options[$id] ) . '" />';
 				
 				if ( $desc != '' )
 					echo '<br /><span class="description">' . $desc . '</span>';
@@ -222,7 +246,7 @@ class StereoOptions {
 			
 			case 'text':
 			default:
-		 		echo '<input class="regular-text' . $field_class . '" type="text" id="' . $id . '" name="stereo_options[' . $id . ']" placeholder="' . $std . '" value="' . esc_attr( $options[$id] ) . '" />';
+		 		echo '<input class="regular-text' . $field_class . '" type="text" id="' . $id . '" name="'.$option.'[' . $id . ']" placeholder="' . $std . '" value="' . esc_attr( $options[$id] ) . '" />';
 		 		
 		 		if ( $desc != '' )
 		 			echo '<br /><span class="description">' . $desc . '</span>';
@@ -456,6 +480,47 @@ class StereoOptions {
 			'class'   => 'warning', // Custom class for CSS
 			'desc'    => __( 'Check this box and click "Save Changes" below to reset options to their defaults.' )
 		);
+
+
+
+		/* Default tracks
+		===========================================*/
+		
+		$this->dt_settings['default_track_mode'] = array(
+			'section' => 'default_tracks',
+			'title'   => __( 'Pick default tracks from…' ),
+			'desc'    => __( 'Choose if and how to pick default tracks. They will be available for playback on all pages without playlists.' ),
+			'type'    => 'radio',
+			'std'     => 'random',
+			'choices' => array(
+				//'choice' => 'Choose from tracks below',
+				'random' => 'A random selection',
+				'playlist' => 'A specific ' . stereo_option('playlist_singular') . "<br/>",
+				0 => 'Please don\'t pick any default tracks',
+			)
+		);
+		$this->dt_settings['track_count'] = array(
+			'section' => 'default_tracks',
+			'title'   => __( 'Number of random tracks' ),
+			'desc'    => __( 'If you have chosen "Random selection" above.' ),
+			'type'    => 'select',
+			'std'     => 5,
+            'choices' => array_combine(range(1, 20),range(1, 20)),
+		);
+        
+        $playlists = array();
+        foreach (get_posts(array("posts_per_page" => -1, "post_type" => "stereo_playlist", "post_status" => 'any')) as $p) {
+            $playlists[$p->ID] = $p->post_title;
+        }
+
+		$this->dt_settings['playlist_choice'] = array(
+			'section' => 'default_tracks',
+			'title'   => __( 'Choose' ) . " " . stereo_option('playlist_singular') ,
+			'desc'    => __( 'Tip: It can be unpublished.' ),
+			'type'    => 'select',
+			'std'     => 5,
+            'choices' => $playlists
+		);
 		
 	}
 	
@@ -484,12 +549,15 @@ class StereoOptions {
 	public function register_settings() {
 		
 		register_setting( 'stereo_options', 'stereo_options', array ( &$this, 'validate_settings' ) );
+		register_setting( 'stereo_default_tracks', 'stereo_default_tracks', array ( &$this, 'validate_dt_settings' ) );
 		
 		foreach ( $this->sections as $slug => $title ) {
 			if ( $slug == 'about' ) {
 				add_settings_section( $slug, $title, array( &$this, 'display_about_section' ), 'stereo_options' );
             } else if ( $slug == 'tools' ) {
 				add_settings_section( $slug, $title, array( &$this, 'display_tools_section' ), 'stereo_options' );
+            } else if ( $slug == 'default_tracks' ) {
+				add_settings_section( $slug, $title, array( &$this, 'display_section' ), 'stereo_default_tracks' );
             } else {
 				add_settings_section( $slug, $title, array( &$this, 'display_section' ), 'stereo_options' );
             }
@@ -498,6 +566,10 @@ class StereoOptions {
 		$this->get_settings();
 		
 		foreach ( $this->settings as $id => $setting ) {
+			$setting['id'] = $id;
+			$this->create_setting( $setting );
+		}
+		foreach ( $this->dt_settings as $id => $setting ) {
 			$setting['id'] = $id;
 			$this->create_setting( $setting );
 		}
@@ -547,6 +619,10 @@ class StereoOptions {
 		return false;
 		
 	}
+
+    public function validate_dt_settings ($input) {
+        return $input;
+    }
 
 
 	

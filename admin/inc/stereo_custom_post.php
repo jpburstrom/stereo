@@ -21,6 +21,8 @@ class StereoCustomPost {
         add_action('admin_head', array(&$this, 'admin_head'));
         add_action('add_meta_boxes', array(&$this, 'add_meta_boxes'));
 		add_action("wp_insert_post", array(&$this, "wp_insert_post"), 10, 2);
+    //Add meta box to post type. Why this needs to be called from admin_head I don't know.
+        //
 
 		add_action( 'admin_enqueue_scripts', array( &$this, 'my_admin_scripts' ) );
         
@@ -76,7 +78,6 @@ class StereoCustomPost {
 <?php
     }
 
-    //Add meta box to post type. Why this needs to be called from admin_head I don't know.
     public function add_meta_boxes() {
         add_meta_box("stereo_meta", "Manage " . stereo_option("playlist_singular"), array(&$this, "metaboxes"),
             "stereo_playlist", "normal", "low");
