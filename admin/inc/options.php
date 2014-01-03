@@ -341,7 +341,7 @@ class StereoOptions {
 		);
         $choices = array();
         foreach (get_intermediate_image_sizes() as $choice) {
-            $choices[$choice] = $choice;
+            $choices[$choice] = ucwords($choice);
         }
 		$this->settings['artwork_size'] = array(
 			'section' => 'advanced',
