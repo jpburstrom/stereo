@@ -74,18 +74,40 @@
             // Return
             return result;
         };
+        var currentTarget;
         //TODO: maybe stupid to have this as a view?
         App.View.History = b.View.extend({
             initialize: function() {
+                var $scrollRoot = $('html,body');
                 var elements = App.options.links.elements ? [App.options.links.elements] : [];
+
                 elements.push('[target="_blank"]');
 
                 if (App.options.history.ignore) {
                     elements.push(App.options.history.ignore);
                 }
 
-                App.e.on('load-start', this.onNewPage);
 
+                this.listenTo(App.e, 'history:load-start', this.onNewPage);
+                this.listenTo(App.e, 'history:load-finish', function() {
+                    App.e.trigger("history:scroll");
+                });
+                this.listenTo(App.e, 'history:scroll', function() {
+                    var offset, 
+                        hash = currentTarget.hash,
+                        target = $(hash);
+                    //If no elem found, search for elem with name attribute
+                    target = target.length ? target : $('[name=' + hash.slice(1) +']');
+                    //Calc offset
+                    offset = target.length ? target.offset().top : 0;
+                    $scrollRoot.animate({
+                        scrollTop: offset
+                    }, App.options.history.scrollTime, function() {
+                        if (hash !== '') {
+                            w.location.hash = hash;
+                        }
+                    });
+                });
 
                 this.$el.on('click', 'a:nomedia:internalLink:not(' + elements.join(',') + ')', this.navigateLink)
                     // Add a small element to use for spinner
@@ -93,20 +115,27 @@
             },
 
             navigateLink: function(ev) {
-                var href = ev.currentTarget.href;
-                console.log("navigateLink");
+                var href = this.href;
+                currentTarget = this;
                 ev.stopPropagation();
                 ev.preventDefault();
+                //FIXME
                 if ( ev.which == 2 || ev.metaKey || ev.shiftKey || true === App.player.isPlaying() ) { 
-                    w.location = href;
-                    return false; 
+                    if (this.hash !== '' && w.location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'') && w.location.hostname == this.hostname) {
+
+                        App.e.trigger("history:scroll");
+                    } else {
+                        w.location = href;
+                    }
+                    return; 
                 }
 
                 $(App.options.history.container).addClass("stereo-loading");
                 App.historyRouter.navigate(href.replace(App.options.history.urlRoot, ''));
-                App.e.trigger("load-start", href);
+                App.e.trigger("history:load-start", href);
 
             },
+
             onNewPage: function(url) {
                 if (!url) return;
                 $.ajax({
@@ -122,7 +151,6 @@
                         
                         var $data, $dataBody, contentHtml, $scripts;
                         //Check that the response is a html file, otherwise redirect
-                        console.log(response.getResponseHeader('Content-Type'));
                         if (response.getResponseHeader('Content-Type').indexOf('html') == -1) {
                             w.location = url;
                             return false;
@@ -157,16 +185,16 @@
                     
                         $(App.options.history.container).removeClass("stereo-loading");
 
+
                         //Trigger the finish event, success is true
                         App.e.trigger("history:load-finish", true);
 
                     },
                     error: function(jqXHR, textStatus, errorThrown){
-                        console.log("ERROER");
-                        //document.location.href = url;
-                        
                         //Trigger the finish event, success is false
                         App.e.trigger("history:load-finish", false);
+
+                        //document.location.href = url;
                         
                         return false;
                     }
@@ -193,6 +221,9 @@
             //Links to ignore, to load normally
             ignore: '',
 
+            scrollTime: 1000,
+            
+            //FIXME:
             enable: false
 
 
