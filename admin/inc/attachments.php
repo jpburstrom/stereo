@@ -7,10 +7,6 @@
  */
 
 
-if (!class_exists("getID3")) {
-    require(STEREO_PLUGIN_DIR . "admin/lib/getid3/getid3.php");
-}
-
 class StereoAttachment {
     
     private $id3data = array();
@@ -80,7 +76,7 @@ class StereoAttachment {
         if ( ! preg_match('!^audio/!', get_post_mime_type( $id )))
             return $metadata;
 
-        $data = $this->_get_id3_data(get_attached_file($id));
+        $data = wp_read_audio_metadata(get_attached_file($id));
 
         if ( trim( $data['title'] ) ) {
             $attachment = array();
@@ -93,31 +89,6 @@ class StereoAttachment {
         update_post_meta($id, "_stereo_metadata", $data);
 
         return $metadata;
-
-    }
-
-    private function _get_id3_data($file) {
-        if ($data = $this->id3data[$file]) {
-            return $data;
-        }
-
-        $getID3 = new getID3;
-        $id3data = $getID3->analyze($file);
-        getid3_lib::CopyTagsToComments($id3data);
-
-        $data = array();
-        if ($id3data["comments_html"]) {
-            foreach ($this->fields as $field => $type) {
-                $val = $id3data["comments_html"][$field];
-                if ($val) {
-                    $val = implode(",", $val);
-                    $data[$field] = $val;
-                }
-            }
-        }
-
-        $this->id3data[$file] = $data;
-        return $data;
 
     }
 
