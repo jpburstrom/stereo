@@ -27,7 +27,7 @@
  
   display: inline-block;
   text-decoration: inherit;
-  width: 1em;
+  width: 0.5em;
   margin-right: .2em;
   text-align: center;
   /* opacity: .8; */
@@ -38,30 +38,26 @@
      
   /* fix buttons height, for twitter bootstrap */
   line-height: 1em;
- 
-  /* Animation center compensation - margins should be symmetric */
-  /* remove if not needed */
-  margin-left: .2em;
- 
-  /* you can be more comfortable with increased icons size */
-  /* font-size: 120%; */
- 
-  /* Uncomment for 3D effect */
-  /* text-shadow: 1px 1px 1px rgba(127, 127, 127, 0.3); */
 }
  
 .icon-amazon:before { content: '\e803'; } /* '' */
 .icon-soundcloud:before { content: '\e802'; } /* '' */
 .icon-wordpress:before { content: '\e804'; } /* '' */
-.icon-pause-1:before { content: '\e801'; } /* '' */
-.icon-stop-1:before { content: '\e800'; } /* '' */
-.icon-play-1:before { content: '\e805'; } /* '' */
-.icon-to-end-alt:before { content: '\e806'; } /* '' */
-.icon-to-start-alt:before { content: '\e807'; } /* '' */
-
-
 .stereo-buttons .pause:before { content: '\e801'; } /* '' */
 .stereo-buttons .stop:before { content: '\e800'; } /* '' */
 .stereo-buttons .play:before { content: '\e805'; } /* '' */
+.stereo-buttons .playpause:before { content: '\e805'; } /* '' */
+.playing .stereo-buttons .playpause:before { content: '\e801'; } /* '' */
 .stereo-buttons .next:before { content: '\e806'; } /* '' */
 .stereo-buttons .prev:before { content: '\e807'; } /* '' */
+
+.stereo-controls, .stereo-buttons, .stereo-label {
+    float:left;
+}
+
+.stereo-buttons button {
+    border:none;
+    background:transparent;
+    cursor:pointer;
+    width:3em;
+}
