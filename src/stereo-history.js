@@ -75,7 +75,6 @@
             return result;
         };
         var currentTarget;
-        //TODO: maybe stupid to have this as a view?
         App.View.History = b.View.extend({
             initialize: function() {
                 var $scrollRoot = $('html,body');
@@ -120,19 +119,19 @@
                 ev.stopPropagation();
                 ev.preventDefault();
                 //FIXME
-                if ( ev.which == 2 || ev.metaKey || ev.shiftKey || true === App.player.isPlaying() ) { 
+                if ( ev.which == 2 || ev.metaKey || ev.shiftKey || false === App.player.isPlaying() ) { 
                     if (this.hash !== '' && w.location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'') && w.location.hostname == this.hostname) {
 
                         App.e.trigger("history:scroll");
                     } else {
                         w.location = href;
                     }
-                    return; 
-                }
+                } else {
 
-                $(App.options.history.container).addClass("stereo-loading");
-                App.historyRouter.navigate(href.replace(App.options.history.urlRoot, ''));
-                App.e.trigger("history:load-start", href);
+                    $(App.options.history.container).addClass("stereo-loading");
+                    App.historyRouter.navigate(href.replace(App.options.history.urlRoot, ''));
+                    App.e.trigger("history:load-start", href);
+                }
 
             },
 
@@ -153,7 +152,7 @@
                         //Check that the response is a html file, otherwise redirect
                         if (response.getResponseHeader('Content-Type').indexOf('html') == -1) {
                             w.location = url;
-                            return false;
+                            return;
                         }
 
                         console.log("Data loading...");
@@ -194,9 +193,9 @@
                         //Trigger the finish event, success is false
                         App.e.trigger("history:load-finish", false);
 
-                        //document.location.href = url;
+                        w.document.location.href = url;
                         
-                        return false;
+                        return;
                     }
                 }); // end ajax
             }
@@ -205,10 +204,9 @@
         });
     })();
 
-    if (!App.options) App.options = {}; 
+    App.e.on("init", function(options) {
 
-    _.extend(App.options, {
-        history: {
+        App.options.history = _.extend({
             //Full URL to index page
             urlRoot: 'http://jb.dev',
             
@@ -226,13 +224,9 @@
             //FIXME:
             enable: false
 
+        }, options.history);
 
-        }
-    });
-
-    App.e.on("init", function(options) {
-
-        if (options.history && options.history.elements) {
+        if (options.history.elements) {
 
             App.historyRouter = new App.HistoryRouter();
             App.views.history = [];
