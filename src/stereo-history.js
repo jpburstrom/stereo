@@ -219,14 +219,14 @@
             //Links to ignore, to load normally
             ignore: '',
 
-            scrollTime: 1000,
+            scrollTime: 0,
             
             //FIXME:
             enable: false
 
         }, options.history);
 
-        if (options.history.elements) {
+        if (options.history.enable && options.history.elements) {
 
             App.historyRouter = new App.HistoryRouter();
             App.views.history = [];
