@@ -5945,7 +5945,7 @@ this["Stereo"]["Tmpl"]["button"] = function(obj) {
 obj || (obj = {});
 var __t, __p = '', __e = _.escape;
 with (obj) {
-__p += '<button class="prev"></button>\n<button class="stop"></button>\n<button class="play"></button>\n<button class="next"></button>\n';
+__p += '<button class="prev"></button>\n<button class="playpause"></button>\n<button class="next"></button>\n';
 
 }
 return __p
@@ -5959,8 +5959,8 @@ __p += '<span class="title">' +
 ((__t = ( title )) == null ? '' : __t) +
 '</span>\n<span class="artist">' +
 ((__t = ( artist )) == null ? '' : __t) +
-'</span>\n<span class="playlist"' +
-((__t = ( playlist )) == null ? '' : __t) +
+'</span>\n<span class="playlist">' +
+((__t = ( playlist.title )) == null ? '' : __t) +
 '</span>\n';
 
 }
@@ -6112,6 +6112,9 @@ return __p
                     },
                     onplay: function() {
                         self.trigger('play', this);
+                    },
+                    onresume: function() {
+                        self.trigger('resume', this);
                     },
                     onpause: function() {
                         self.trigger('pause', this);
@@ -6295,9 +6298,11 @@ return __p
             this.listenTo(this.playlist, 'reset', function(o, opt) {
                 if (this.get('playState') == 1) {
                     var self = this;
-                    this._orphanSong = _.filter(opt.previousModels, function(m) {
-                        return m.id == self.get('song');
-                    })[0];
+                    if (this._orphanSong === false) {
+                        this._orphanSong = _.filter(opt.previousModels, function(m) {
+                            return m.id == self.get('song');
+                        })[0];
+                    }
                 }
             });
         },
@@ -6372,7 +6377,10 @@ return __p
         _play: function(s) {
             if (s) {
                 this.listenToOnce(s, 'finish', this.onFinish );
-                this.set('playState', 1);
+                this.set('playState', 3);
+                this.listenToOnce(s, 'play resume', function() {
+                    this.set('playState', 1);
+                });
                 s.play();
             } else {
                 this.set('playState', 0);
@@ -6472,7 +6480,8 @@ return __p
             "click .prev": function() { this.model.prev(); },
             "click .stop": function() { this.model.stop(); },
             "click .play": function() { this.model.play(); },
-            //"click .pause": function() { this.model.pause(); },
+            "click .playpause": function() { this.model.playPause(); },
+            "click .pause": function() { this.model.pause(); },
             "click .next": function() { this.model.next(); }
         },
 
@@ -6494,35 +6503,25 @@ return __p
         model: App.player,
         song:false,
 
-        initialize: function() {
-            if (this.options.template) {
-                this.template = this.options.template;
-            }
+        initialize: function(options) {
             this.listenTo(this.model, 'change', this.changeSong);
         },
 
         changeSong: function() {
             if (this.model.hasChanged("song")) {
-                if (this.song) {
+                if (this.song !== false) {
                     this.stopListening(this.song);
                 }
                 this.song = this.model.getSong();
-                if (!this.song) {
-                    this.render(true);
-                } else {
-                    this.listenToOnce(this.song.info, 'hasInfo', this.render);
-                    this.song.info.getInfo();
-                }
+                this.listenToOnce(this.song.info, 'hasInfo', this.render);
+                this.song.info.getInfo();
             }
         },
 
-        render: function(empty) {
-            /*
-            if (empty) 
-                this.$el.html(this.template({}));
-            else
+        render: function() {
+            if (this.song !== false) {
                 this.$el.html(this.template(this.song.info.attributes));
-                */
+            }
 
             return this;
         }
@@ -6585,18 +6584,30 @@ return __p
     });
 
     App.View.ClassChanger = b.View.extend({
-        _doChangeClass: function(url) {
-            if (url && this.model.hasChanged('song')) {
-                if (this.model.get('song') != url) {
-                    this.el.className = this.className;
-                } else {
-                    this.$el.addClass("active");
-                }
+        _changeActive: function(url) {
+            if (this.model.get('song') != this.url) {
+                this.el.className = this.className;
+            } else {
+                this.$el.addClass("active");
             }
-            
-            if (this.model.hasChanged("playState") && (!url || this.model.get('song') == url)) {
+        },
+        _changePlayState: function() {
+            if (!this.url || this.model.get('song') == this.url) {
                 this.$el.removeClass(this.model.getPlayStateLabel(this.model.previous('playState')))
                     .addClass(this.model.getPlayStateLabel());
+            }
+        },
+
+        _initClass: function() {
+            this._changeActive();
+            this._changePlayState();
+        },
+        _doChangeClass: function(url) {
+            if (url && this.model.hasChanged('song')) {
+                this._changeActive(url);
+            }
+            if (this.model.hasChanged("playState")) {
+                this._changePlayState();
             }
         }
     });
@@ -6604,16 +6615,17 @@ return __p
     App.View.Controls = App.View.ClassChanger.extend({
         className: 'stereo-controls',
         views: {},
-        initialize: function() {
+        initialize: function(options) {
             var self = this;
             this.model = App.player;
             this.$el.addClass(this.className);
-            _.each(self.options.order, function(thing) {
+            _.each(options.order, function(thing) {
                 self.views[thing] = new App.View[thing]();
                 self.views[thing].render();
                 self.$el.append(self.views[thing].$el);
             });
             this.listenTo(this.model, 'change', this.changeClass);
+            //this._initClass();
             return this;
         },
 
@@ -6625,37 +6637,30 @@ return __p
 
     App.View.PlaylistItem = App.View.ClassChanger.extend({
 
-        initialize: function() {
+        initialize: function(options) {
             this.model = App.player;
             this.className = this.className || this.el.className;
-            if (!this.options.url) {
-                this.options.url = this.$el.data('stereo-track').toString();
+            if (!options.url) {
+                options.url = this.$el.data('stereo-track').toString();
             }
-            this.options = _.extend(this.defaults(), this.options);
-            if (this.options.template) {
-                this.template = this.options.template;
-            }
+            this.url = options.url;
+            this.template = options.template;
             this.listenTo(this.model, 'change', this.changeClass);
-        },
-
-        defaults: function() {
-            return {
-                url: false
-            };
+            this._initClass();
         },
 
         events: {
             "click": function(ev) {  
                 ev.preventDefault();
-                if (!this.model.playlist.get(this.options.url)) {
-                    this.model.playlist.add(this.options.url);
+                if (!this.model.playlist.get(this.url)) {
+                    this.model.playlist.add(this.url);
                 }
-                this.model.playPause(this.options.url); 
+                this.model.playPause(this.url); 
             }
         },
 
         changeClass: function() {
-            this._doChangeClass(this.options.url);
+            this._doChangeClass(this.url);
         }
     });
 
@@ -6699,7 +6704,7 @@ return __p
 
         options = _.extend({}, App.options, options); 
 
-        //If controls, make controls
+        //Make controls. 
         if (options.controls && options.controls.elements) {
             App.views.controls = [];
             rebuildViews(options.controls.elements, App.views.controls, function() {
@@ -6710,13 +6715,23 @@ return __p
             });
         }
 
+        //
+        //Fill playlist with link urls, and connect views to the links.
         if (options.links && options.links.elements) {
-            //Rebuild links on init and history reload
             App.views.links = [];
+            //Rebuild links on init and history reload
             App.e.on("init history:load-finish", function(success_or_object) {
-                App.playlist.reset();
+                console.log("load finshi");
+                var do_reset = true;
                 if (false !== success_or_object) {
                     rebuildViews(options.links.elements, App.views.links, function() {
+                        //If we have links on the page, let's reset the playlist and
+                        //use these links as playlist instead. Since this is running in a
+                        //loop, only do it once.
+                        if (do_reset) {
+                            App.playlist.reset();
+                            do_reset = false;
+                        }
                         App.views.links.push(new App.View.PlaylistItem({
                             el: this
                         }));
@@ -6737,6 +6752,265 @@ return __p
         }
     };
 
+
+})(window, Backbone, _, jQuery);
+
+;/**
+ * Stereo - a javascript audio player
+ *
+ * Johannes Burström 2013
+ * Stereo may be freely distributed under the MIT license.
+ */
+
+ //Bug: anchor links don't work on index (root) page
+
+/*global window: false, Backbone:false, _:false, console:false, jQuery:false*/
+
+(function(w, b, _, $){
+
+    "use strict";
+
+    var App;
+
+    w.Stereo = w.Stereo || {};
+    App = w.Stereo;
+
+    //Overriding the navigate method
+    b.History.prototype.navigate = function(fragment, options) {
+
+        if (!b.History.started) return false;
+        if (!options || options === true) options = {trigger: !!options};
+
+        var url = this.root + (fragment = this.getFragment(fragment || ''));
+
+        // Don't strip the fragment of the query and hash for matching.
+        if (this.fragment === fragment) return;
+        this.fragment = fragment;
+
+        // Don't include a trailing slash on the root.
+        if (fragment === '' && url !== '/') url = url.slice(0, -1);
+
+        // If pushState is available, we use it to set the fragment as a real URL.
+        if (this._hasPushState) {
+            this.history[options.replace ? 'replaceState' : 'pushState']({}, w.document.title, url);
+            //Else redirect
+        } else {
+            return this.location.assign(url);
+        }
+        if (options.trigger) return this.loadUrl(fragment);
+    };
+
+    App.HistoryRouter = b.Router.extend({
+        initialize: function () {
+            var that = this;
+            $(function () {
+
+                //TODO: if App.options.history.enable
+                b.history.start({
+                    pushState: true, 
+                    hashChange:false, 
+                    //Take root from urlRoot
+                    root: App.options.history.urlRoot.replace(/^.*\/\/[^\/]*/, '')
+                });
+            });
+        },
+        routes: {
+            '*page' : 'newPage'
+        }
+    });
+
+    (function() {
+        var documentHtml = function(html){
+            // Prepare
+            var result = String(html)
+            .replace(/<\!DOCTYPE[^>]*>/i, '')
+            .replace(/<(html|head|body|title|meta|script)([\s\>])/gi,'<div data-history-$1="true"$2')
+            .replace(/<\/(html|head|body|title|meta|script)\>/gi,'</div>')
+            ;
+
+            // Return
+            return result;
+        };
+        var currentTarget;
+        App.View.History = b.View.extend({
+            initialize: function() {
+                var $scrollRoot = $('html,body');
+                var elements = App.options.links.elements ? [App.options.links.elements] : [];
+
+                elements.push('[target="_blank"]');
+
+                if (App.options.history.ignore) {
+                    elements.push(App.options.history.ignore);
+                }
+
+
+                this.listenTo(App.e, 'history:load-start', this.onNewPage);
+                this.listenTo(App.e, 'history:load-finish', function() {
+                    App.e.trigger("history:scroll");
+                });
+                this.listenTo(App.e, 'history:scroll', function() {
+                    var offset, 
+                        hash = currentTarget.hash,
+                        target = $(hash);
+                    //If no elem found, search for elem with name attribute
+                    target = target.length ? target : $('[name=' + hash.slice(1) +']');
+                    //Calc offset
+                    offset = target.length ? target.offset().top : 0;
+                    $scrollRoot.animate({
+                        scrollTop: offset
+                    }, App.options.history.scrollTime, function() {
+                        if (hash !== '') {
+                            w.location.hash = hash;
+                        }
+                    });
+                });
+
+                this.$el.on('click', 'a:nomedia:internalLink:not(' + elements.join(',') + ')', this.navigateLink)
+                    // Add a small element to use for spinner
+                    .append('<div class="stereo-spinner"/>');
+            },
+
+            navigateLink: function(ev) {
+                var href = this.href;
+                currentTarget = this;
+                ev.stopPropagation();
+                ev.preventDefault();
+                //FIXME
+                if ( ev.which == 2 || ev.metaKey || ev.shiftKey || false === App.player.isPlaying() ) { 
+                    if (this.hash !== '' && w.location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'') && w.location.hostname == this.hostname) {
+
+                        App.e.trigger("history:scroll");
+                    } else {
+                        w.location = href;
+                    }
+                } else {
+
+                    $(App.options.history.container).addClass("stereo-loading");
+                    App.historyRouter.navigate(href.replace(App.options.history.urlRoot, ''));
+                    App.e.trigger("history:load-start", href);
+                }
+
+            },
+
+            onNewPage: function(url) {
+                if (!url) return;
+                $.ajax({
+                    url: url,
+                    data: {
+                        //Send a variable
+                        stereo_ajax : true
+                    },
+                    dataType: "html",
+
+                    success: function(data, textStatus, response){
+                        // Prepare
+                        
+                        var $data, $dataBody, contentHtml, $scripts;
+                        //Check that the response is a html file, otherwise redirect
+                        if (response.getResponseHeader('Content-Type').indexOf('html') == -1) {
+                            w.location = url;
+                            return;
+                        }
+
+                        console.log("Data loading...");
+                        //Get the treated data
+                        $data = $($.trim(documentHtml(data)));
+
+                        $dataBody = $data.find('[data-history-body]');
+
+
+                        // Update the content
+                        $(App.options.history.elements).stop(true,true).each(function() {
+                            $(this).each(function() {
+                                var $self = $(this);
+                                var $other = $dataBody.find("#" + $self.attr("id"));
+                                $self.html($other.html()).removeClass().addClass($other.attr("class"));
+                            });
+                        });
+                        
+                        //Trigger the finish event, success is true
+                        App.e.trigger("history:load-data", $data);
+
+
+                        w.document.title = 
+                            w.document.title = $data.find('.data-history-title:first').text();
+                        try {
+                            w.document.getElementsByTagName('title')[0].innerHTML = w.document.title.replace('<','&lt;').replace('>','&gt;').replace(' & ',' &amp; ');
+                        }
+                        catch ( Exception ) { }
+                    
+                        $(App.options.history.container).removeClass("stereo-loading");
+
+
+                        //Trigger the finish event, success is true
+                        App.e.trigger("history:load-finish", true);
+
+                    },
+                    error: function(jqXHR, textStatus, errorThrown){
+                        //Trigger the finish event, success is false
+                        App.e.trigger("history:load-finish", false);
+
+                        w.document.location.href = url;
+                        
+                        return;
+                    }
+                }); // end ajax
+            }
+
+                
+        });
+    })();
+
+    App.e.on("init", function(options) {
+
+        App.options.history = _.extend({
+            //Full URL to index page
+            urlRoot: 'http://jb.dev',
+            
+            //Everything in container is affected by history
+            container: 'body',
+
+            //All elements get replaced on ajax page load
+            elements: '#content',
+
+            //Links to ignore, to load normally
+            ignore: '',
+
+            scrollTime: 0,
+            
+            //FIXME:
+            enable: false
+
+        }, options.history);
+
+        if (options.history.enable && options.history.elements) {
+
+            App.historyRouter = new App.HistoryRouter();
+            App.views.history = [];
+            $(options.history.container).each(function() {
+                App.views.history.push( new App.View.History({ 
+                    el: this
+                }));
+
+            });
+
+        }
+
+    });
+
+    // Creating custom :external selector
+    $.expr[':'].internalLink = function(obj){
+        //True if internal link
+        var int = (obj.nodeName == "A") && (obj.hostname == w.location.hostname) && !obj.href.match(/^mailto\:/);
+        return int;
+    };
+    // Creating custom :nomedia selector, works for html and php files, add your own extensions if you want
+    $.expr[':'].nomedia = function(obj){
+        //Select links with no extension,
+        //Or links with html/php extensions
+        return (obj.nodeName == "A") && (! obj.href.match(/\.([a-z]{2,4}$)/i) || obj.href.match(/\.([psx]?htm[l]?|php[34]?)/gi)) ;
+    };
+    
 
 })(window, Backbone, _, jQuery);
 
