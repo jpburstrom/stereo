@@ -1,25 +1,13 @@
 .stereo-track {
+    cursor:move;
     position:relative;
-    border:1px solid black;
+    border:1px solid #DFDFDF;
     overflow:hidden;
 }
 
 .stereo-track .actions {
     float:right;
-}
-
-.stereo-track .handle {
-    background:url('handle.png') 0px 4px no-repeat;
-    display:block;
-    float:left;
-    width:3%;
-    max-width:16px;
-    height:30px;
-    cursor:move;
-}
-.handle.right {
-    float:right;
-    margin-right:2px;
+    padding-right:0;
 }
 
 .stereo-track-number {
@@ -39,11 +27,11 @@
 }
 
 .stereo-metadata {
-    margin-top:0.3em;
+    margin-top:0.8em;
     color:#999;
     display:block;
     float:left;
-    width:40%;
+    width:43%;
 }
 .stereo-metadata li {
     float:left;
@@ -93,12 +81,10 @@
 }
 
 .metadata .icon-wordpress {
-    color:#464646;
-    text-shadow: 0px 0px 10px #21759b;
+    color: #21759b;
 }
 .metadata .icon-soundcloud {
-    color:white;
-    text-shadow: 0px 0px 10px #ff5c00;
+    color: #ff5c00;
 }
 
 .button .icon {

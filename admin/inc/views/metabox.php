@@ -35,7 +35,6 @@ if ( !defined( 'ABSPATH' ) )
     <?php endif; ?>
     <script id="stereo_track_template" type="text/html">
         <li class="stereo-track postarea">
-            <span class="handle"> </span>
             <span class="stereo-track-number"></span><input class="stereo-track-number-input" name="stereo_track_number[]" type="hidden" value=""/>
             <input type="text" placeholder="Track name" class="stereo-track-name" name="stereo_track_name[]"/>
             <input type="hidden" class="stereo-track-host" name="stereo_track_host[]" />
@@ -53,13 +52,11 @@ if ( !defined( 'ABSPATH' ) )
     <?php //<a class="stereo-replace-file" href="#">Replace file</a>?>
                 </li>
             </ul>
-            <span class="handle right"> </span>
         </li>
     </script>
     <ul id="stereo_tracks">
     <?php while ( $connected->have_posts() ) : $connected->the_post(); $meta = get_stereo_track_meta($post->ID); ?>
         <li class="stereo-track postarea <?php if (!$meta['fileid']) echo 'nofile'?> ">
-            <span class="handle"> </span>
             <span class="stereo-track-number"><?php echo $post->menu_order ?> </span><input class="stereo-track-number-input" name="stereo_track_number[]" type="hidden" value="<?php echo $post->menu_order ?>"/>
             <input type="text" placeholder="Track name" value="<?php the_title(); ?>" class="stereo-track-name" name="stereo_track_name[]"/>
             <input type="hidden" class="stereo-track-id" value="<?php the_ID(); ?>" name="stereo_track_ID[]"/>
@@ -79,7 +76,6 @@ if ( !defined( 'ABSPATH' ) )
     <?php //<a class="stereo-replace-file" href="#">Replace file</a>?>
                 </li>
             </ul>
-            <span class="handle right"> </span>
         </li>
     <?php endwhile; ?>
     </ul>
