@@ -485,7 +485,8 @@
             "click .prev": function() { this.model.prev(); },
             "click .stop": function() { this.model.stop(); },
             "click .play": function() { this.model.play(); },
-            //"click .pause": function() { this.model.pause(); },
+            "click .playpause": function() { this.model.playPause(); },
+            "click .pause": function() { this.model.pause(); },
             "click .next": function() { this.model.next(); }
         },
 

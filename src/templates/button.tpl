@@ -1,4 +1,3 @@
 <button class="prev"></button>
-<button class="stop"></button>
-<button class="play"></button>
+<button class="playpause"></button>
 <button class="next"></button>
