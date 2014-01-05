@@ -77,7 +77,7 @@
              * @param object options (optional) options
              */
             initialize: function(url, options) {
-                this.id = url;
+                this.id = url.toString();
                 this.options = _.extend({}, options);
                 //this.url = this._fullURL(url, App.options.baseURL);
                 this.info = new App.SongInfo({
@@ -646,7 +646,7 @@
             this.model = App.player;
             this.className = this.className || this.el.className;
             if (!options.url) {
-                options.url = this.$el.data('stereo-track').toString();
+                options.url = this.$el.data('stereo-track');
             }
             this.url = options.url;
             this.template = options.template;
@@ -680,7 +680,7 @@
         playlist: {
             onload: false, //('all'|id) //Fallback to all songs or playlist id
             repeat: true,
-            shuffle: false //Shuffle loaded files
+            shuffle: false, //Shuffle loaded files
         },
         controls: {
             //Pass an id of the control container, which should exist in the source
@@ -692,7 +692,8 @@
             elements: "[data-stereo-track]"
         },
         sm: {
-        }
+        },
+        default_tracks: false
     }, App.options);
 
     App.init = function(options) {
@@ -740,10 +741,20 @@
                         App.views.links.push(new App.View.PlaylistItem({
                             el: this
                         }));
-                        App.playlist.add($(this).data("stereo-track").toString());
+                        App.playlist.add($(this).data("stereo-track"));
                     });
                 }
             });
+        }
+
+        if (options.default_tracks) {
+            var t = options.default_tracks;
+            if (t.default_track_mode == "random") {
+                t.tracks = _.shuffle(t.tracks).slice(0, Math.max(0, t.track_count));
+            }
+
+            //We add default tracks. They will be removed if there are other tracks on the page.
+            App.playlist.add(t.tracks);
         }
 
         App.e.trigger("init", options);
