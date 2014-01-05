@@ -18,5 +18,4 @@ xcuserdata
 CVS
 node_modules
 src/templates/compiled.js
-stereo.js
-stereo.min.js
+js
