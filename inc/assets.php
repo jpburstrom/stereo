@@ -17,7 +17,7 @@ function stereo_enqueue_assets() {
     wp_deregister_script('backbone');
     wp_register_script('backbone', STEREO_PLUGIN_URL . "js/stereo/src/vendor/backbone.js", array('underscore','jquery'), '1.1.0', 1 );
 
-    wp_register_script('stereo', STEREO_PLUGIN_URL . "js/stereo/dist/stereo.js", array("backbone")); //FIXME
+    wp_register_script('stereo', STEREO_PLUGIN_URL . "js/stereo/js/stereo.js", array("backbone")); //FIXME
     wp_register_script('stereo-widget', "$jsdir/stereo-widget.js", array("stereo"));
 
 
@@ -28,7 +28,7 @@ function stereo_enqueue_assets() {
             'doInit' => true,
             'sm' => array(
                 'debugMode' => false,
-                'url' => STEREO_PLUGIN_URL . "js/stereo/src/vendor/soundmanager2/swf/", //FIXME
+                'url' => STEREO_PLUGIN_URL . "js/stereo/swf/",
             ),
             'history' => array(
                 'container' => 'body',
