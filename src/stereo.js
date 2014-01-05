@@ -676,6 +676,7 @@
     App.options = _.extend({
         urlRoot: "./_mp3/",
         streamingSlug: "stream",
+        doInit: true,
         playlist: {
             onload: false, //('all'|id) //Fallback to all songs or playlist id
             repeat: true,
@@ -726,7 +727,6 @@
             App.views.links = [];
             //Rebuild links on init and history reload
             App.e.on("init history:load-finish", function(success_or_object) {
-                console.log("load finshi");
                 var do_reset = true;
                 if (false !== success_or_object) {
                     rebuildViews(options.links.elements, App.views.links, function() {
