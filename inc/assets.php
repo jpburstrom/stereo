@@ -32,7 +32,8 @@ function stereo_enqueue_assets() {
                 'elements' => stereo_option('ajax_elements'),
                 'ignore' => stereo_option('ajax_ignore'),
                 'scrollTime' => (int) stereo_option('ajax_scrollTime')
-            )
+            ),
+            'default_tracks' => get_stereo_default_tracks(),
         )
     ));
 

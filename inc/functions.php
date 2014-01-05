@@ -65,6 +65,34 @@ function the_stereo_playlist () {
     <?php include("views/playlist.php") ?>
 <?php
 }
+
+function get_stereo_default_tracks() {
+   $opt = get_option("stereo_default_tracks");
+   switch( $opt["default_track_mode"] ) {
+   case "random":
+       $p = get_posts(array(
+           "post_type" => "stereo_track",
+           "posts_per_page" => -1,
+       ));
+       unset ($opt["playlist_choice"]);
+       break;
+   case "playlist":
+        $p = p2p_type( 'playlist_to_tracks' )->get_connected( $opt["playlist_choice"], array('posts_per_page' => -1, 'orderby' => 'menu_order', 'order' => 'ASC') )->posts;
+       unset ($opt["track_count"]);
+       break;
+   default:
+       return false;
+       break;
+   }
+
+   if ($p) {
+       foreach ($p as $post) {
+           $opt["tracks"][] = $post->ID;
+       }
+   }
+
+   return $opt;
+}
             
 function stereo_init_sc() 
 {

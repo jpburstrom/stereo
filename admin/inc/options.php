@@ -495,7 +495,7 @@ class StereoOptions {
 			'choices' => array(
 				//'choice' => 'Choose from tracks below',
 				'random' => 'A random selection',
-				'playlist' => 'A specific ' . stereo_option('playlist_singular') . "<br/>",
+				'playlist' => 'A specific ' . stereo_option('playlist_singular') ,
 				0 => 'Please don\'t pick any default tracks',
 			)
 		);
