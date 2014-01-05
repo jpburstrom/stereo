@@ -75,9 +75,17 @@ module.exports = function(grunt) {
                     "src/templates/compiled.js": ["src/templates/*.tpl"]
                 }
             }
+        },
+        copy: {
+            main: {
+                files: [
+                    {expand: true, cwd: "src/vendor/soundmanager2/swf", src: ["*.swf", "!*debug*"], dest:"swf/"}
+                ]
+            }
         }
     });
 
+    grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-qunit');
@@ -86,6 +94,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-jst');
 
     grunt.registerTask('test', ['jst', 'jshint', 'qunit']);
-    grunt.registerTask('default', ['jst', 'jshint',  'concat', 'uglify']);
+    grunt.registerTask('default', ['jst', 'jshint',  'concat', 'uglify', 'copy']);
+    grunt.registerTask('release', ['jst', 'jshint',  'concat', 'uglify', 'copy']);
 
 };
