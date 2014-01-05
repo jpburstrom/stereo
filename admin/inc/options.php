@@ -606,6 +606,7 @@ class StereoOptions {
 	* @since 1.0
 	*/
 	public function validate_settings( $input ) {
+        $this->purge_plugin_cache();
 		if ( ! isset( $input['reset_theme'] ) ) {
 			$options = get_option( 'stereo_options' );
 			
@@ -621,7 +622,15 @@ class StereoOptions {
 	}
 
     public function validate_dt_settings ($input) {
+        $this->purge_plugin_cache();
         return $input;
+    }
+
+    private function purge_plugin_cache () {
+        if( class_exists('W3_Plugin_TotalCacheAdmin') ) {
+            $plugin_totalcacheadmin = & w3_instance('W3_Plugin_TotalCacheAdmin');
+            $plugin_totalcacheadmin->flush_pgcache();
+        }
     }
 
 
