@@ -80,7 +80,7 @@ class StereoInfoRewrite {
 
     function add_rewrite_rules()
     {
-        $stream = stereo_option('streaming_slug');
+        $stream = stereo_option('rewrite_slug');
         add_rewrite_rule('^' . $stream . '/(tracks|playlists)/([^/]*)/?', 'index.php?stereo_type=$matches[1]&stereo_id=$matches[2]','top');
         add_rewrite_rule('^' . $stream . '/(tracks|playlists)/?', 'index.php?stereo_type=$matches[1]','top');
     }

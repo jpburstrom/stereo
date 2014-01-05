@@ -42,7 +42,7 @@ function get_stereo_attachment_meta( $attachment_id ) {
 
 
 function stereo_url($append="") {
-    return home_url( trailingslashit(stereo_option('streaming_slug')), $append);
+    return home_url( trailingslashit(stereo_option('rewrite_slug')), $append);
 }
 
 /**

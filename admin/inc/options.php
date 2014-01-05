@@ -342,9 +342,9 @@ class StereoOptions {
 			'type'    => 'checkbox',
 			'std'     => 0 // Set to 1 to be checked by default, 0 to be unchecked by default.
 		);
-		$this->settings['streaming_slug'] = array(
-			'title'   => __( 'Streaming rewrite slug' ),
-			'desc'    => __( 'Slug to use for streaming (make sure it doesn\'t collide with other permalinks)' ),
+		$this->settings['rewrite_slug'] = array(
+			'title'   => __( 'Rewrite slug' ),
+			'desc'    => __( 'Slug to use for streaming and info API (make sure it doesn\'t collide with other permalinks)' ),
 			'std'     => 'stereo',
 			'type'    => 'text',
 			'section' => 'advanced'
