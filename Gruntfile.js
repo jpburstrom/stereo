@@ -29,7 +29,7 @@ module.exports = function(grunt) {
                 // the files to concatenate
                 src: ['src/vendor/soundmanager2/script/soundmanager2.js', 'src/templates/compiled.js', 'src/stereo.js', 'src/stereo-history.js'],
                 // the location of the resulting JS file
-                dest: 'dist/<%= pkg.name %>.js'
+                dest: '<%= pkg.name %>.js'
             }
         },
         uglify: {
@@ -43,7 +43,7 @@ module.exports = function(grunt) {
             },
             dist: {
                 files: {
-                    'dist/<%= pkg.name %>.min.js': ['<%= concat.dist.dest %>']
+                    '<%= pkg.name %>.min.js': ['<%= concat.dist.dest %>']
                 }
             }
         },
