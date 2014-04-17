@@ -66,6 +66,12 @@ function the_stereo_playlist () {
 <?php
 }
 
+function have_stereo_playlist () {
+    global $post;
+    $connected = p2p_type( 'playlist_to_tracks' )->get_connected( $post, array('posts_per_page' => -1, 'orderby' => 'menu_order', 'order' => 'ASC') );
+    return $connected->have_posts();
+}
+
 function get_stereo_default_tracks() {
    $opt = get_option("stereo_default_tracks");
    switch( $opt["default_track_mode"] ) {
