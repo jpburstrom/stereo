@@ -3,11 +3,20 @@
     position:relative;
     border:1px solid #DFDFDF;
     overflow:hidden;
+    transition:background-color 1s ;
+    -webkit-transition:background-color 1s ;
+    -moz-transition:background-color 1s ;
+    -o-transition:background-color 1s ;
 }
+.stereo-track.more {
+    background-color:#eeeeee;
+}
+
 
 .stereo-track .actions {
     float:right;
     padding-right:0;
+    width:70%;
 }
 
 .stereo-track-number {
@@ -39,8 +48,41 @@
     font-size:0.8em;
     line-height:2.4;
 }
+.stereo-metadata li ul {
+    position:relative;
+    top:-1em;
+}
+.stereo-metadata select { 
+    max-width:100%;
+    font-size:1em;
+}
+.stereo-metadata li li {
+    clear:right;
+    font-size:1em;
+    float:none;
+    line-height:1.2;
+}
 .nofile .metadata {
     display:none;
+}
+.stereo-metadata .submitbox {
+    margin-top:1em;
+}
+.stereo-track-actions-label {
+    position:relative;
+    z-index:1;
+    font-size:1.5em;
+    line-height:1;
+    float:right;
+}
+.stereo-track-actions-label:after {
+    content:"…";
+}
+.more .stereo-track-actions-label:after {
+    content:"×";
+}
+.stereo-track.more .hide-if-js {
+    display:block;
 }
 
 .stereo-stop { display: none }

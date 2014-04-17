@@ -3,7 +3,7 @@
  * Stereo
  * Johannes Burström 2013
  *
- * Admin template include
+ * Default tracks option page
  */
 
 if ( !defined( 'ABSPATH' ) )

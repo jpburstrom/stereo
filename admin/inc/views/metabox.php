@@ -3,7 +3,7 @@
  * Stereo
  * Johannes Burström 2013
  *
- * Admin template include
+ * Metabox for playlist, showing all tracks
  */
 
 if ( !defined( 'ABSPATH' ) )
@@ -48,13 +48,34 @@ if ( !defined( 'ABSPATH' ) )
                     </span>
                 </li>
                 <li class="actions">
-                    <span class="submitbox"><a class="stereo-delete-track submitdelete" href="#">Delete track</a></span>
-    <?php //<a class="stereo-replace-file" href="#">Replace file</a>?>
+                    <label class="stereo-track-actions-label"></label>
+                    <ul class="hide-if-js">
+                        <li><a class="stereo-track-detach" href="#">Detach file from track</a></li>
+                        <?php if (true === STEREO_WP_SRC): ?>
+                            <li><a class="stereo-replace-wp" href="#">Replace with file from Media Library</a></li>
+                        <?php endif ?>
+                    <?php if (true === STEREO_SC_SRC): ?>
+                         <label>Replace with SoundCloud track:</label>
+                        <select class="stereo-replace-sc">
+                        <option></option>
+                        <?php foreach (stereo_sc()->get_tracks() as $id => $set): ?>
+                                <option value="<?php echo $id ?>" data-stereo_tracks='<?php echo $set[1]?>'><?php echo $set[0] ?> </option>
+                        <?php endforeach; ?>
+                        </select>
+                            </li>
+                    <?php endif; ?>
+                        <li class="submitbox"><a class="stereo-delete-track submitdelete" href="#">Delete track</a></li>
+
+
+                    </ul>
+
+                    </span>
                 </li>
             </ul>
         </li>
     </script>
     <ul id="stereo_tracks">
+    <?php //Show all tracks ?>
     <?php while ( $connected->have_posts() ) : $connected->the_post(); $meta = get_stereo_track_meta($post->ID); ?>
         <li class="stereo-track postarea <?php if (!$meta['fileid']) echo 'nofile'?> ">
             <span class="stereo-track-number"><?php echo $post->menu_order ?> </span><input class="stereo-track-number-input" name="stereo_track_number[]" type="hidden" value="<?php echo $post->menu_order ?>"/>
@@ -72,8 +93,28 @@ if ( !defined( 'ABSPATH' ) )
                     </span>
                 </li>
                 <li class="actions">
-                    <span class="submitbox"><a class="stereo-delete-track submitdelete" href="#">Delete track</a></span>
-    <?php //<a class="stereo-replace-file" href="#">Replace file</a>?>
+                    <label class="stereo-track-actions-label"></label>
+                    <ul class="hide-if-js">
+                        <li><a class="stereo-track-detach" href="#">Detach file from track</a></li>
+                        <?php if (true === STEREO_WP_SRC): ?>
+                            <li><a class="stereo-replace-wp" href="#">Replace with file from Media Library</a></li>
+                        <?php endif ?>
+                    <?php if (true === STEREO_SC_SRC): ?>
+                         <label>Replace with SoundCloud track:</label>
+                        <select class="stereo-replace-sc">
+                        <option></option>
+                        <?php foreach (stereo_sc()->get_tracks() as $id => $set): ?>
+                                <option value="<?php echo $id ?>" data-stereo_tracks='<?php echo $set[1]?>'><?php echo $set[0] ?> </option>
+                        <?php endforeach; ?>
+                        </select>
+                            </li>
+                    <?php endif; ?>
+                        <li class="submitbox"><a class="stereo-delete-track submitdelete" href="#">Delete track</a></li>
+
+
+                    </ul>
+
+                    </span>
                 </li>
             </ul>
         </li>

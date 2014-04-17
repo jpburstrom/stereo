@@ -30,17 +30,27 @@ jQuery(document).ready(function($) {
          } else if (host == 'sc') {
             html = "<span title='Hosted by SoundCloud' class='host-icon icon-soundcloud'></span>";
          }
-         $item.find(".metadata").prepend(html);
+         $item.find(".metadata").find('.host-icon').remove().end().prepend(html);
      },
      add_track = function(data) {
         var $item = add_track_gui();
-        $item.find(".stereo-track-name").val(data.title);
-        $item.find(".stereo-track-host").val(data.host);
-        $item.find(".stereo-track-fileid").val(data.id);
-        add_icon(data.host, $item);
+        replace_track($item, data);
         bindAudioEvents.apply($item.find(".stereo-preview").attr("src", data.url ));
         $("#stereo_delete_tracks").show();
         return $item;
+     },
+     replace_track = function($item, data) {
+        if (data.title) {
+            $item.find(".stereo-track-name").val(data.title);
+        }
+        $item.find(".stereo-track-host").val(data.host);
+        $item.find(".stereo-track-fileid").val(data.id);
+        if (data.host) {
+            $item.removeClass("nofile");
+            add_icon(data.host, $item);
+        } else {
+            $item.addClass("nofile");
+        }
      },
      delete_track = function($track) {
         var id = $track.find(".stereo-track-id").val();
@@ -57,6 +67,11 @@ jQuery(document).ready(function($) {
          data.url = data.stream_url + "?client_id=" + stereo_sc_id;
          data.host = "sc";
          return add_track(data);
+     },
+     replace_sc_track = function($item, data) {
+         data.url = data.stream_url + "?client_id=" + stereo_sc_id;
+         data.host = "sc";
+         replace_track($item, data);
      },
      bindAudioEvents = function() {
         $(this).on("loadeddata", function() {
@@ -160,7 +175,6 @@ jQuery(document).ready(function($) {
             frame: 'select'
         });
 
-        file_frame.on( 'load', function() { alert("yes"); } );
          // When an image is selected, run a callback.
          file_frame.on( 'select', function() {
              var selection = file_frame.state().get('selection');
@@ -173,6 +187,60 @@ jQuery(document).ready(function($) {
         //Add class so we can hide images
         // Finally, open the modal
         file_frame.open();
+    });
+    
+    $(document).on('click', '.stereo-track-actions-label', function(event) {
+        $p = $(this).closest(".stereo-track").toggleClass("more");
+    });
+
+    $(document).on("click", ".stereo-replace-wp", function( event ){
+
+        var file_frame;
+        var $self = $(this).closest('.stereo-track');
+
+        event.preventDefault();
+
+        // Create the media frame.
+        file_frame = wp.media.frames.file_frame = wp.media({
+            title: jQuery( this ).data( 'uploader_title' ),
+            library: {
+                type: "audio"
+            },
+            button: {
+                text: jQuery( this ).data( 'uploader_button_text' )
+            },
+            multiple: false,  // Set to true to allow multiple files to be selected
+            frame: 'select'
+        });
+
+         // When an image is selected, run a callback.
+         file_frame.on( 'select', function() {
+             var selection = file_frame.state().get('selection');
+             selection.map( function( attachment ) {
+                 attachment = attachment.toJSON();
+                 attachment.host = 'wp';
+                 replace_track($self, attachment);
+                 setTimeout(function(){$self.removeClass("more");}, 200);
+             });
+         });
+        //Add class so we can hide images
+        // Finally, open the modal
+        file_frame.open();
+        
+
+    }).on("click", ".stereo-track-detach", function( event ){
+
+        event.preventDefault();
+        replace_track($(this).closest('.stereo-track').removeClass("more"), {
+            host: "",
+            id: ""
+        });
+
+    }).on("change", ".stereo-replace-sc", function( event) {
+        var data = $(this).children(":selected").data("stereo_tracks");
+        var $item = $(this).closest(".stereo-track").removeClass("more");
+        $(this).val("");
+        replace_sc_track($item, data);
     });
 
     $('.stereo-preview').each( bindAudioEvents );
