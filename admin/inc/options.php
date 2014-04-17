@@ -376,6 +376,14 @@ class StereoOptions {
             'choices' => $choices
 		);
 
+		$this->settings['include_css'] = array(
+			'section' => 'advanced',
+			'title'   => __( 'Include CSS' ),
+			'desc'    => __( 'Include CSS for plugin (if not, add your own styles in style.css).' ),
+			'type'    => 'checkbox',
+			'std'     => '1'
+		);
+
         $this->settings['ajax_enable'] = array(
             'section' => 'ajax',
 			'title'   => __( 'Enable ajax loading of pages' ),

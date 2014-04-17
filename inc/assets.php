@@ -9,9 +9,11 @@
 function stereo_enqueue_assets() {
     $cssdir = STEREO_PLUGIN_URL . "css";
     $jsdir = STEREO_PLUGIN_URL . "js";
-    wp_register_style('stereo-widget', "$cssdir/stereo-widget.css");
-    wp_enqueue_style('stereo', "$cssdir/stereo.css");
-    wp_enqueue_style('stereo-icons', "$cssdir/icons.css");
+    if (stereo_option('include_css') || is_admin()) {
+        wp_register_style('stereo-widget', $cssdir . "/stereo-widget.css");
+        wp_enqueue_style('stereo', $cssdir . "/stereo.css");
+    }
+    //wp_enqueue_style('stereo-icons', stereo_find_asset("icons.css", $cssdir));
 
     wp_register_script('stereo', STEREO_PLUGIN_URL . "js/stereo/js/stereo.js", array("backbone")); //FIXME
     wp_register_script('stereo-widget', "$jsdir/stereo-widget.js", array("stereo"));

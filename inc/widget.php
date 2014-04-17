@@ -21,7 +21,9 @@ class StereoWidget extends scbWidget {
 
     function enqueue_scripts() {
         if( is_active_widget( '', '', $this->id_base ) ) { // check if search widget is used
-            wp_enqueue_style("stereo-widget");
+            if (stereo_option('include_css')) {
+                wp_enqueue_style("stereo-widget");
+            }
             wp_enqueue_script("stereo-widget");
         }
     }
