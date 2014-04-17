@@ -41,7 +41,7 @@ function stereo_init_custom_post_type()
     $options = array(
         'public' => true,
         'labels' => array( 'name' => "Track" ),
-        'supports' => array("editor", "title", "page-attributes", 'thumbnail'),
+        'supports' => array("title", "page-attributes", 'thumbnail'),
         'hierarchical' => true
     );
     $options['show_ui'] = (1 == stereo_option('show_track_ui'));

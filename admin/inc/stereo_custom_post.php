@@ -7,7 +7,6 @@
  * Custom post types backend
  */
 
-
 class StereoCustomPost {
 
 
@@ -30,7 +29,7 @@ class StereoCustomPost {
 
     function my_admin_scripts() {
         global $current_screen;
-        if ($current_screen->post_type == 'stereo_playlist' && $current_screen->base == 'post') {
+        if (($current_screen->post_type == 'stereo_playlist' || $current_screen->post_type == 'stereo_track') && $current_screen->base == 'post') {
             //wp_enqueue_script('media-upload');
             //wp_enqueue_script('thickbox');
             //wp_enqueue_script('ui-sortable');
@@ -43,7 +42,7 @@ class StereoCustomPost {
 
 
 
-    //Set up custom boxes for post type
+    //Set up custom box for playlist
     public function metaboxes() 
     { 
 		global $post;
@@ -51,6 +50,20 @@ class StereoCustomPost {
         $connected = p2p_type( 'playlist_to_tracks' )->get_connected( $post, array('posts_per_page' => -1, 'orderby' => 'menu_order', 'order' => 'ASC') );
 
         include ( 'views/metabox.php' );
+        
+    }
+    //Set up custom box for playlist
+    public function track_metaboxes() 
+    { 
+		global $post;
+
+        $playlist = p2p_type( 'playlist_to_tracks' )->get_connected( $post );
+?>
+            <p><?php echo stereo_option("playlist_singular") ?>: <?php edit_post_link($playlist->post->post_title, null, null, $playlist->post->ID) ?></a></p>
+<?php
+
+
+        include ( 'views/metabox-tracks.php' );
         
     }
 
@@ -79,9 +92,12 @@ class StereoCustomPost {
     }
 
     public function add_meta_boxes() {
+        //Add playlist metabox
         add_meta_box("stereo_meta", "Manage " . stereo_option("playlist_singular"), array(&$this, "metaboxes"),
             "stereo_playlist", "normal", "low");
-
+        //Add track metabox
+        add_meta_box("stereo_meta_track", "Track info", array(&$this, "track_metaboxes"),
+            "stereo_track", "normal", "low");
         
     }
 
