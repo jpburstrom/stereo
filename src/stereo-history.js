@@ -24,6 +24,7 @@
         if (!b.History.started) return false;
         if (!options || options === true) options = {trigger: !!options};
 
+
         var url = this.root + (fragment = this.getFragment(fragment || ''));
 
         // Don't strip the fragment of the query and hash for matching.
@@ -155,7 +156,6 @@
                             return;
                         }
 
-                        console.log("Data loading...");
                         //Get the treated data
                         $data = $($.trim(documentHtml(data)));
 
