@@ -313,6 +313,12 @@
                     }
                 }
             });
+
+            this.listenTo(this.playlist, 'add', function(o) {
+                if (this.playlist.length == 1 && this.get('playState') === 0) {
+                    this.setSong(this.playlist.at(0));
+                }
+            });
         },
         play: function() { 
             this._play(this.getSongSafe());
