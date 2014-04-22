@@ -158,7 +158,6 @@
              */
             url: function() {
                 var u, url = this.id, base = _.result(this, 'urlRoot') || _.result(this.collection, 'url') || urlError();
-                if (this.isNew()) return base;
                 if (base) {
                     u = base;
                     //If url is full path, return it
