@@ -113,7 +113,11 @@
                     id: this.options.id,
                     url: this.url(),
                     onload: function() {
-                        self.trigger('load', this);
+                        if (this.readyState == 2) {
+                            self.trigger('loaderror', this);
+                        } else {
+                            self.trigger('load', this);
+                        }
                     },
                     onplay: function() {
                         self.trigger('play', this);
@@ -279,7 +283,7 @@
 
 
     App.Player = b.Model.extend({
-        _playStateLabels: ['stopped', 'playing', 'paused', 'loading'],
+        _playStateLabels: ['stopped', 'playing', 'paused', 'loading', 'error'],
         _orphanSong: false,
         playlist: App.playlist,
         initialize: function() {
@@ -339,6 +343,10 @@
 
         },
 
+        onError: function() {
+            this.set('playState', 4);
+        },
+
         /**
          * Convenient functionz
          * @param string id Song to play
@@ -381,6 +389,7 @@
         _play: function(s) {
             if (s) {
                 this.listenToOnce(s, 'finish', this.onFinish );
+                this.listenToOnce(s, 'loaderror', this.onError );
                 this.set('playState', 3);
                 this.listenToOnce(s, 'play resume', function() {
                     this.set('playState', 1);
@@ -506,6 +515,8 @@
         className: 'stereo-label',
         model: App.player,
         song:false,
+        $current: false,
+        ticker:false,
 
         initialize: function(options) {
             this.listenTo(this.model, 'change', this.changeSong);
@@ -518,16 +529,41 @@
                 }
                 this.song = this.model.getSong();
                 this.listenToOnce(this.song.info, 'hasInfo', this.render);
+                this.listenTo(this.song, 'loaderror', this.renderError);
                 this.song.info.getInfo();
             }
         },
 
+        renderError: function() {
+            this.stopListening(this.song.info);
+            console.log(this.$el);
+            this.$el.html("<span class='load-error'>Error loading file</span>");
+        },
         render: function() {
             if (this.song !== false) {
                 this.$el.html(this.template(this.song.info.attributes));
+                if (this.$el.children(":visible").length > 1) {
+                    this.$current = this.$el.children(":first:visible").css("top", "100%").animate({top: 0}, 400);
+                    this.animate();
+                }
             }
 
             return this;
+        },
+
+        animate: function() {
+            w.clearInterval(this.ticker);
+            this.ticker = w.setInterval(_.bind(this.tick, this), 4000);
+        },
+
+        tick: function() {
+            this.$current.animate({top: "-100%"}, 200);
+            if (this.$current.siblings(":visible").first().length > 0) {
+                this.$current = this.$current.siblings(":visible").first();
+            } else {
+                this.$current = this.$current.siblings().first(":visible");
+            }
+            this.$current.css("top", "100%").animate({top: 0}, 400);
         }
 
     });
