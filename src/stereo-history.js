@@ -54,9 +54,14 @@
                 b.history.start({
                     pushState: true, 
                     hashChange:false, 
+                    //We don't want the initial routing
+                    silent: true,
                     //Take root from urlRoot
                     root: App.options.history.urlRoot.replace(/^.*\/\/[^\/]*/, '')
                 });
+                //We need the hash here -- b seems to drop it from history otherwise
+                that.navigate(w.location.pathname + w.location.hash);
+
             });
         },
         routes: {
@@ -64,12 +69,11 @@
         },
 
         newPage: function(page) {
+            //convert null to url
             if(!page) {
                 page = App.options.history.urlRoot;
             }
-            if (App.player.isPlaying()) {
-                App.e.trigger("history:load-start", page);
-            }
+            App.e.trigger("history:load-start", page);
 
         }
     });
@@ -96,6 +100,7 @@
                 if (App.options.history.ignore) {
                     elements.push(App.options.history.ignore);
                 }
+
 
 
                 this.listenTo(App.e, 'history:load-start', this.onNewPage);
@@ -129,14 +134,20 @@
                 var href = this.href;
                 //Stop all 
                 //FIXME
+
+                //We 
                 if ( !( ev.which == 2 || ev.metaKey || ev.shiftKey || false === App.player.isPlaying() ) ) { 
-                    if (this.hash !== '' && w.location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'') && w.location.hostname == this.hostname) {
-                        App.historyRouter.navigate(href.replace(App.options.history.urlRoot, ''));
-                        w.location = href;
-                        return;
-                    }
                     ev.stopPropagation();
                     ev.preventDefault();
+                    //If only hash is changed (anchor links),
+                    //trigger navigate (for history) and scroll to new position
+                    if (this.hash !== '' && w.location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'') && w.location.hostname == this.hostname) {
+                        App.historyRouter.navigate(href.replace(App.options.history.urlRoot, ''));
+                        App.e.trigger("history:scroll");
+                        return;
+                    }
+                    //If player is playing and url points to different page,
+                    //navigate to page (for history) and trigger the new page actions
                     App.historyRouter.navigate(href.replace(App.options.history.urlRoot, ''));
                     App.historyRouter.newPage(href.replace(App.options.history.urlRoot, ''));
                 }
