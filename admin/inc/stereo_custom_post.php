@@ -160,7 +160,11 @@ class StereoCustomPost {
         
         //Insert metadata
 
-        update_post_meta($post_id, "_stereo", $metadata);
+        if ($metadata !== false) {
+            update_post_meta($post_id, "_stereo", $metadata);
+        } else {
+            delete_post_meta($post_id, "_stereo");
+        }
         
         //Link track with playlist
         p2p_type( 'playlist_to_tracks' )->connect( $playlist_id, $post_id, array('date' => current_time('mysql') ));
@@ -263,6 +267,9 @@ class StereoCustomPost {
             break;
         case 'sc':
             $this->_do_sc_metadata($metadata);
+            break;
+        default:
+            $metadata = false;
             break;
         }
     }
