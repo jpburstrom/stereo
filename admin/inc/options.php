@@ -24,7 +24,8 @@ class StereoOptions {
 		
 		$this->sections['general']      = __( 'User settings' );
 		$this->sections['advanced']      = __( 'Admin' );
-		$this->sections['ajax']      = __( 'Ajax' );
+		$this->sections['names']      = __( 'Names & Slugs' );
+		$this->sections['ajax']      = __( 'Continuous Playback' );
 		$this->sections['tools']        = __( 'Tools' );
 		$this->sections['about']        = __( 'About' );
 
@@ -314,74 +315,74 @@ class StereoOptions {
 			'section' => 'general'
         );
          */
+		$this->settings['rewrite_slug'] = array(
+			'title'   => __( 'Rewrite slug' ),
+			'desc'    => __( 'Slug to use for streaming and info API (make sure it doesn\'t collide with other permalinks)' ),
+			'std'     => 'stereo',
+			'type'    => 'text',
+			'section' => 'names'
+		);
 
 		$this->settings['playlist_singular'] = array(
 			'title'   => __( 'Playlist singular name' ),
 			'desc'    => __( 'Name of the custom post type (could be Playlist, Set, Album...)' ),
 			'std'     => 'Playlist',
 			'type'    => 'text',
-			'section' => 'advanced'
+			'section' => 'names'
 		);
 		$this->settings['playlist_plural'] = array(
 			'title'   => __( 'Playlist plural name' ),
 			'desc'    => __( 'Plural (more than one) name of the custom post type (could be Playlists, Sets, Albums...)' ),
 			'std'     => 'Playlists',
 			'type'    => 'text',
-			'section' => 'advanced'
+			'section' => 'names'
 		);
 		$this->settings['playlist_slug'] = array(
 			'title'   => __( 'Playlist rewrite slug' ),
 			'desc'    => __( 'Slug to use for URL rewrites' ),
 			'std'     => 'playlist',
 			'type'    => 'text',
-			'section' => 'advanced'
+			'section' => 'names'
 		);
 		$this->settings['playlist_taxonomy_singular'] = array(
 			'title'   => __( 'Taxonomy singular name' ),
 			'desc'    => __( 'Name of the taxonomy (could be Group, Category, etc)' ),
 			'std'     => 'Playlist category',
 			'type'    => 'text',
-			'section' => 'advanced'
+			'section' => 'names'
 		);
 		$this->settings['playlist_taxonomy_plural'] = array(
 			'title'   => __( 'Taxonomy plural name' ),
 			'desc'    => __( 'Plural name of the playlist taxonomy (could be Groups, Categories, etc)' ),
 			'std'     => 'Playlist categories',
 			'type'    => 'text',
-			'section' => 'advanced'
+			'section' => 'names'
 		);
 		$this->settings['playlist_taxonomy_slug'] = array(
 			'title'   => __( 'Taxonomy rewrite slug' ),
 			'desc'    => __( 'Slug to use for URL rewrites' ),
 			'std'     => 'playlist_category',
 			'type'    => 'text',
-			'section' => 'advanced'
+			'section' => 'names'
 		);
 		$this->settings['taxonomy_tags'] = array(
 			'section' => 'advanced',
-			'title'   => __( 'Taxonomy have tags' ),
-            'desc'    => __( 'If checked, write taxonomy terms as tags. If not checked, choose among already existing terms.' ),
+			'title'   => stereo_option('playlist_taxonomy_plural') . " " . __( 'are tags' ),
+            'desc'    => sprintf(__( 'Use %s like tags.'), stereo_option('playlist_taxonomy_plural') ),
 			'type'    => 'checkbox',
 			'std'     => 0 // Set to 1 to be checked by default, 0 to be unchecked by default.
-		);
-		$this->settings['rewrite_slug'] = array(
-			'title'   => __( 'Rewrite slug' ),
-			'desc'    => __( 'Slug to use for streaming and info API (make sure it doesn\'t collide with other permalinks)' ),
-			'std'     => 'stereo',
-			'type'    => 'text',
-			'section' => 'advanced'
 		);
 		$this->settings['show_track_ui'] = array(
 			'section' => 'advanced',
 			'title'   => __( 'Show Track UI' ),
-			'desc'    => __( 'If Tracks should be visible in the main menu (good for debugging)' ),
+			'desc'    => __( 'Make Tracks visible in the main menu (good for debugging)' ),
 			'type'    => 'checkbox',
 			'std'     => 0 // Set to 1 to be checked by default, 0 to be unchecked by default.
 		);
 		$this->settings['local_support'] = array(
 			'section' => 'advanced',
 			'title'   => __( 'Uploaded files support' ),
-			'desc'    => __( 'Allow streaming of uploaded files' ),
+			'desc'    => __( 'Use files uploaded to the WP Media Library' ),
 			'type'    => 'checkbox',
 			'std'     => 1 // Set to 1 to be checked by default, 0 to be unchecked by default.
 		);
@@ -401,15 +402,15 @@ class StereoOptions {
 		$this->settings['include_css'] = array(
 			'section' => 'advanced',
 			'title'   => __( 'Include CSS' ),
-			'desc'    => __( 'Include CSS for plugin (if not, add your own styles in style.css).' ),
+			'desc'    => __( 'Include plugin CSS (if not, add your own styles in style.css).' ),
 			'type'    => 'checkbox',
 			'std'     => '1'
 		);
 
         $this->settings['ajax_enable'] = array(
             'section' => 'ajax',
-			'title'   => __( 'Enable ajax loading of pages' ),
-			'desc'    => __( 'If enabled, pages will be ajax-loaded when sound is playing.' ),
+			'title'   => __( 'Enable continous playback' ),
+			'desc'    => __( 'If enabled, sound will continue to play on page navigation.' ),
 			'type'    => 'checkbox',
 			'std'     => 1
 		);
