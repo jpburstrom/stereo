@@ -70,3 +70,11 @@ function stereo_init() {
 
 }
 
+
+function stereo_activation() {
+    $notices= get_option('stereo_deferred_admin_notices', array());
+    $notices[]= "options_nag";
+    update_option('stereo_deferred_admin_notices', $notices);
+}
+
+register_activation_hook(__FILE__, 'stereo_activation');

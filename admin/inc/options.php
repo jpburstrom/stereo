@@ -17,6 +17,10 @@ class StereoOptions {
 		$this->settings = array();
 		$this->dt_settings = array();
 		$this->get_settings();
+
+        $this->notices = array(
+            'options_nag' => __('Welcome to <strong>Stereo</strong>! Please visit the <a href="options-general.php?page=stereo_options">Stereo options page</a> to configure the plugin.')
+        );
 		
 		$this->sections['general']      = __( 'User settings' );
 		$this->sections['advanced']      = __( 'Admin' );
@@ -28,13 +32,33 @@ class StereoOptions {
 		
 		add_action( 'admin_menu', array( &$this, 'add_pages' ) );
 		add_action( 'admin_init', array( &$this, 'register_settings' ) );
+		add_action( 'admin_init', array( &$this, 'update_version' ) );
+        add_action('admin_notices', array( &$this, 'admin_notices' ) );
+        
         add_action( 'wp_ajax_stereo_update_tracks', array( &$this, 'update_tracks') );
 		
 		if ( ! get_option( 'stereo_options' ) )
 			$this->initialize_settings();
 
-		
 	}
+
+    public function admin_notices()
+    {
+        if ($notices = get_option('stereo_deferred_admin_notices')) {
+            foreach ($notices as $notice) {
+                echo "<div class='updated'><p>{$this->notices[$notice]}</p></div>";
+            }
+            delete_option('stereo_deferred_admin_notices');
+        }
+    }
+
+    public function update_version() {
+        $v = 1;
+        $version = get_option('stereo_version');
+        if ($version != $v) {
+            update_option('stereo_version', $v);
+        }
+    }
 	
 	/**
 	 * Add options page
