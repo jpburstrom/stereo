@@ -44,18 +44,24 @@ class StereoOptions {
     public function admin_notices()
     {
         if ($notices = get_option('stereo_deferred_admin_notices')) {
+            var_export($notices);
             foreach ($notices as $notice) {
-                echo "<div class='updated'><p>{$this->notices[$notice]}</p></div>";
+                if ($this->notices[$notice]) {
+                    $notice = $this->notices[$notice];
+                } 
+                echo "<div class='updated'><p>$notice</p></div>";
             }
             delete_option('stereo_deferred_admin_notices');
         }
     }
 
     public function update_version() {
-        $v = 1;
         $version = get_option('stereo_version');
-        if ($version != $v) {
-            update_option('stereo_version', $v);
+        if ($version != STEREO_VERSION) {
+            update_option('stereo_version', STEREO_VERSION);
+            $notices = get_option('stereo_deferred_admin_notices');
+            //$notices[] = __('Stereo is updated to version') . " " . STEREO_VERSION;
+            update_option('stereo_deferred_admin_notices', $notices);
         }
     }
 	
