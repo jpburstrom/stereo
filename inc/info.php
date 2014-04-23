@@ -11,9 +11,11 @@
 class StereoPlaylistInfo {
     var $title =     "";
     var $artwork =  "";
+    var $url = "";
 
     function __construct($playlist) {
         $this->title = $playlist->post_title;
+        $this->url = get_permalink($playlist->ID);
         $a = wp_get_attachment_image_src(get_post_thumbnail_id($playlist->ID), stereo_option("artwork_size"));
         $this->artwork = $a ? array(
             "url" => $a[0],
