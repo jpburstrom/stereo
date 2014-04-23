@@ -20,6 +20,7 @@
 
     //Overriding the navigate method
     b.History.prototype.navigate = function(fragment, options) {
+        
 
         if (!b.History.started) return false;
         if (!options || options === true) options = {trigger: !!options};
@@ -60,6 +61,16 @@
         },
         routes: {
             '*page' : 'newPage'
+        },
+
+        newPage: function(page) {
+            if(!page) {
+                page = App.options.history.urlRoot;
+            }
+            if (App.player.isPlaying()) {
+                App.e.trigger("history:load-start", page);
+            }
+
         }
     });
 
@@ -75,7 +86,6 @@
             // Return
             return result;
         };
-        var currentTarget;
         App.View.History = b.View.extend({
             initialize: function() {
                 var $scrollRoot = $('html,body');
@@ -94,7 +104,7 @@
                 });
                 this.listenTo(App.e, 'history:scroll', function() {
                     var offset, 
-                        hash = currentTarget.hash,
+                        hash = w.location.hash,
                         target = $(hash);
                     //If no elem found, search for elem with name attribute
                     target = target.length ? target : $('[name=' + hash.slice(1) +']');
@@ -114,29 +124,28 @@
                     .append('<div class="stereo-spinner"/>');
             },
 
+            //called when links are clicked
             navigateLink: function(ev) {
                 var href = this.href;
-                currentTarget = this;
-                ev.stopPropagation();
-                ev.preventDefault();
+                //Stop all 
                 //FIXME
-                if ( ev.which == 2 || ev.metaKey || ev.shiftKey || false === App.player.isPlaying() ) { 
+                if ( !( ev.which == 2 || ev.metaKey || ev.shiftKey || false === App.player.isPlaying() ) ) { 
                     if (this.hash !== '' && w.location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'') && w.location.hostname == this.hostname) {
-
-                        App.e.trigger("history:scroll");
-                    } else {
+                        App.historyRouter.navigate(href.replace(App.options.history.urlRoot, ''));
                         w.location = href;
+                        return;
                     }
-                } else {
-
-                    $(App.options.history.container).addClass("stereo-loading");
+                    ev.stopPropagation();
+                    ev.preventDefault();
                     App.historyRouter.navigate(href.replace(App.options.history.urlRoot, ''));
-                    App.e.trigger("history:load-start", href);
+                    App.historyRouter.newPage(href.replace(App.options.history.urlRoot, ''));
                 }
 
             },
 
             onNewPage: function(url) {
+                var $el = this.$el;
+                $el.addClass("stereo-loading");
                 if (!url) return;
                 $.ajax({
                     url: url,
@@ -159,10 +168,18 @@
                         //Get the treated data
                         $data = $($.trim(documentHtml(data)));
 
+                        //Get the data body. TODO: this could be replaced for the container class maybe?
                         $dataBody = $data.find('[data-history-body]');
 
+                        //Replace container classes
+                        $el.removeClass();
+                        if (App.options.history.container == "body") {
+                           $el.addClass($dataBody.attr("class")); 
+                        } else {
+                            $el.addClass($dataBody.find(App.options.history.container));
+                        }
 
-                        // Update the content
+                        // Update the content on each of the elements
                         $(App.options.history.elements).stop(true,true).each(function() {
                             $(this).each(function() {
                                 var $self = $(this);
@@ -171,10 +188,7 @@
                             });
                         });
                         
-                        //Trigger the finish event, success is true
-                        App.e.trigger("history:load-data", $data);
-
-
+                        //Replace document title
                         w.document.title = 
                             w.document.title = $data.find('.data-history-title:first').text();
                         try {
@@ -182,8 +196,11 @@
                         }
                         catch ( Exception ) { }
                     
-                        $(App.options.history.container).removeClass("stereo-loading");
+                        //A load-data event for your convenience
+                        App.e.trigger("history:load-data", $data);
 
+                        //Stop loading
+                        $el.removeClass("stereo-loading");
 
                         //Trigger the finish event, success is true
                         App.e.trigger("history:load-finish", true);
@@ -236,6 +253,7 @@
                 }));
 
             });
+
 
         }
 
