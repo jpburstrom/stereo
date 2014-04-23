@@ -278,7 +278,7 @@ class StereoOptions {
 		$this->settings['soundcloud_id'] = array(
 			'title'   => __( 'SoundCloud Client ID' ),
 			'desc'    => __( 'Your SoundCloud Client ID (Register your app <a href="http://soundcloud.com/you/apps/new" target="_blank">here</a>)' ),
-			'std'     => 'CLIENT_ID',
+			'std'     => '',
 			'type'    => 'text',
 			'section' => 'general'
 		);

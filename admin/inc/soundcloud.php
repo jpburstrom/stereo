@@ -53,6 +53,7 @@ class StereoSoundCloud
                 }
             }
         }
+        var_export($this->get_users());
         return $sets;
     }
 

@@ -89,7 +89,7 @@ jQuery(document).ready(function($) {
      }
      ;
 
-    jQuery("#stereo_tracks").sortable({
+    $("#stereo_tracks").sortable({
         //connectWith: '.metabox-holder',
         update: recountAll,
         start: function () {

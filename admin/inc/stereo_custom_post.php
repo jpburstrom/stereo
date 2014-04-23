@@ -32,7 +32,7 @@ class StereoCustomPost {
         if (($current_screen->post_type == 'stereo_playlist' || $current_screen->post_type == 'stereo_track') && $current_screen->base == 'post') {
             //wp_enqueue_script('media-upload');
             //wp_enqueue_script('thickbox');
-            //wp_enqueue_script('ui-sortable');
+            //wp_enqueue_script('jquery-ui-sortable');
             wp_enqueue_script( 'stereo-admin-cptjs', STEREO_PLUGIN_URL . 'admin/js/cpt.js' );
             wp_enqueue_style( 'stereo-admin-cpt', STEREO_PLUGIN_URL . 'admin/css/cpt.css' );
 
