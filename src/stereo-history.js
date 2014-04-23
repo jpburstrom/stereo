@@ -69,11 +69,8 @@
         },
 
         newPage: function(page) {
-            //convert null to url
-            if(!page) {
-                page = App.options.history.urlRoot;
-            }
-            App.e.trigger("history:load-start", page);
+            //Hack
+            App.e.trigger("history:load-start", w.location.pathname + w.location.hash);
 
         }
     });
@@ -132,25 +129,25 @@
             //called when links are clicked
             navigateLink: function(ev) {
                 var href = this.href;
-                //Stop all 
-                //FIXME
 
-                //We 
-                if ( !( ev.which == 2 || ev.metaKey || ev.shiftKey || false === App.player.isPlaying() ) ) { 
-                    ev.stopPropagation();
-                    ev.preventDefault();
-                    //If only hash is changed (anchor links),
-                    //trigger navigate (for history) and scroll to new position
-                    if (this.hash !== '' && w.location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'') && w.location.hostname == this.hostname) {
-                        App.historyRouter.navigate(href.replace(App.options.history.urlRoot, ''));
-                        App.e.trigger("history:scroll");
-                        return;
-                    }
+                //If only hash is changed (anchor links),
+                //trigger navigate (for history) and scroll to new position
+                if (this.hash !== '' && w.location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'') && w.location.hostname == this.hostname) {
+                    App.historyRouter.navigate(href.replace(App.options.history.urlRoot, ''));
+                    App.e.trigger("history:scroll");
+
+                //If the link is not internal, check if player is playing and we're not right-clicking etc
+                } else if ( !( ev.which == 2 || ev.metaKey || ev.shiftKey || false === App.player.isPlaying() ) ) { 
                     //If player is playing and url points to different page,
                     //navigate to page (for history) and trigger the new page actions
                     App.historyRouter.navigate(href.replace(App.options.history.urlRoot, ''));
                     App.historyRouter.newPage(href.replace(App.options.history.urlRoot, ''));
+                } else {
+                    //Else return, continue propagation etc
+                    return;
                 }
+                ev.stopPropagation();
+                ev.preventDefault();
 
             },
 
