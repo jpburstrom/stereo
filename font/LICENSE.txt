@@ -1,13 +1,13 @@
 Font license info
 
 
-## Zocial
+## Fontelico
 
-   Copyright (C) 2012 by Sam Collins
+   Copyright (C) 2012 by Fontello project
 
-   Author:    Sam Collins
-   License:   MIT (http://opensource.org/licenses/mit-license.php)
-   Homepage:  http://zocial.smcllns.com/
+   Author:    Crowdsourced, for Fontello project
+   License:   SIL (http://scripts.sil.org/OFL)
+   Homepage:  http://fontello.com
 
 
 ## Font Awesome
@@ -15,7 +15,16 @@ Font license info
    Copyright (C) 2012 by Dave Gandy
 
    Author:    Dave Gandy
-   License:   SIL OFL 1.1
+   License:   SIL ()
    Homepage:  http://fortawesome.github.com/Font-Awesome/
+
+
+## Zocial
+
+   Copyright (C) 2012 by Sam Collins
+
+   Author:    Sam Collins
+   License:   MIT (http://opensource.org/licenses/mit-license.php)
+   Homepage:  http://zocial.smcllns.com/
 
 
