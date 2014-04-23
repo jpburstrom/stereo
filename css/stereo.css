@@ -19,7 +19,7 @@
 }
 */
  
- [class^="icon-"]:before, [class*=" icon-"]:before, .stereo-buttons button:before {
+ [class^="icon-"]:before, [class*=" icon-"]:before, .stereo-buttons button:before, .stereo-spinner:before {
   font-family: "icons";
   font-style: normal;
   font-weight: normal;
@@ -53,6 +53,7 @@
     content: '\e805'; 
 } /* '' */
 .playing .stereo-buttons .playpause:before { content: '\e801'; } /* '' */
+.stereo-spinner:before,
 .loading .stereo-buttons .playpause:before { 
     position:relative;
     content: '\e808'; 
@@ -119,6 +120,35 @@
 
 .stereo-label .artist {
     display:none;
+}
+
+.stereo-spinner {
+    text-shadow: 1px 0 0 #aaa, 0 -1px 0 #aaa, 0 1px 0 #aaa, -1px 0 0 #aaa;
+    position:fixed;
+    font-size:2em;
+    top:50%;
+    left:50%;
+    width:20px;
+    height:1em;
+    opacity:0;
+    transition:opacity 0.1s ;
+    -webkit-transition:opacity 0.1s ;
+    -moz-transition:opacity 0.1s ;
+    -o-transition:opacity 0.1s ;
+}
+
+.stereo-loading .stereo-spinner {
+    opacity:1;
+  -moz-animation: spin 2s infinite linear;
+  -o-animation: spin 2s infinite linear;
+  -webkit-animation: spin 2s infinite linear;
+  animation: spin 2s infinite linear;
+   -webkit-transform-origin:54% 47%;
+  -moz-transform-origin:54% 47%;
+  -ms-transform-origin:54% 47%;
+  -o-transform-origin:54% 47%;
+  transform-origin: 54% 47%;
+
 }
 
 .loading .stereo-buttons .playpause {
