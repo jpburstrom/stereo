@@ -649,7 +649,9 @@ class StereoOptions {
 			
 			foreach ( $this->checkboxes as $id ) {
 				if ( isset( $options[$id] ) && ! isset( $input[$id] ) )
-					unset( $options[$id] );
+					$input[$id] = 0;
+                elseif (!isset($options[$id]))
+                    $input[$id] = $this->settings[$id]["std"];
 			}
 			
 			return $input;
