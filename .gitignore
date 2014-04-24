@@ -16,7 +16,6 @@ xcuserdata
 # svn & cvs
 .svn
 CVS
-js/node_modules
+node_modules
 js/src/templates/compiled.js
-js/js
 js/swf

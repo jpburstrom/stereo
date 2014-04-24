@@ -4,7 +4,7 @@ module.exports = function(grunt) {
         pkg: grunt.file.readJSON('package.json'),
         watch: {
             scripts: {
-                files: ['src/*.js'],
+                files: ['js/src/*.js'],
                 tasks: ['jshint', 'concat'],
                 options: {
                     spawn: false,
@@ -12,7 +12,7 @@ module.exports = function(grunt) {
                 }
             },
             templates: {
-                files: ['src/templates/*.tpl'],
+                files: ['js/src/templates/*.tpl'],
                 tasks: ['jst', 'jshint', 'concat'],
                 options: {
                     spawn: false,
@@ -27,7 +27,7 @@ module.exports = function(grunt) {
             },
             dist: {
                 // the files to concatenate
-                src: ['src/vendor/soundmanager2/script/soundmanager2.js', 'src/templates/compiled.js', 'src/stereo.js', 'src/stereo-history.js'],
+                src: ['js/src/vendor/soundmanager2/script/soundmanager2.js', 'js/src/templates/compiled.js', 'js/src/stereo.js', 'js/src/stereo-history.js'],
                 // the location of the resulting JS file
                 dest: 'js/<%= pkg.name %>.js'
             }
@@ -51,7 +51,7 @@ module.exports = function(grunt) {
             files: ['test/*.html']
         },
         jshint: {
-            files: ['Gruntfile.js', 'src/*.js', 'test/*.js'],
+            files: ['Gruntfile.js', 'js/src/*.js', 'test/*.js'],
             options: {
                 // options here to override JSHint defaults
                 /*
@@ -72,14 +72,14 @@ module.exports = function(grunt) {
                     }
                 },
                 files: {
-                    "src/templates/compiled.js": ["src/templates/*.tpl"]
+                    "js/src/templates/compiled.js": ["js/src/templates/*.tpl"]
                 }
             }
         },
         copy: {
             main: {
                 files: [
-                    {expand: true, cwd: "src/vendor/soundmanager2/swf", src: ["*.swf", "!*debug*"], dest:"swf/"}
+                    {expand: true, cwd: "js/src/vendor/soundmanager2/swf", src: ["*.swf", "!*debug*"], dest:"js/swf/"}
                 ]
             }
         }
