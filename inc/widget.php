@@ -7,12 +7,12 @@
  */
 
 
-class StereoWidget extends scbWidget {
+class StereoPlayerWidget extends scbWidget {
 
 	public function __construct() {
         parent::__construct(
-            'stereo_widget', // Base ID
-            'StereoWidget', // Name
+            'stereo_player', // Base ID
+            'Stereo Player', // Name
             array( 'description' => __( 'Player widget for Stereo tracks', 'stereo' ), ) // Args
         );
 
@@ -46,13 +46,6 @@ class StereoWidget extends scbWidget {
 		</p>
 		<?php 
 
-        echo $this->input(array(
-            "type" => "checkbox",
-            "name" => "test",
-            "desc" => "Testar",
-            "value" => false
-        ));
-
 	}
 
 	public function update( $new_instance, $old_instance ) {
@@ -69,7 +62,7 @@ class StereoWidget extends scbWidget {
 }
 
 add_action( 'widgets_init', function(){
-     register_widget( 'StereoWidget' );
+     register_widget( 'StereoPlayerWidget' );
 });
 
 
