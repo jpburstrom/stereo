@@ -1,0 +1,42 @@
+.stereo-controls div
+{
+    overflow:hidden;
+    display:block;
+    min-height:10px;
+    border:1px solid black;
+
+}
+.stereo-buttons button {
+    border:1px solid black;
+    background-color:white;
+    display:block;
+    float:left;
+    width:40px;
+    height:30px;
+}
+
+/*TODO: move these to demo*/
+
+.stereo-buttons .play:after { content: "Play"; }
+.stereo-buttons .stop:after { content: "Stop"; }
+.stereo-buttons .prev:after { content: "Prev"; }
+.stereo-buttons .next:after { content: "Next"; }
+.stereo-controls.playing .play { background-color: green; }
+.stereo-controls.paused .play { background-color: gray; }
+
+.stereo-link {
+    display:block;
+    padding:1em;
+    border:2px solid #aaf;
+    margin-bottom:1px;
+    position:relative;
+}
+.stereo-link.active { background-color: #eee; }
+.stereo-link.playing { border:2px solid green; }
+.stereo-link.paused { border:2px solid gray; }
+.stereo-link.stopped { border:2px solid red; }
+
+.stereo-link.active:after { position:absolute; top:0; right:2px; font-family:monospace; content: ".active"; }
+.stereo-link.playing:after { content: ".active.playing" }
+.stereo-link.paused:after { content: ".active.paused" }
+.stereo-link.stopped:after { content: ".active.stopped" }

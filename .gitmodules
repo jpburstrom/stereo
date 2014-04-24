@@ -7,3 +7,9 @@
 [submodule "lib/php-soundcloud"]
 	path = lib/php-soundcloud
 	url = https://github.com/mptre/php-soundcloud.git
+[submodule "js/src/vendor/soundmanager2"]
+	path = js/src/vendor/soundmanager2
+	url = https://github.com/scottschiller/SoundManager2.git
+[submodule "js/test/qunit"]
+	path = js/test/qunit
+	url = https://github.com/jquery/qunit.git
