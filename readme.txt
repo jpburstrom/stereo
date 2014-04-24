@@ -1,4 +1,4 @@
-=== Plugin Name ===
+=== Stereo ===
 Contributors: jpburstrom
 Tags: mp3 player, mp3, music, discography, portfolio, sound
 Requires at least: 3.9
