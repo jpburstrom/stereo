@@ -1,6 +1,6 @@
-[submodule "src/vendor/soundmanager2"]
-	path = src/vendor/soundmanager2
+[submodule "js/src/vendor/soundmanager2"]
+	path = js/src/vendor/soundmanager2
 	url = https://github.com/scottschiller/SoundManager2.git
-[submodule "test/qunit"]
-	path = test/qunit
+[submodule "js/test/qunit"]
+	path = js/test/qunit
 	url = https://github.com/jquery/qunit.git
