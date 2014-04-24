@@ -1,6 +1,3 @@
-[submodule "js/stereo"]
-	path = js/stereo
-	url = git@jpburstrom.unfuddle.com:jpburstrom/yuckbox2.git
 [submodule "lib/scb"]
 	path = lib/scb
 	url = https://github.com/scribu/wp-scb-framework.git
