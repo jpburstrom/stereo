@@ -114,7 +114,7 @@ class StereoCustomPost {
             return;
         if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) 
             return;
-        if ( !wp_verify_nonce( $_POST['stereo_playlist'], plugin_basename( __FILE__ ) ) )
+        if ( !isset($_POST['stereo_playlist']) || !wp_verify_nonce( $_POST['stereo_playlist'], plugin_basename( __FILE__ ) ) )
             return;
         // Check permissions
         if ( !current_user_can( 'edit_post', $post_id ) )
