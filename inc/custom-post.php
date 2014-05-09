@@ -13,6 +13,8 @@ function stereo_init_custom_post_type()
     $p = stereo_option("playlist_plural");
     $ts = stereo_option("playlist_taxonomy_singular");
     $tp = stereo_option("playlist_taxonomy_plural");
+    $rs = stereo_option("playlist_taxonomy2_singular");
+    $rp = stereo_option("playlist_taxonomy2_plural");
 
     register_post_type( 'stereo_playlist',
         array(
@@ -81,43 +83,41 @@ function stereo_init_custom_post_type()
         ),
     ) );
 
-    //Hardcoded
-    $rs = "Role";
-    $rp = "Roles";
-
-    register_taxonomy( 'stereo_role', array( 'stereo_playlist' ), array(
-        'hierarchical'      => false,
-        'public'            => true,
-        'show_in_nav_menus' => true,
-        'show_ui'           => true,
-        'show_admin_column' => false,
-        'query_var'         => true,
-        //We just append _role to playlist slug
-        'rewrite' => array('slug' => stereo_option("playlist_slug") . "_role"),
-        'capabilities'      => array(
-            'manage_terms'  => 'edit_posts',
-            'edit_terms'    => 'edit_posts',
-            'delete_terms'  => 'edit_posts',
-            'assign_terms'  => 'edit_posts'
-        ),
-        'labels'            => array(
-            'name'                       => $rp, 
-            'singular_name'              => $rs,
-            'search_items'               => __( 'Search', 'stereo' ) . " $rp",
-            'popular_items'              => __( 'Popular', 'stereo' ) . " $rp",
-            'all_items'                  => __( 'All', 'stereo' ) . " $rp",
-            'parent_item'                => __( 'Parent', 'stereo' ) . " $rs",
-            'parent_item_colon'          => __( 'Parent', 'stereo' ) . " $rs:",
-            'edit_item'                  => __( 'Edit', 'stereo' ) . " $rs",
-            'update_item'                => __( 'Update', 'stereo' ) . " $rs",
-            'add_new_item'               => __( 'New', 'stereo' ) . " $rs",
-            'new_item_name'              => __( 'New', 'stereo' ) . " $rs",
-            'separate_items_with_commas' => "$rp " . __( 'separated by comma', 'stereo' ),
-            'add_or_remove_items'        => __( 'Add or remove', 'stereo' ) . " $rp",
-            'choose_from_most_used'      => __( 'Choose from the most used', 'stereo' ) . " $rp",
-            'menu_name'                  => $rp,
-        ),
-    ) );
+    if (stereo_option("show_second_taxonomy")) {
+        register_taxonomy( 'stereo_role', array( 'stereo_playlist' ), array(
+            'hierarchical'      => false,
+            'public'            => true,
+            'show_in_nav_menus' => true,
+            'show_ui'           => true,
+            'show_admin_column' => false,
+            'query_var'         => true,
+            //We just append _role to playlist slug
+            'rewrite' => array('slug' => stereo_option("playlist_taxonomy2_slug")),
+            'capabilities'      => array(
+                'manage_terms'  => 'edit_posts',
+                'edit_terms'    => 'edit_posts',
+                'delete_terms'  => 'edit_posts',
+                'assign_terms'  => 'edit_posts'
+            ),
+            'labels'            => array(
+                'name'                       => $rp, 
+                'singular_name'              => $rs,
+                'search_items'               => __( 'Search', 'stereo' ) . " $rp",
+                'popular_items'              => __( 'Popular', 'stereo' ) . " $rp",
+                'all_items'                  => __( 'All', 'stereo' ) . " $rp",
+                'parent_item'                => __( 'Parent', 'stereo' ) . " $rs",
+                'parent_item_colon'          => __( 'Parent', 'stereo' ) . " $rs:",
+                'edit_item'                  => __( 'Edit', 'stereo' ) . " $rs",
+                'update_item'                => __( 'Update', 'stereo' ) . " $rs",
+                'add_new_item'               => __( 'New', 'stereo' ) . " $rs",
+                'new_item_name'              => __( 'New', 'stereo' ) . " $rs",
+                'separate_items_with_commas' => "$rp " . __( 'separated by comma', 'stereo' ),
+                'add_or_remove_items'        => __( 'Add or remove', 'stereo' ) . " $rp",
+                'choose_from_most_used'      => __( 'Choose from the most used', 'stereo' ) . " $rp",
+                'menu_name'                  => $rp,
+            ),
+        ) );
+    }
 
 }
 
@@ -125,19 +125,24 @@ if (true != stereo_option('taxonomy_tags')) {
 
     add_action( 'admin_menu', 'stereo_remove_tagsdiv');
     function stereo_remove_tagsdiv() {
-        remove_meta_box('tagsdiv-stereo_category', 'stereo_playlist', 'normal');
+        if (true != stereo_option('taxonomy_tags'))
+            remove_meta_box('tagsdiv-stereo_category', 'stereo_playlist', 'normal');
+        if (true != stereo_option('taxonomy2_tags'))
+            remove_meta_box('tagsdiv-stereo_role', 'stereo_playlist', 'normal');
     }
 
     add_action( 'add_meta_boxes', 'stereo_add_tagsdiv');
     function stereo_add_tagsdiv() {
-        add_meta_box( 'stereo-stereo_category', stereo_option("playlist_taxonomy_plural"), 'stereo_category_metabox', 'stereo_playlist' ,'side','core');
+        if (true != stereo_option('taxonomy_tags'))
+            add_meta_box( 'stereo_category', stereo_option("playlist_taxonomy_plural"), 'stereo_category_metabox', 'stereo_playlist' ,'side','core', array('stereo_category'));
+        if (true != stereo_option('taxonomy2_tags'))
+            add_meta_box( 'stereo_role', stereo_option("playlist_taxonomy_plural"), 'stereo_category_metabox', 'stereo_playlist' ,'side','core', array('stereo_role'));
     }  
 
 
 
-    function stereo_category_metabox($post) {  
-
-        $taxonomy = 'stereo_category';  
+    function stereo_category_metabox($post, $args) {  
+        $taxonomy = $args['args'][0];
 
         // all terms of ctax
         $all_ctax_terms = get_terms($taxonomy,array('hide_empty' => 0)); 

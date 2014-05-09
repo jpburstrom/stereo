@@ -371,12 +371,47 @@ class StereoOptions {
 			'type'    => 'text',
 			'section' => 'names'
 		);
+		$this->settings['playlist_taxonomy2_singular'] = array(
+			'title'   => __( 'Second taxonomy singular name' ),
+			'desc'    => __( 'Name of the taxonomy (could be Group, Category, etc)' ),
+			'std'     => 'Role',
+			'type'    => 'text',
+			'section' => 'names'
+		);
+		$this->settings['playlist_taxonomy2_plural'] = array(
+			'title'   => __( 'Taxonomy plural name' ),
+			'desc'    => __( 'Plural name of the playlist taxonomy (could be Groups, Categories, etc)' ),
+			'std'     => 'Roles',
+			'type'    => 'text',
+			'section' => 'names'
+		);
+		$this->settings['playlist_taxonomy2_slug'] = array(
+			'title'   => __( 'Second taxonomy rewrite slug' ),
+			'desc'    => __( 'Slug to use for URL rewrites' ),
+			'std'     => 'playlist_roles',
+			'type'    => 'text',
+			'section' => 'names'
+		);
 		$this->settings['taxonomy_tags'] = array(
 			'section' => 'advanced',
 			'title'   => stereo_option('playlist_taxonomy_plural') . " " . __( 'are tags' ),
             'desc'    => sprintf(__( 'Use %s like tags.'), stereo_option('playlist_taxonomy_plural') ),
 			'type'    => 'checkbox',
 			'std'     => 0 // Set to 1 to be checked by default, 0 to be unchecked by default.
+		);
+		$this->settings['show_second_taxonomy'] = array(
+			'section' => 'advanced',
+            'title'   => "Activate second taxonomy",
+            'desc'    => sprintf(__( 'Activate a second taxonomy (%s) for playlists'), stereo_option('playlist_taxonomy2_plural') ),
+			'type'    => 'checkbox',
+			'std'     => 0 // Set to 1 to be checked by default, 0 to be unchecked by default.
+		);
+		$this->settings['taxonomy2_tags'] = array(
+			'section' => 'advanced',
+			'title'   => stereo_option('playlist_taxonomy2_plural') . " " . __( 'are tags' ),
+            'desc'    => sprintf(__( 'Use %s like tags.'), stereo_option('playlist_taxonomy2_plural') ),
+			'type'    => 'checkbox',
+			'std'     => 1 // Set to 1 to be checked by default, 0 to be unchecked by default.
 		);
 		$this->settings['show_track_ui'] = array(
 			'section' => 'advanced',
