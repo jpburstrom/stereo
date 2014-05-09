@@ -66,7 +66,7 @@ function get_stereo_streaming_link( $trackid=false) {
 function the_stereo_track_tag($meta, $tag="li") {
     global $post;
     echo "<$tag class='stereo track"; 
-    if ($meta['host'] != "") {
+    if ($meta && $meta['host'] != "") {
         echo " active' data-stereo-track='$post->ID'>";
     } else {
         echo "'>";
@@ -82,6 +82,7 @@ function the_stereo_playlist () {
 ?>
     <?php include("views/playlist.php") ?>
 <?php
+    wp_reset_postdata();
 }
 
 /**
