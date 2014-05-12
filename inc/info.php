@@ -12,10 +12,19 @@ class StereoPlaylistInfo {
     var $title =     "";
     var $artwork =  "";
     var $url = "";
+    var $artist = "";
+    var $artist_url = "";
 
     function __construct($playlist) {
         $this->title = $playlist->post_title;
         $this->url = get_permalink($playlist->ID);
+        $artist = get_stereo_connected_artist($playlist->ID);
+        if ($artist) {
+            $this->artist = $artist->post_title; 
+            $this->artist_url = get_permalink($artist->ID);
+        } else {
+            $this->artist = get_post_meta($playlist->ID, "_stereo_other_artist", true);
+        }
         $a = wp_get_attachment_image_src(get_post_thumbnail_id($playlist->ID), stereo_option("artwork_size"));
         $this->artwork = $a ? array(
             "url" => $a[0],
@@ -27,7 +36,7 @@ class StereoPlaylistInfo {
 
 class StereoTrackInfo {
 
-    var $title =     "", 
+    var $title = "", 
         $playlist, 
         $artist = "",
         $album = "",
