@@ -43,17 +43,26 @@ class StereoCustomPost {
 
 
     //Set up custom box for playlist
-    public function metaboxes() 
+    public function playlist_metabox() 
     { 
 		global $post;
 
         $connected = p2p_type( 'playlist_to_tracks' )->get_connected( $post, array('posts_per_page' => -1, 'orderby' => 'menu_order', 'order' => 'ASC') );
 
-        include ( 'views/metabox.php' );
+        include ( 'views/metabox-playlist.php' );
+        
+    }
+
+    //Set up playlist->artist metabox
+    public function artist_metabox() 
+    { 
+		global $post;
+
+        include ( 'views/metabox-artist.php' );
         
     }
     //Set up custom box for playlist
-    public function track_metaboxes() 
+    public function track_metabox() 
     { 
 		global $post;
 
@@ -93,10 +102,12 @@ class StereoCustomPost {
 
     public function add_meta_boxes() {
         //Add playlist metabox
-        add_meta_box("stereo_meta", "Manage " . stereo_option("playlist_singular"), array(&$this, "metaboxes"),
+        add_meta_box("stereo_meta", "Manage " . stereo_option("playlist_singular"), array(&$this, "playlist_metabox"),
+            "stereo_playlist", "normal", "low");
+        add_meta_box("stereo_meta_artist", stereo_option("artist_singular"), array(&$this, "artist_metabox"),
             "stereo_playlist", "normal", "low");
         //Add track metabox
-        add_meta_box("stereo_meta_track", "Track info", array(&$this, "track_metaboxes"),
+        add_meta_box("stereo_meta_track", "Track info", array(&$this, "track_metabox"),
             "stereo_track", "normal", "low");
         
     }
