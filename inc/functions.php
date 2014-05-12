@@ -29,7 +29,9 @@ function stereo_option( $option ) {
  * @uses get_post_meta
  */
 function get_stereo_track_meta( $trackid ) {
-    return get_post_meta($trackid, '_stereo', true);
+    $meta = get_post_meta($trackid, '_stereo', true);
+    $meta = (!empty($meta)) ? $meta : NULL;
+    return $meta;
 }
 
 /**
