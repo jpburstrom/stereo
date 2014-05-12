@@ -8,7 +8,6 @@
 
 add_action('init', 'stereo_init_custom_post_type_artist');
 
-
 function stereo_init_custom_post_type_artist() 
 {
     $s = stereo_option("artist_singular");
@@ -19,9 +18,9 @@ function stereo_init_custom_post_type_artist()
 		'show_in_nav_menus' => true,
 		'show_ui'           => true,
 		'supports'          => array( 'title', 'editor', 'thumbnail' ),
-		'has_archive'       => true,
+		'has_archive'       => stereo_option("has_artist_archive"),
 		'query_var'         => true,
-		'rewrite'           => true,
+        'rewrite' => array('slug' => stereo_option("artist_slug")),
 		'labels'            => array(
             'name' => $p,
             'menu_name' => $p,

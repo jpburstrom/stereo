@@ -40,6 +40,7 @@ function stereo_init_custom_post_type()
 
             ),
             'public' => true,
+            'has_archive'       => stereo_option("has_playlist_archive"),
             'rewrite' => array('slug' => stereo_option("playlist_slug")),
             'supports' => array("editor", "title", "page-attributes", 'thumbnail')
         )

@@ -395,7 +395,7 @@ class StereoOptions {
 		);
 		$this->settings['taxonomy_tags'] = array(
 			'section' => 'advanced',
-			'title'   => stereo_option('playlist_taxonomy_plural') . " " . __( 'are tags' ),
+			'title'   => __( 'First taxonomy are tags' ),
             'desc'    => sprintf(__( 'Use %s like tags.'), stereo_option('playlist_taxonomy_plural') ),
 			'type'    => 'checkbox',
 			'std'     => 0 // Set to 1 to be checked by default, 0 to be unchecked by default.
@@ -409,10 +409,17 @@ class StereoOptions {
 		);
 		$this->settings['taxonomy2_tags'] = array(
 			'section' => 'advanced',
-			'title'   => stereo_option('playlist_taxonomy2_plural') . " " . __( 'are tags' ),
-            'desc'    => sprintf(__( 'Use %s like tags.'), stereo_option('playlist_taxonomy2_plural') ),
+			'title'   => __( 'Second taxonomy are tags' ),
+            'desc'    => sprintf(__( 'Use second taxonomy (%s) like tags.'), stereo_option('playlist_taxonomy2_plural') ),
 			'type'    => 'checkbox',
 			'std'     => 1 // Set to 1 to be checked by default, 0 to be unchecked by default.
+		);
+		$this->settings['has_playlist_archive'] = array(
+			'section' => 'advanced',
+			'title'   => sprintf(__( 'Use archive for %s' ), stereo_option('playlist_plural')),
+			'desc'    => __( 'Check this box to enable the stereo_playlist archive' ),
+			'type'    => 'checkbox',
+			'std'     => 0 // Set to 1 to be checked by default, 0 to be unchecked by default.
 		);
 		$this->settings['show_track_ui'] = array(
 			'section' => 'advanced',
@@ -507,9 +514,16 @@ class StereoOptions {
 		$this->settings['artist_slug'] = array(
 			'title'   => __( 'Artist rewrite slug' ),
 			'desc'    => __( 'Slug to use for URL rewrites' ),
-			'std'     => 'artist',
+			'std'     => 'playlist',
 			'type'    => 'text',
 			'section' => 'artists'
+		);
+		$this->settings['has_artist_archive'] = array(
+			'section' => 'artists',
+			'title'   => sprintf(__( 'Use archive for %s' ), stereo_option('artist_plural')),
+			'desc'    => __( 'Check this box to enable the artist archive' ),
+			'type'    => 'checkbox',
+			'std'     => 0 // Set to 1 to be checked by default, 0 to be unchecked by default.
 		);
 
 		
