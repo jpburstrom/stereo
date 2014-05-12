@@ -25,6 +25,7 @@ class StereoOptions {
 		$this->sections['general']      = __( 'User settings' );
 		$this->sections['advanced']      = __( 'Admin' );
 		$this->sections['names']      = __( 'Names & Slugs' );
+		$this->sections['artists']      = __( 'Multiple Artists' );
 		$this->sections['ajax']      = __( 'Continuous Playback' );
 		$this->sections['tools']        = __( 'Tools' );
 		$this->sections['about']        = __( 'About' );
@@ -322,7 +323,7 @@ class StereoOptions {
         );
          */
 		$this->settings['rewrite_slug'] = array(
-			'title'   => __( 'Rewrite slug' ),
+			'title'   => __( 'API slug' ),
 			'desc'    => __( 'Slug to use for streaming and info API (make sure it doesn\'t collide with other permalinks)' ),
 			'std'     => 'stereo',
 			'type'    => 'text',
@@ -479,67 +480,39 @@ class StereoOptions {
 			'type'    => 'text',
 			'std'     => '0'
 		);
-		
-        /*
-		$this->settings['example_textarea'] = array(
-			'title'   => __( 'Example Textarea Input' ),
-			'desc'    => __( 'This is a description for the textarea input.' ),
-			'std'     => 'Default value',
-			'type'    => 'textarea',
-			'section' => 'general'
+
+        $this->settings['allow_multiple_artists'] = array(
+            'section' => 'artists',
+			'title'   => __( 'Allow multiple artists' ),
+            'desc'    => __( 'This will create an artist post type' ),
+            'type'    => 'checkbox',
+            'std'     => 0
+        );
+
+		$this->settings['artist_singular'] = array(
+			'title'   => __( 'Artist singular name' ),
+			'desc'    => __( 'Name of the stereo_artist custom post type (could be Artist, Project...)' ),
+			'std'     => 'Artist',
+			'type'    => 'text',
+			'section' => 'artists'
 		);
-		
-		$this->settings['example_checkbox'] = array(
-			'section' => 'general',
-			'title'   => __( 'Example Checkbox' ),
-			'desc'    => __( 'This is a description for the checkbox.' ),
-			'type'    => 'checkbox',
-			'std'     => 1 // Set to 1 to be checked by default, 0 to be unchecked by default.
+		$this->settings['artist_plural'] = array(
+			'title'   => __( 'Artist plural name' ),
+			'desc'    => __( 'Plural (more than one) name of the stereo_artist custom post type (could be Artists, Projects...)' ),
+			'std'     => 'Artists',
+			'type'    => 'text',
+			'section' => 'artists'
 		);
-		
-		$this->settings['example_heading'] = array(
-			'section' => 'general',
-			'title'   => '', // Not used for headings.
-			'desc'    => 'Example Heading',
-			'type'    => 'heading'
+
+		$this->settings['artist_slug'] = array(
+			'title'   => __( 'Artist rewrite slug' ),
+			'desc'    => __( 'Slug to use for URL rewrites' ),
+			'std'     => 'artist',
+			'type'    => 'text',
+			'section' => 'artists'
 		);
+
 		
-		$this->settings['example_radio'] = array(
-			'section' => 'general',
-			'title'   => __( 'Example Radio' ),
-			'desc'    => __( 'This is a description for the radio buttons.' ),
-			'type'    => 'radio',
-			'std'     => '',
-			'choices' => array(
-				'choice1' => 'Choice 1',
-				'choice2' => 'Choice 2',
-				'choice3' => 'Choice 3'
-			)
-		);
-		
-		$this->settings['example_select'] = array(
-			'section' => 'general',
-			'title'   => __( 'Example Select' ),
-			'desc'    => __( 'This is a description for the drop-down.' ),
-			'type'    => 'select',
-			'std'     => '',
-			'choices' => array(
-				'choice1' => 'Other Choice 1',
-				'choice2' => 'Other Choice 2',
-				'choice3' => 'Other Choice 3'
-			)
-		);
-		
-		
-		$this->settings['custom_css'] = array(
-			'title'   => __( 'Custom Styles' ),
-			'desc'    => __( 'Enter any custom CSS here to apply it to your theme.' ),
-			'std'     => '',
-			'type'    => 'textarea',
-			'section' => 'appearance',
-			'class'   => 'code'
-		);
-         */
 				
 		/* Reset
 		===========================================*/

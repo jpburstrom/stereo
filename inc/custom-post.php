@@ -6,6 +6,10 @@
 * Stereo custom post type
 */
 
+
+if (stereo_option('allow_multiple_artists'))
+    include "custom-post-artist.php";
+
 add_action('init', 'stereo_init_custom_post_type');
 function stereo_init_custom_post_type() 
 {
@@ -21,6 +25,7 @@ function stereo_init_custom_post_type()
             'labels' => array(
                 'name' => $p,
                 'singular_name' => $s,
+                'menu_name' => $p,
                 'add_new' => __( 'Add New' ),
                 'add_new_item' => __( 'Add New ' ) . $s,
                 'edit' => __( 'Edit' ),
@@ -50,7 +55,7 @@ function stereo_init_custom_post_type()
 
     register_post_type( 'stereo_track', $options);
 
-    register_taxonomy( 'stereo_category', array( 'stereo_playlist' ), array(
+    register_taxonomy( 'stereo_category', array( 'stereo_playlist', 'stereo_artist' ), array(
         'hierarchical'      => false,
         'public'            => true,
         'show_in_nav_menus' => true,
@@ -84,7 +89,7 @@ function stereo_init_custom_post_type()
     ) );
 
     if (stereo_option("show_second_taxonomy")) {
-        register_taxonomy( 'stereo_role', array( 'stereo_playlist' ), array(
+        register_taxonomy( 'stereo_role', array( 'stereo_playlist', 'stereo_artist' ), array(
             'hierarchical'      => false,
             'public'            => true,
             'show_in_nav_menus' => true,
@@ -125,18 +130,30 @@ if (true != stereo_option('taxonomy_tags')) {
 
     add_action( 'admin_menu', 'stereo_remove_tagsdiv');
     function stereo_remove_tagsdiv() {
-        if (true != stereo_option('taxonomy_tags'))
+        if (true != stereo_option('taxonomy_tags')) {
             remove_meta_box('tagsdiv-stereo_category', 'stereo_playlist', 'normal');
-        if (true != stereo_option('taxonomy2_tags'))
+            if (stereo_option('allow_multiple_artists'))
+                remove_meta_box('tagsdiv-stereo_category', 'stereo_artist', 'normal');
+        }
+        if (true != stereo_option('taxonomy2_tags')) {
             remove_meta_box('tagsdiv-stereo_role', 'stereo_playlist', 'normal');
+            if (stereo_option('allow_multiple_artists'))
+                remove_meta_box('tagsdiv-stereo_role', 'stereo_artist', 'normal');
+        }
     }
 
     add_action( 'add_meta_boxes', 'stereo_add_tagsdiv');
     function stereo_add_tagsdiv() {
-        if (true != stereo_option('taxonomy_tags'))
+        if (true != stereo_option('taxonomy_tags')) {
             add_meta_box( 'stereo_category', stereo_option("playlist_taxonomy_plural"), 'stereo_category_metabox', 'stereo_playlist' ,'side','core', array('stereo_category'));
-        if (true != stereo_option('taxonomy2_tags'))
+            if (stereo_option('allow_multiple_artists'))
+                add_meta_box( 'stereo_category', stereo_option("playlist_taxonomy_plural"), 'stereo_category_metabox', 'stereo_artist' ,'side','core', array('stereo_category'));
+        }
+        if (true != stereo_option('taxonomy2_tags')) {
             add_meta_box( 'stereo_role', stereo_option("playlist_taxonomy_plural"), 'stereo_category_metabox', 'stereo_playlist' ,'side','core', array('stereo_role'));
+            if (stereo_option('allow_multiple_artists'))
+                add_meta_box( 'stereo_role', stereo_option("playlist_taxonomy_plural"), 'stereo_category_metabox', 'stereo_artist' ,'side','core', array('stereo_role'));
+        }
     }  
 
 
