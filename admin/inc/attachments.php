@@ -40,7 +40,7 @@ class StereoAttachment {
         foreach ($this->fields as $key => $value) {
             $form_fields["stereo_$key"]["label"] = ucwords(str_replace("_", " ", $key));
             $form_fields["stereo_$key"]["input"] = "text";
-            $form_fields["stereo_$key"]["value"] = $attachment_data[$key];
+            $form_fields["stereo_$key"]["value"] = (isset($attachment_data[$key])) ? $attachment_data[$key] : "";
         }
 
         return $form_fields;
