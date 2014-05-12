@@ -56,7 +56,9 @@ function get_stereo_streaming_link( $trackid=false) {
         $trackid = $post->ID;
     }
     $meta = get_stereo_track_meta($trackid);
-    $out = ($meta['fileid']) ?  stereo_url("stream/" . trailingslashit($trackid) ) : '';
+    $out = "";
+    if ($meta)
+        $out = ($meta['fileid']) ?  stereo_url("stream/" . trailingslashit($trackid) ) : '';
     return $out;
 }
 

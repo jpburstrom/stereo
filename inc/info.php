@@ -57,8 +57,8 @@ class StereoTrackInfo {
             } 
         }
         $this->playlist = new StereoPlaylistInfo($playlist);
-        unset ($data['fileid'], $data['host']);
         if ($data) {
+            unset ($data['fileid'], $data['host']);
             foreach ($data as $k => $v) {
                 $this->$k = ($v) ? $v : '';
             }
