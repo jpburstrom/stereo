@@ -36,7 +36,8 @@ class StereoStream {
 
     function add_cookie()
     {
-        $path = trailingslashit(parse_url(site_url(), PHP_URL_PATH));
+
+        $path = trailingslashit(parse_url(home_url(), PHP_URL_PATH));
         setcookie("stereo", $this->create_cookie_string(), time() + $this->expiry_time, $path);
     }
 
@@ -106,8 +107,9 @@ class StereoStream {
     function wp_streaming($id)
     {
         $url = wp_get_attachment_url($id);
+        $upload_dir = wp_upload_dir();
         $name = basename($url);
-        $file = str_replace(trailingslashit(site_url()), ABSPATH, $url);
+        $file = str_replace($upload_dir['baseurl'], $upload_dir['basedir'], $url);
 
         $mime_type = "audio/mpeg";
 
