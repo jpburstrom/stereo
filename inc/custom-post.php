@@ -7,7 +7,7 @@
 */
 
 
-if (stereo_option('allow_multiple_artists'))
+if (stereo_option('create_artist_cpt'))
     include "custom-post-artist.php";
 
 add_action('init', 'stereo_init_custom_post_type');
@@ -133,12 +133,12 @@ if (true != stereo_option('taxonomy_tags')) {
     function stereo_remove_tagsdiv() {
         if (true != stereo_option('taxonomy_tags')) {
             remove_meta_box('tagsdiv-stereo_category', 'stereo_playlist', 'normal');
-            if (stereo_option('allow_multiple_artists'))
+            if (stereo_option('create_artist_cpt'))
                 remove_meta_box('tagsdiv-stereo_category', 'stereo_artist', 'normal');
         }
         if (true != stereo_option('taxonomy2_tags')) {
             remove_meta_box('tagsdiv-stereo_role', 'stereo_playlist', 'normal');
-            if (stereo_option('allow_multiple_artists'))
+            if (stereo_option('create_artist_cpt'))
                 remove_meta_box('tagsdiv-stereo_role', 'stereo_artist', 'normal');
         }
     }
@@ -147,12 +147,12 @@ if (true != stereo_option('taxonomy_tags')) {
     function stereo_add_tagsdiv() {
         if (true != stereo_option('taxonomy_tags')) {
             add_meta_box( 'stereo_category', stereo_option("playlist_taxonomy_plural"), 'stereo_category_metabox', 'stereo_playlist' ,'side','core', array('stereo_category'));
-            if (stereo_option('allow_multiple_artists'))
+            if (stereo_option('create_artist_cpt'))
                 add_meta_box( 'stereo_category', stereo_option("playlist_taxonomy_plural"), 'stereo_category_metabox', 'stereo_artist' ,'side','core', array('stereo_category'));
         }
         if (true != stereo_option('taxonomy2_tags')) {
             add_meta_box( 'stereo_role', stereo_option("playlist_taxonomy_plural"), 'stereo_category_metabox', 'stereo_playlist' ,'side','core', array('stereo_role'));
-            if (stereo_option('allow_multiple_artists'))
+            if (stereo_option('create_artist_cpt'))
                 add_meta_box( 'stereo_role', stereo_option("playlist_taxonomy_plural"), 'stereo_category_metabox', 'stereo_artist' ,'side','core', array('stereo_role'));
         }
     }  

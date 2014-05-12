@@ -18,10 +18,9 @@ class StereoCustomPost {
         //actions
         //add_action('parse_request', array(&$this, 'events_request_filter'), 10);
         add_action('admin_head', array(&$this, 'admin_head'));
-        add_action('add_meta_boxes', array(&$this, 'add_meta_boxes'));
+        add_action('add_meta_boxes', array(&$this, 'add_meta_boxes'), 1);
 		add_action("wp_insert_post", array(&$this, "wp_insert_post"), 10, 2);
-    //Add meta box to post type. Why this needs to be called from admin_head I don't know.
-        //
+		add_action("edit_form_after_title", array(&$this, "edit_form_after_title"));
 
 		add_action( 'admin_enqueue_scripts', array( &$this, 'my_admin_scripts' ) );
         
@@ -30,9 +29,7 @@ class StereoCustomPost {
     function my_admin_scripts() {
         global $current_screen;
         if (($current_screen->post_type == 'stereo_playlist' || $current_screen->post_type == 'stereo_track') && $current_screen->base == 'post') {
-            //wp_enqueue_script('media-upload');
-            //wp_enqueue_script('thickbox');
-            //wp_enqueue_script('jquery-ui-sortable');
+
             wp_enqueue_script( 'stereo-admin-cptjs', STEREO_PLUGIN_URL . 'admin/js/cpt.js' );
             wp_enqueue_style( 'stereo-admin-cpt', STEREO_PLUGIN_URL . 'admin/css/cpt.css' );
 
@@ -40,6 +37,15 @@ class StereoCustomPost {
         }
     }
 
+	function edit_form_after_title()
+	{
+		// globals
+		global $post, $wp_meta_boxes;
+		// render
+		do_meta_boxes( get_current_screen(), 'stereo_after_title', $post);
+		// clean up
+		unset( $wp_meta_boxes['post']['stereo_after_title'] );
+	}
 
 
     //Set up custom box for playlist
@@ -57,11 +63,16 @@ class StereoCustomPost {
     public function artist_metabox() 
     { 
 		global $post;
+        $artists = get_posts(array("posts_per_page" => -1, "post_type" => "stereo_artist", "orderby" => "menu_order", "order"=>"ASC"));
+        $selected = get_stereo_connected_artist_id($post->ID);
+
+        $other = get_post_meta($post->ID, "_stereo_other_artist", true);
+        if ($other) $selected = -1;
 
         include ( 'views/metabox-artist.php' );
         
     }
-    //Set up custom box for playlist
+    //Set up custom box for tracks
     public function track_metabox() 
     { 
 		global $post;
@@ -75,6 +86,7 @@ class StereoCustomPost {
         include ( 'views/metabox-tracks.php' );
         
     }
+
 
     public function metabox_toolbar() 
     {
@@ -105,7 +117,7 @@ class StereoCustomPost {
         add_meta_box("stereo_meta", "Manage " . stereo_option("playlist_singular"), array(&$this, "playlist_metabox"),
             "stereo_playlist", "normal", "low");
         add_meta_box("stereo_meta_artist", stereo_option("artist_singular"), array(&$this, "artist_metabox"),
-            "stereo_playlist", "normal", "low");
+            "stereo_playlist", "stereo_after_title", "high");
         //Add track metabox
         add_meta_box("stereo_meta_track", "Track info", array(&$this, "track_metabox"),
             "stereo_track", "normal", "low");
@@ -134,6 +146,8 @@ class StereoCustomPost {
 		if ($post->post_type == "stereo_playlist")
 		{
 
+            $this->set_playlist_artist($post_id);
+
             $this->add_update_tracks($post_id, $_POST['stereo_track_number']);
 
             if (isset($_POST['stereo_delete_track']))
@@ -141,6 +155,19 @@ class StereoCustomPost {
 
 		}
 	}
+
+    function set_playlist_artist($playlist_id) {
+        //TODO: if stereo_artist > -1, set up connection with ID
+
+        p2p_type( 'playlist_to_artist' )->disconnect( $playlist_id, $_POST["stereo_current_artist"] );
+
+        if ($_POST["stereo_artist"] > -1) {
+            p2p_type( 'playlist_to_artist' )->connect( $playlist_id, $_POST["stereo_artist"], array('date' => current_time('mysql') ));
+            delete_post_meta($playlist_id, "_stereo_other_artist");
+        } else {
+            update_post_meta($playlist_id, "_stereo_other_artist", $_POST["stereo_other_artist"]);
+        }
+    }
 
     function create_track($playlist_id, $args, $metadata) 
     {
@@ -176,6 +203,7 @@ class StereoCustomPost {
         } else {
             delete_post_meta($post_id, "_stereo");
         }
+
         
         //Link track with playlist
         p2p_type( 'playlist_to_tracks' )->connect( $playlist_id, $post_id, array('date' => current_time('mysql') ));
@@ -242,7 +270,7 @@ class StereoCustomPost {
     function prepare_track_postdata($key) 
     {
         $args = array();
-        $args['ID'] = $_POST['stereo_track_ID'][$key];
+        if (isset($_POST['stereo_track_ID'])) $args['ID'] = $_POST['stereo_track_ID'][$key];
         $args['post_title'] = $_POST['stereo_track_name'][$key];
         $args['menu_order'] = $_POST['stereo_track_number'][$key];
         return $args;

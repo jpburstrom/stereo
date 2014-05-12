@@ -34,6 +34,40 @@ function get_stereo_track_meta( $trackid ) {
     return $meta;
 }
 
+function get_stereo_connected_artist( $id ) {
+    $p = get_posts(array( 'connected_type' => 'playlist_to_artist', 'connected_items' => $id, 'nopaging' => true, 'suppress_filters' => false));
+    if ($p)
+        return $p[0];
+    else 
+        return $p;
+}
+
+function get_stereo_connected_artist_id( $id ) {
+    $p = get_posts(array( 'fields' => 'ids', 'connected_type' => 'playlist_to_artist', 'connected_items' => $id, 'nopaging' => true, 'suppress_filters' => false));
+    if ($p)
+        return $p[0];
+    else 
+        return $p;
+}
+
+function get_stereo_artist_from_playlist( $id = false, $link = false ) {
+    global $post;
+    if (!$id) {
+        $id = $post->ID;
+    }
+    $artist = get_stereo_connected_artist($id);
+    if ($artist) {
+        if ($link) {
+            $artist = "<a href='" . get_permalink($artist->ID) . "' title='" . __("Open artist page", "stereo") . "'>{$artist->post_title}</a>"; 
+        } else {
+            $artist = $artist->post_title;
+        }
+    } else {
+        $artist = get_post_meta($id, "_stereo_other_artist", true);
+    }
+    return $artist; 
+}
+
 /**
  * Get metadata for audio attachment
  */

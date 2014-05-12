@@ -51,6 +51,12 @@ function stereo_connection_types() {
 		'to' => 'stereo_track',
         'cardinality' => 'one-to-many'
 	) );
+	p2p_register_connection_type( array(
+		'name' => 'playlist_to_artist',
+		'from' => 'stereo_playlist',
+		'to' => 'stereo_artist',
+        'cardinality' => 'one-to-one'
+	) );
 }
 
 function stereo_init() {

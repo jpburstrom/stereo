@@ -247,5 +247,13 @@ jQuery(document).ready(function($) {
 
     hide_delete_if_empty();
 
+    $("#stereo_artist").change(function() {
+        if ($(this).val() == -1) { //Other artist
+            $("#stereo_other_artist").show().removeAttr("disabled").focus();
+        } else {
+            $("#stereo_other_artist").hide().attr("disabled", "disabled");
+        }
+    });
+
 
 });

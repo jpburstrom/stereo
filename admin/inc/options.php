@@ -488,10 +488,10 @@ class StereoOptions {
 			'std'     => '0'
 		);
 
-        $this->settings['allow_multiple_artists'] = array(
+        $this->settings['create_artist_cpt'] = array(
             'section' => 'artists',
-			'title'   => __( 'Allow multiple artists' ),
-            'desc'    => __( 'This will create an artist post type' ),
+			'title'   => __( 'Create artist post type' ),
+            'desc'    => __( 'This will create an artist post type, useful for sites with multiple artists/projects.' ),
             'type'    => 'checkbox',
             'std'     => 0
         );
