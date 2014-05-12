@@ -517,7 +517,13 @@
     });
 
     App.View.Label = b.View.extend({
-        template: App.Tmpl.label,
+        template: function(obj) {
+            var __p = "";
+            _.each(App.options.controls.label_order, function(el) {
+                __p += App.Tmpl[el](obj);
+            });
+            return __p;
+        },
         className: 'stereo-label',
         model: App.player,
         song:false,
@@ -721,13 +727,14 @@
         playlist: {
             onload: false, //('all'|id) //Fallback to all songs or playlist id
             repeat: true,
-            shuffle: false, //Shuffle loaded files
+            shuffle: false //Shuffle loaded files
         },
         controls: {
             //Pass an id of the control container, which should exist in the source
             elements: "#stereo_controls",
             //Choose which components, and their source order
-            order: ['Buttons', 'Label', 'Position', 'Time']
+            order: ['Buttons', 'Label', 'Position', 'Time'],
+            label_order: ['title', 'playlist-artist', 'playlist']
         },
         links: {
             elements: "[data-stereo-track]"

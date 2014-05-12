@@ -5990,6 +5990,18 @@ window.soundManager = soundManager; // public API, flash callbacks etc.
 ;this["Stereo"] = this["Stereo"] || {};
 this["Stereo"]["Tmpl"] = this["Stereo"]["Tmpl"] || {};
 
+this["Stereo"]["Tmpl"]["artist"] = function(obj) {
+obj || (obj = {});
+var __t, __p = '', __e = _.escape;
+with (obj) {
+__p += '<span class="artist">' +
+((__t = ( artist )) == null ? '' : __t) +
+'</span>\n';
+
+}
+return __p
+};
+
 this["Stereo"]["Tmpl"]["button"] = function(obj) {
 obj || (obj = {});
 var __t, __p = '', __e = _.escape;
@@ -6000,17 +6012,34 @@ __p += '<button class="prev"></button>\n<button class="playpause"></button>\n<bu
 return __p
 };
 
-this["Stereo"]["Tmpl"]["label"] = function(obj) {
+this["Stereo"]["Tmpl"]["playlist-artist"] = function(obj) {
+obj || (obj = {});
+var __t, __p = '', __e = _.escape, __j = Array.prototype.join;
+function print() { __p += __j.call(arguments, '') }
+with (obj) {
+
+ if (playlist.artist_url) { ;
+__p += '\n<span class="playlist-artist"><a href="' +
+((__t = ( playlist.artist_url )) == null ? '' : __t) +
+'">' +
+((__t = ( playlist.artist )) == null ? '' : __t) +
+'</a></span>\n';
+ } else { ;
+__p += '\n<span class="playlist-artist">' +
+((__t = ( playlist.artist )) == null ? '' : __t) +
+'</span>\n';
+ } ;
+__p += '\n';
+
+}
+return __p
+};
+
+this["Stereo"]["Tmpl"]["playlist"] = function(obj) {
 obj || (obj = {});
 var __t, __p = '', __e = _.escape;
 with (obj) {
-__p += '<span class="title"><a href="' +
-((__t = ( playlist.url )) == null ? '' : __t) +
-'">' +
-((__t = ( title )) == null ? '' : __t) +
-'</a></span>\n<span class="artist">' +
-((__t = ( artist )) == null ? '' : __t) +
-'</span>\n<span class="playlist"><a href="' +
+__p += '<span class="playlist"><a href="' +
 ((__t = ( playlist.url )) == null ? '' : __t) +
 '">' +
 ((__t = ( playlist.title )) == null ? '' : __t) +
@@ -6043,6 +6072,18 @@ __p += '<span class="time">\n    <span class="min">' +
 '</span>\n    <span class="sec">' +
 ((__t = ( sec )) == null ? '' : __t) +
 '</span>\n</span>\n';
+
+}
+return __p
+};
+
+this["Stereo"]["Tmpl"]["title"] = function(obj) {
+obj || (obj = {});
+var __t, __p = '', __e = _.escape;
+with (obj) {
+__p += '<span class="title">' +
+((__t = ( title )) == null ? '' : __t) +
+'</span>\n';
 
 }
 return __p
@@ -6565,7 +6606,13 @@ return __p
     });
 
     App.View.Label = b.View.extend({
-        template: App.Tmpl.label,
+        template: function(obj) {
+            var __p = "";
+            _.each(App.options.controls.label_order, function(el) {
+                __p += App.Tmpl[el](obj);
+            });
+            return __p;
+        },
         className: 'stereo-label',
         model: App.player,
         song:false,
@@ -6769,13 +6816,14 @@ return __p
         playlist: {
             onload: false, //('all'|id) //Fallback to all songs or playlist id
             repeat: true,
-            shuffle: false, //Shuffle loaded files
+            shuffle: false //Shuffle loaded files
         },
         controls: {
             //Pass an id of the control container, which should exist in the source
             elements: "#stereo_controls",
             //Choose which components, and their source order
-            order: ['Buttons', 'Label', 'Position', 'Time']
+            order: ['Buttons', 'Label', 'Position', 'Time'],
+            label_order: ['title', 'playlist-artist', 'playlist']
         },
         links: {
             elements: "[data-stereo-track]"
