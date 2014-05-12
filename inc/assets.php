@@ -36,6 +36,13 @@ function stereo_enqueue_assets() {
                 'scrollTime' => (int) stereo_option('ajax_scrollTime')
             ),
             'default_tracks' => get_stereo_default_tracks(),
+            'controls' => array(
+                //Pass an id of the control container, which should exist in the source
+                'elements' => "#stereo_controls",
+                //Choose which components, and their source order
+                'order' => array('Buttons', 'Label', 'Position', 'Time'),
+                'label_order' => apply_filters('stereo_label_order', array('title', 'playlist-artist', 'playlist'))
+            )
         )
     ));
 
