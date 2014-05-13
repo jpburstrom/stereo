@@ -21,7 +21,7 @@ function stereo_enqueue_assets() {
 
     wp_enqueue_script('stereo');
     wp_localize_script('stereo', 'Stereo', array(
-        'options' => array(
+        'options' => apply_filters('stereo_options', array(
             'urlRoot' => stereo_url(),
             'doInit' => true,
             'sm' => array(
@@ -41,9 +41,9 @@ function stereo_enqueue_assets() {
                 'elements' => "#stereo_controls",
                 //Choose which components, and their source order
                 'order' => array('Buttons', 'Label', 'Position', 'Time'),
-                'label_order' => apply_filters('stereo_label_order', array('title', 'playlist-artist', 'playlist'))
+                'label_order' => array('title', 'playlist-artist', 'playlist')
             )
-        )
+        ))
     ));
 
 }
