@@ -68,6 +68,10 @@ function get_stereo_artist_from_playlist( $id = false, $link = false ) {
     return $artist; 
 }
 
+function the_stereo_artist( $id = false, $link = true ) {
+    echo get_stereo_artist_from_playlist($id, $link);
+} 
+
 /**
  * Get metadata for audio attachment
  */
