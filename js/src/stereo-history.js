@@ -246,7 +246,6 @@
 
             scrollTime: 0,
             
-            //FIXME:
             enable: false
 
         }, options.history);
