@@ -469,9 +469,9 @@ class StereoOptions {
         $this->settings['ajax_elements'] = array(
             'section' => 'ajax',
 			'title'   => __( 'Elements to reload' ),
-			'desc'    => __( 'jQuery selector(s) of elements to reload. This would be your primary content container, optional sidebar etc.' ),
+			'desc'    => __( 'Ids of elements to reload. This would be your primary content container, optional sidebar etc.' ),
 			'type'    => 'text',
-			'std'     => '#primary'
+			'std'     => '#wrapper'
 		);
 
         $this->settings['ajax_ignore'] = array(
