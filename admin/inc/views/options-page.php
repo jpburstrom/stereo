@@ -10,6 +10,7 @@ if ( !defined( 'ABSPATH' ) )
     die( '-1' );
 ?>
 
+
     <div class="wrap">
         <div class="icon32" id="icon-options-general"></div>
         <h2> <?php _e( 'Stereo Options', 'stereo' ) ?> </h2>
@@ -26,7 +27,7 @@ if ( !defined( 'ABSPATH' ) )
             <div class="ui-tabs">
                 <ul class="ui-tabs-nav">
             
-                    <?php foreach ( $this->sections as $section_slug => $section ) : ?>
+                    <?php foreach ( $this->sections as $section_slug => $section ) : if ($section_slug == "default_tracks") continue; ?>
                     <li><a href="#<?php echo $section_slug ?>"><?php echo $section ?></a></li>
                     <?php endforeach; ?>
             

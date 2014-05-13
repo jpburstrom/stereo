@@ -29,6 +29,8 @@ class StereoOptions {
 		$this->sections['ajax']      = __( 'Continuous Playback' );
 		$this->sections['tools']        = __( 'Tools' );
 		$this->sections['about']        = __( 'About' );
+        //This is for another page
+		$this->sections['default_tracks']        = __( 'Default tracks' );
 
 		add_action( 'admin_menu', array( &$this, 'add_pages' ) );
 		add_action( 'admin_init', array( &$this, 'register_settings' ) );
