@@ -30,6 +30,7 @@ function stereo_enqueue_assets() {
             ),
             'history' => array(
                 'container' => 'body',
+                'urlRoot' => home_url(),
                 'enable' => stereo_option('ajax_enable'),
                 'elements' => stereo_option('ajax_elements'),
                 'ignore' => stereo_option('ajax_ignore'),
