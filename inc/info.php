@@ -15,22 +15,24 @@ class StereoPlaylistInfo {
     var $artist = "";
     var $artist_url = "";
 
-    function __construct($playlist) {
-        $this->title = $playlist->post_title;
-        $this->url = get_permalink($playlist->ID);
-        $artist = get_stereo_connected_artist($playlist->ID);
-        if ($artist) {
-            $this->artist = $artist->post_title; 
-            $this->artist_url = get_permalink($artist->ID);
-        } else {
-            $this->artist = get_post_meta($playlist->ID, "_stereo_other_artist", true);
+    function __construct($playlist = false) {
+        if ($playlist) {
+            $this->title = $playlist->post_title;
+            $this->url = get_permalink($playlist->ID);
+            $artist = get_stereo_connected_artist($playlist->ID);
+            if ($artist) {
+                $this->artist = $artist->post_title; 
+                $this->artist_url = get_permalink($artist->ID);
+            } else {
+                $this->artist = get_post_meta($playlist->ID, "_stereo_other_artist", true);
+            }
+            $a = wp_get_attachment_image_src(get_post_thumbnail_id($playlist->ID), stereo_option("artwork_size"));
+            $this->artwork = $a ? array(
+                "url" => $a[0],
+                "width" => $a[1],
+                "height" => $a[2]
+            ) : null;
         }
-        $a = wp_get_attachment_image_src(get_post_thumbnail_id($playlist->ID), stereo_option("artwork_size"));
-        $this->artwork = $a ? array(
-            "url" => $a[0],
-            "width" => $a[1],
-            "height" => $a[2]
-        ) : null;
     }
 }
 
@@ -63,9 +65,11 @@ class StereoTrackInfo {
             ));
             if ($playlist->found_posts == 1) {
                 $playlist = $playlist->posts[0];
-            } 
+                $this->playlist = new StereoPlaylistInfo($playlist);
+            } else {
+                $this->playlist = new StereoPlaylistInfo();
+            }
         }
-        $this->playlist = new StereoPlaylistInfo($playlist);
         if ($data) {
             unset ($data['fileid'], $data['host']);
             foreach ($data as $k => $v) {
