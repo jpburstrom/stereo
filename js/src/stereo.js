@@ -554,9 +554,13 @@
         render: function() {
             if (this.song !== false) {
                 this.$el.html(this.template(this.song.info.attributes));
-                if (this.$el.children(":visible").length > 1) {
-                    this.$current = this.$el.children(":first:visible").css("top", "100%").animate({top: 0}, 400);
-                    this.animate();
+                if (App.options.controls.labelTicker) {
+                    if (this.$el.children(":visible").length > 1) {
+                        this.$current = this.$el.children(":first:visible").css("top", "100%").animate({top: 0}, 400);
+                        this.animate();
+                    }
+                } else {
+                    this.$el.css("display", "none").fadeIn(300);
                 }
             }
 
@@ -734,7 +738,8 @@
             elements: "#stereo_controls",
             //Choose which components, and their source order
             order: ['Buttons', 'Label', 'Position', 'Time'],
-            label_order: ['title', 'playlist-artist', 'playlist']
+            label_order: ['title', 'playlist-artist', 'playlist'],
+            labelTicker: false
         },
         links: {
             elements: "[data-stereo-track]"
