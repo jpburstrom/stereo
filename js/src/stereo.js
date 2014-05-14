@@ -560,7 +560,7 @@
                         this.animate();
                     }
                 } else {
-                    this.$el.css("display", "none").fadeIn(300);
+                    this.$el.css("display", "none").fadeIn(100);
                 }
             }
 
