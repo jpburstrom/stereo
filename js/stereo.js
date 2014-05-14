@@ -6995,8 +6995,8 @@ return __p
             // Prepare
             var result = String(html)
             .replace(/<\!DOCTYPE[^>]*>/i, '')
-            .replace(/<(html|head|body|title|meta|script)([\s\>])/gi,'<div data-history-$1="true"$2')
-            .replace(/<\/(html|head|body|title|meta|script)\>/gi,'</div>')
+            .replace(/<(html|head|body|title|meta)([\s\>])/gi,'<div data-history-$1="true"$2')
+            .replace(/<\/(html|head|body|title|meta)\>/gi,'</div>')
             ;
 
             // Return
