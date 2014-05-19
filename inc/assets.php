@@ -15,7 +15,7 @@ function stereo_enqueue_assets() {
     }
     //wp_enqueue_style('stereo-icons', stereo_find_asset("icons.css", $cssdir));
 
-    wp_register_script('stereo', "$jsdir/stereo.js", array("backbone")); 
+    wp_register_script('stereo', "$jsdir/stereo.min.js", array("backbone")); 
     wp_register_script('stereo-widget', "$jsdir/stereo-widget.js", array("stereo"));
 
 
