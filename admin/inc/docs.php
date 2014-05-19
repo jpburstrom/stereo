@@ -95,7 +95,6 @@ HTML
                 ) );
             };
         } 
-        echo $screen->id; //TEMP
 
         if ($screen->post_type == 'stereo_playlist' || $screen->post_type == 'stereo_tracks' || $screen->post_type == 'stereo_artist') {
             $screen->set_help_sidebar(wpautop(self::$sidebar));
