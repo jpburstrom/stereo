@@ -20,6 +20,10 @@ class StereoCustomPost {
         add_action('admin_head', array(&$this, 'admin_head'));
         add_action('add_meta_boxes', array(&$this, 'add_meta_boxes'), 1);
 		add_action("wp_insert_post", array(&$this, "wp_insert_post"), 10, 2);
+		add_action("wp_insert_post", array(&$this, "wp_insert_post"), 10, 2);
+        //add_action("wp_trash_post", array(&$this, "trash_connected_tracks"), 10, 2);
+        //add_action("untrash_post", array(&$this, "restore_connected_tracks"), 10, 2);
+        add_action("before_delete_post", array(&$this, "delete_connected_tracks"), 10, 2);
 		add_action("edit_form_after_title", array(&$this, "edit_form_after_title"));
 
 		add_action( 'admin_enqueue_scripts', array( &$this, 'my_admin_scripts' ) );
@@ -154,7 +158,65 @@ class StereoCustomPost {
                 $this->delete_tracks($_POST['stereo_delete_track']);
 
 		}
+
 	}
+
+    function trash_connected_tracks($post_id) 
+    {
+        $this->_delete_connected($post_id, false);
+    }
+
+    function delete_connected_tracks($post_id) 
+    {
+        $this->_delete_connected($post_id, true);
+    }
+
+    function restore_connected_tracks($post_id) 
+    {
+        global $post_type;
+        if ($post_type != 'stereo_playlist')
+            return;
+
+        $connected = $this->_get_connected_tracks($post_id);
+        //var_export($connected); die();
+        $post_type = 'stereo_track';
+        foreach ($connected as $id) {
+            wp_untrash_post($id);
+        }
+        $post_type = 'stereo_playlist';
+
+
+    }
+
+    private function _delete_connected($post_id, $force) 
+    {
+        global $post_type;
+        if ($post_type != 'stereo_playlist')
+            return;
+
+
+        $connected = $this->_get_connected_tracks($post_id);
+        var_export($post_id);
+        var_export($connected); die();
+
+
+        $post_type = 'stereo_track';
+        foreach ($connected as $id) {
+            if ($force) {
+                wp_delete_post($id, $force);
+            } else {
+                wp_trash_post($id);
+            }
+        }
+        $post_type = 'stereo_playlist';
+        
+
+    }
+
+    private function _get_connected_tracks($post_id) 
+    {
+        return get_posts(array( 'connected_type' => 'playlist_to_tracks', 'connected_items' => $post_id, 'fields' => 'ids', 'posts_per_page' => -1, 'nopaging' => true, 'post_status' => 'trash', 'suppress_filters' => false));
+    }
 
     function set_playlist_artist($playlist_id) {
         //TODO: if stereo_artist > -1, set up connection with ID

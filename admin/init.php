@@ -28,6 +28,7 @@ require("inc/stereo_custom_post.php");
 require("inc/attachments.php");
 require("inc/functions.php");
 require("inc/updater.php");
+require("inc/docs.php");
 
 new WP_GitHub_Updater(array(
     'slug' => "stereo/stereo.php", // this is the slug of your plugin

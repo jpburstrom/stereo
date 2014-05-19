@@ -77,6 +77,9 @@ class StereoOptions {
 		
 		$admin_page = add_options_page( 'Stereo', 'Stereo', 'manage_options', 'stereo_options', array( &$this, 'display_page' ) );
         $admin_page_tracks = add_submenu_page('edit.php?post_type=stereo_playlist', 'Default tracks', 'Default tracks', 'edit_posts', 'stereo_default_tracks', array(&$this, 'display_default_tracks'));
+
+        add_action( 'load-' . $admin_page, array( "StereoDocs", 'load' ));
+        add_action( 'load-' . $admin_page_tracks, array( "StereoDocs", 'load' ));
 		
 		add_action( 'admin_print_scripts-' . $admin_page, array( &$this, 'scripts' ) );
 		add_action( 'admin_print_styles-' . $admin_page, array( &$this, 'styles' ) );
