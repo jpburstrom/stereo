@@ -68,7 +68,7 @@ HTML
             //'edit-stereo_playlist' => array(stereo_option('playlist_singular')),
             'stereo_playlist' => array("The Playlist", "Track types", "Add Tracks", "Reorder and Delete"),
             //'edit-stereo_artist' => array(stereo_option('artist_singular')),
-            'stereo_artist' => array(stereo_option('artist_singular')),
+            'stereo_artist' => array(),
             'settings_page_stereo_options' => array('Stereo Options')
 
         );
