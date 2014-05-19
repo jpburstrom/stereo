@@ -21,8 +21,8 @@ class StereoCustomPost {
         add_action('add_meta_boxes', array(&$this, 'add_meta_boxes'), 1);
 		add_action("wp_insert_post", array(&$this, "wp_insert_post"), 10, 2);
 		add_action("wp_insert_post", array(&$this, "wp_insert_post"), 10, 2);
-        //add_action("wp_trash_post", array(&$this, "trash_connected_tracks"), 10, 2);
-        //add_action("untrash_post", array(&$this, "restore_connected_tracks"), 10, 2);
+        add_action("wp_trash_post", array(&$this, "trash_connected_tracks"), 10, 2);
+        add_action("untrash_post", array(&$this, "restore_connected_tracks"), 10, 2);
         add_action("before_delete_post", array(&$this, "delete_connected_tracks"), 10, 2);
 		add_action("edit_form_after_title", array(&$this, "edit_form_after_title"));
 
@@ -178,7 +178,6 @@ class StereoCustomPost {
             return;
 
         $connected = $this->_get_connected_tracks($post_id);
-        //var_export($connected); die();
         $post_type = 'stereo_track';
         foreach ($connected as $id) {
             wp_untrash_post($id);
@@ -196,8 +195,6 @@ class StereoCustomPost {
 
 
         $connected = $this->_get_connected_tracks($post_id);
-        var_export($post_id);
-        var_export($connected); die();
 
 
         $post_type = 'stereo_track';
@@ -215,7 +212,11 @@ class StereoCustomPost {
 
     private function _get_connected_tracks($post_id) 
     {
-        return get_posts(array( 'connected_type' => 'playlist_to_tracks', 'connected_items' => $post_id, 'fields' => 'ids', 'posts_per_page' => -1, 'nopaging' => true, 'post_status' => 'trash', 'suppress_filters' => false));
+        $post = get_post($post_id);
+        $query = array( 'connected_type' => 'playlist_to_tracks', 'connected_items' => $post_id, 'fields' => 'ids', 'posts_per_page' => -1, 'nopaging' => true, 'suppress_filters' => false );
+        if ($post->post_status == "trash")
+            $query = array_merge($query, array('post_status' => 'trash', 'connected_query' => array('post_status' => 'trash')));
+        return get_posts($query);
     }
 
     function set_playlist_artist($playlist_id) {
