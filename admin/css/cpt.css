@@ -76,10 +76,10 @@
     float:right;
 }
 .stereo-track-actions-label:after {
-    content:"…";
+    content: "\f107";
 }
 .more .stereo-track-actions-label:after {
-    content:"×";
+    content: "\f343";
 }
 .stereo-track.more .hide-if-js {
     display:block;
