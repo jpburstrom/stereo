@@ -7,5 +7,5 @@
  */
 
 ?>
-<ul id="stereo_controls">
-</ul>
+<div id="stereo_controls">
+</div>
