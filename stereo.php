@@ -55,7 +55,7 @@ function stereo_connection_types() {
 		'name' => 'playlist_to_artist',
 		'from' => 'stereo_playlist',
 		'to' => 'stereo_artist',
-        'cardinality' => 'one-to-one'
+        'cardinality' => 'many-to-one'
 	) );
 }
 

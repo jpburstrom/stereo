@@ -220,11 +220,13 @@ class StereoCustomPost {
 
     function set_playlist_artist($playlist_id) {
         //TODO: if stereo_artist > -1, set up connection with ID
+        //
 
-        p2p_type( 'playlist_to_artist' )->disconnect( $playlist_id, $_POST["stereo_current_artist"] );
+        p2p_type( 'playlist_to_artist' )->disconnect( $playlist_id, 'any');
 
         if ($_POST["stereo_artist"] > -1) {
             p2p_type( 'playlist_to_artist' )->connect( $playlist_id, $_POST["stereo_artist"], array('date' => current_time('mysql') ));
+
             delete_post_meta($playlist_id, "_stereo_other_artist");
         } else {
             update_post_meta($playlist_id, "_stereo_other_artist", $_POST["stereo_other_artist"]);
