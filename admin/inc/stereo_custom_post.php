@@ -20,7 +20,6 @@ class StereoCustomPost {
         add_action('admin_head', array(&$this, 'admin_head'));
         add_action('add_meta_boxes', array(&$this, 'add_meta_boxes'), 1);
 		add_action("wp_insert_post", array(&$this, "wp_insert_post"), 10, 2);
-		add_action("wp_insert_post", array(&$this, "wp_insert_post"), 10, 2);
         add_action("wp_trash_post", array(&$this, "trash_connected_tracks"), 10, 2);
         add_action("untrash_post", array(&$this, "restore_connected_tracks"), 10, 2);
         add_action("before_delete_post", array(&$this, "delete_connected_tracks"), 10, 2);
@@ -190,7 +189,7 @@ class StereoCustomPost {
     private function _delete_connected($post_id, $force) 
     {
         global $post_type;
-        if ($post_type != 'stereo_playlist')
+        if ('stereo_playlist' != get_post_type($post_id))
             return;
 
 
