@@ -48,7 +48,7 @@ if ( !defined( 'ABSPATH' ) )
                     </span>
                 </li>
                 <li class="actions">
-                    <div class="stereo-track-actions-label dashicons dashicons-admin-tools"></div>
+                    <div class="stereo-track-actions-label dashicons"></div>
                     <ul class="hide-if-js">
                         <li><a class="stereo-track-detach" href="#">Detach file from track</a></li>
                         <?php if (true === STEREO_WP_SRC): ?>
