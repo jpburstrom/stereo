@@ -548,7 +548,6 @@
 
         renderError: function() {
             this.stopListening(this.song.info);
-            console.log(this.$el);
             this.$el.html("<span class='load-error'>Error loading file</span>");
         },
         render: function() {

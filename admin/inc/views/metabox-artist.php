@@ -11,12 +11,10 @@ if ( !defined( 'ABSPATH' ) )
 
 $class = "";
 if (!$other) $class = "hide-if-js";
-var_export($selected);
 ?>
 
 <?php if (stereo_option('create_artist_cpt')): ?>
 
-<?php foreach ($artists as $artist) { echo $artist->ID . "|"; } ?>
 <label for="stereo_artist" class="screen-reader-text"><?php echo stereo_option("artist_singular") ?></label>
 <select id="stereo_artist" name="stereo_artist">
     <?php foreach ($artists as $artist): ?>
