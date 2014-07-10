@@ -15,7 +15,7 @@ class StereoStream {
 
     function __construct() 
     {
-        $this->expiry_time = 60*60*24;
+        $this->expiry_time = 60*60*24; //1 dygn
 
         add_action('init', array(&$this, 'add_rewrite_rules'));
         add_action('query_vars', array(&$this, 'stereo_query_vars') );
@@ -34,17 +34,11 @@ class StereoStream {
         return $str . "|" . $this->create_cookie_hash($str);
     }
 
-    function add_cookie()
+    function update_cookie()
     {
 
         $path = trailingslashit(parse_url(home_url(), PHP_URL_PATH));
         setcookie("stereo", $this->create_cookie_string(), time() + $this->expiry_time, $path);
-    }
-
-    function get_cookie()
-    {
-        if (!isset($_COOKIE['stereo'])) 
-            return false;
     }
 
     function validate_cookie() {
@@ -71,15 +65,18 @@ class StereoStream {
         if ( !$query->is_main_query()) {
             return;
         }
-        if ( !isset ( $query->query_vars['stereo_id'] )) {
-            //Here we add a cookie on non-streaming pages
-            $this->add_cookie();
-            return;
-        }
 
-        if (!$this->validate_cookie()){
-            header('HTTP/1.1 403 Forbidden');
-            die();
+            if ( !isset ( $query->query_vars['stereo_id'] )) {
+                //Here we add a cookie on non-streaming pages
+                if (stereo_option('enable_cookie')) $this->update_cookie();
+                return;
+            }
+
+        if (stereo_option('enable_cookie')) {
+            if (!$this->validate_cookie()){
+                header('HTTP/1.1 403 Forbidden');
+                die("403");
+            }
         }
 
         if ( is_numeric ( $query->query_vars['stereo_id'] )) {
@@ -87,8 +84,7 @@ class StereoStream {
         }
 
         header('HTTP/1.1 404 Not Found');
-        echo "404";
-        die();
+        die("404");
     }
 
     function streaming($id)

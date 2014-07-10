@@ -440,6 +440,13 @@ class StereoOptions {
 			'type'    => 'checkbox',
 			'std'     => 1 // Set to 1 to be checked by default, 0 to be unchecked by default.
 		);
+		$this->settings['enable_cookie'] = array(
+			'section' => 'advanced',
+			'title'   => __( 'Enable cookie-based hotlink protection' ),
+			'desc'    => __( 'If enabled, set a cookie on page view, and check for it when streaming. (This might make it harder to play the songs through hotlinking). If you use page caching, this should probably be turned off.' ),
+			'type'    => 'checkbox',
+			'std'     => 0 // Set to 1 to be checked by default, 0 to be unchecked by default.
+		);
         $choices = array();
         foreach (get_intermediate_image_sizes() as $choice) {
             $choices[$choice] = ucwords($choice);
@@ -680,6 +687,7 @@ class StereoOptions {
                 elseif (!isset($options[$id]))
                     $input[$id] = $this->settings[$id]["std"];
 			}
+
 			
 			return $input;
 		}
