@@ -47,7 +47,6 @@ class StereoOptions {
     public function admin_notices()
     {
         if ($notices = get_option('stereo_deferred_admin_notices')) {
-            var_export($notices);
             foreach ($notices as $notice) {
                 if ($this->notices[$notice]) {
                     $notice = $this->notices[$notice];
