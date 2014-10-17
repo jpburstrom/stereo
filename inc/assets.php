@@ -9,6 +9,11 @@
 function stereo_enqueue_assets() {
     $cssdir = STEREO_PLUGIN_URL . "css";
     $jsdir = STEREO_PLUGIN_URL . "js";
+
+    if (!is_admin() && !is_active_widget(false, false, 'stereo_player') && !current_theme_supports('stereo-playlists')) {
+        return;
+    }
+
     if (stereo_option('include_css') || is_admin()) {
         wp_register_style('stereo-widget', $cssdir . "/stereo-widget.css");
         wp_enqueue_style('stereo', $cssdir . "/stereo.css");
