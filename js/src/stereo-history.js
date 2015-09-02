@@ -144,10 +144,12 @@
 
                 //If the link is not internal, check if player is playing and we're not right-clicking etc
                 } else if ( !( ev.which == 2 || ev.metaKey || ev.shiftKey || false === App.player.isPlaying() ) ) { 
+
+                    var relHref = href.replace(App.options.history.urlRoot, '');
                     //If player is playing and url points to different page,
                     //navigate to page (for history) and trigger the new page actions
-                    App.historyRouter.navigate(href.replace(App.options.history.urlRoot, ''));
-                    App.historyRouter.newPage(href.replace(App.options.history.urlRoot, ''));
+                    App.historyRouter.navigate(relHref);
+                    App.historyRouter.newPage(relHref);
                 } else {
                     //Else return, continue propagation etc
                     return;
@@ -203,8 +205,7 @@
                         });
                         
                         //Replace document title
-                        w.document.title = 
-                            w.document.title = $data.find('.data-history-title:first').text();
+                        w.document.title = $data.find('[data-history-title]:first').text();
                         try {
                             w.document.getElementsByTagName('title')[0].innerHTML = w.document.title.replace('<','&lt;').replace('>','&gt;').replace(' & ',' &amp; ');
                         }
