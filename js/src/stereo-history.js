@@ -9,14 +9,16 @@
 
 /*global window: false, Backbone:false, _:false, console:false, jQuery:false*/
 
-(function(w, b, _, $){
+(function(w, $){
 
     "use strict";
 
-    var App;
+    var App, b, _;
 
     w.Stereo = w.Stereo || {};
     App = w.Stereo;
+    b = App.backbone;
+    _ = App.underscore;
 
     //Overriding the navigate method
     b.History.prototype.navigate = function(fragment, options) {
@@ -287,5 +289,5 @@
     };
     
 
-})(window, Backbone, _, jQuery);
+})(window, jQuery);
 

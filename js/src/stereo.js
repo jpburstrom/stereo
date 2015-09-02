@@ -16,7 +16,14 @@
     w.Stereo = w.Stereo || {};
     App = w.Stereo;
 
-    App.e = _.clone(Backbone.Events);
+    App.e = _.clone(b.Events);
+    App.backbone = b;
+    App.underscore = _;
+
+    //HACK: We need a global underscore for templates
+    if (typeof window._ == "undefined") {
+        window._ = _;
+    }
 
     (function() {
 
