@@ -20,7 +20,7 @@ function stereo_enqueue_assets() {
     }
     //wp_enqueue_style('stereo-icons', stereo_find_asset("icons.css", $cssdir));
 
-    wp_register_script('stereo', "$jsdir/stereo.min.js", array("backbone")); 
+    wp_register_script('stereo', "$jsdir/stereo.min.js"); 
     wp_register_script('stereo-widget', "$jsdir/stereo-widget.js", array("stereo"));
 
 
@@ -47,7 +47,8 @@ function stereo_enqueue_assets() {
                 'elements' => "#stereo_controls",
                 //Choose which components, and their source order
                 'order' => array('Buttons', 'Label', 'Position', 'Time'),
-                'label_order' => array('title', 'playlist-artist', 'playlist')
+                'label_order' => array('title', 'playlist', 'playlist-artist'),
+                'labelTicker' => true
             )
         ))
     ));
