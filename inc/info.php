@@ -11,14 +11,16 @@
 class StereoPlaylistInfo {
     var $title =     "";
     var $artwork =  "";
-    var $url = "";
+    var $url = null;
     var $artist = "";
     var $artist_url = "";
 
     function __construct($playlist = false) {
         if ($playlist) {
             $this->title = $playlist->post_title;
-            $this->url = get_permalink($playlist->ID);
+            if ($playlist->post_status == "publish") {
+                $this->url = get_permalink($playlist->ID);
+            } 
             $artist = get_stereo_connected_artist($playlist->ID);
             if ($artist) {
                 $this->artist = $artist->post_title; 
@@ -61,6 +63,7 @@ class StereoTrackInfo {
                 'connected_direction' => 'to',
                 'connected_type' => 'playlist_to_tracks',
                 'connected_items' => $track,
+                'post_status' => 'any', //XXX really?
                 'nopaging' => true,
             ));
             if ($playlist->found_posts == 1) {
@@ -69,6 +72,8 @@ class StereoTrackInfo {
             } else {
                 $this->playlist = new StereoPlaylistInfo();
             }
+        } else {
+            $this->playlist = new StereoPlaylistInfo($playlist);
         }
         if ($data) {
             unset ($data['fileid'], $data['host']);
@@ -159,7 +164,7 @@ class StereoInfoRewrite {
         if (!$ids) {
             return;
         }
-        $options = array("post_status" => "publish", "post_type" => "stereo_playlist");
+        $options = array("post_status" => "any", "post_type" => "stereo_playlist");
         $options['post__in'] = $ids;
         $q = new WP_Query($options);
         if (!$q->have_posts()) {
@@ -168,8 +173,16 @@ class StereoInfoRewrite {
         $tracklist = array();
         foreach ($q->posts as $p) {
             $tracks = array();
-            $connected = p2p_type( 'playlist_to_tracks' )->set_direction( 'from' )->get_connected( $p, 
-                array('posts_per_page' => -1, 'orderby' => 'menu_order', 'order' => 'ASC') );
+            //$connected = p2p_type( 'playlist_to_tracks' )->set_direction( 'from' )->get_connected( $p, 
+            //    array('posts_per_page' => -1, 'orderby' => 'menu_order', 'order' => 'ASC') );
+            $connected = new WP_Query( array(
+                'connected_type' => 'playlist_to_tracks',
+                'connected_items' => $p,
+                'connected_query' => array( 'post_status' => 'any' ),
+                'posts_per_page' => -1,
+                'orderby' => 'menu_order',
+                'order' => 'ASC'
+            ));
             if ($connected->have_posts()) {
                 while ($connected->have_posts()) {
                     $connected->the_post(); 
