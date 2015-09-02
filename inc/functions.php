@@ -103,6 +103,21 @@ function get_stereo_streaming_link( $trackid=false) {
 }
 
 /**
+    Get playlist query
+ */
+function get_stereo_playlist_query() {
+    $connected = new WP_Query( array(
+        'connected_type' => 'playlist_to_tracks',
+        'connected_items' => get_queried_object_id(),
+        'connected_query' => array( 'post_status' => 'any' ),
+        'posts_per_page' => -1,
+        'orderby' => 'menu_order',
+        'order' => 'ASC'
+    ));
+    return $connected;
+}
+
+/**
  * Print opening tag for playlist item
  */
 function the_stereo_track_tag($meta, $tag="li") {
@@ -120,10 +135,10 @@ function the_stereo_track_tag($meta, $tag="li") {
  */
 function the_stereo_playlist () {
     global $post;
-    //Do not show playlist if password for content is required
+    //Do not show playlist if password is required
     if (post_password_required())
        return; 
-    $connected = p2p_type( 'playlist_to_tracks' )->get_connected( $post, array('posts_per_page' => -1, 'orderby' => 'menu_order', 'order' => 'ASC') );
+    $connected = get_stereo_playlist_query();
 ?>
     <?php include("views/playlist.php") ?>
 <?php
@@ -137,7 +152,7 @@ function the_stereo_playlist () {
  */ 
 function have_stereo_playlist () {
     global $post;
-    $connected = p2p_type( 'playlist_to_tracks' )->get_connected( $post, array('posts_per_page' => -1, 'orderby' => 'menu_order', 'order' => 'ASC') );
+    $connected = get_stereo_playlist_query();
     return $connected->have_posts();
 }
 
@@ -150,11 +165,17 @@ function get_stereo_default_tracks() {
    $opt = get_option("stereo_default_tracks");
    switch( $opt["default_track_mode"] ) {
    case "random":
-       //Get all tracks
-       $p = get_posts(array(
-           "post_type" => "stereo_track",
-           "posts_per_page" => -1,
-       ));
+       //Get all tracks from published playlists
+        $connected = new WP_Query( array(
+            'connected_type' => 'playlist_to_tracks',
+            'connected_items' => 'any',
+            'connected_direction' => 'from',
+            'connected_query' => array( 'post_status' => 'publish' ),
+            'nopaging' => true,
+            'orderby' => 'menu_order',
+            'order' => 'ASC'
+        ));
+        $p = $connected->posts;
        //If we have a default playlist, remove that option
        unset ($opt["playlist_choice"]);
        break;
