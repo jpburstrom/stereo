@@ -9607,11 +9607,11 @@ return __p
              * @param object options (optional) options
              */
             initialize: function(url, options) {
-                this.id = url.toString();
+                this.set("id", url.toString());
                 this.options = _.extend({}, options);
                 //this.url = this._fullURL(url, App.options.baseURL);
                 this.info = new App.SongInfo({
-                    id: url
+                    id: this.id
                 });
             },
 
@@ -9640,7 +9640,7 @@ return __p
             createSound: function() {
                 var self = this;
                 this.snd = w.soundManager.createSound({
-                    id: this.options.id,
+                    id: this.id,
                     url: this.url(),
                     onload: function() {
                         if (this.readyState == 2) {
@@ -10464,10 +10464,9 @@ return __p
                         hash = w.location.hash,
                         target = $(hash);
                     //If no elem found, search for elem with name attribute
-                    console.log(hash);
                     if (target.length === 0) {
                         if (hash.length <= 1) {
-                            target = $("body");
+                            target = $scrollRoot;
                         } else {
                             target = $('[name=' + hash.slice(1) +']');
                         }
