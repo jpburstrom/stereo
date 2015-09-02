@@ -38,10 +38,11 @@ function stereo_load_p2p_core() {
 
 	define( 'P2P_TEXTDOMAIN', 'stereo' );
 
-	require_once STEREO_PLUGIN_DIR . 'lib/p2p-core/init.php';
+	require_once STEREO_PLUGIN_DIR . 'lib/p2p-core/autoload.php';
 
-	// TODO: can't use activation hook
-	add_action( 'admin_init', array( 'P2P_Storage', 'install' ) );
+    P2P_Storage::init();
+    P2P_Query_Post::init();
+    register_uninstall_hook( __FILE__, array( 'P2P_Storage', 'uninstall' ) );
 }
 
 function stereo_connection_types() {
