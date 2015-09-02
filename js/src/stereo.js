@@ -821,5 +821,5 @@
     };
 
 
-})(window, Backbone, _, jQuery);
+})(window, Backbone.noConflict(), _.noConflict(), jQuery);
 
