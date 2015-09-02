@@ -109,7 +109,13 @@
                         hash = w.location.hash,
                         target = $(hash);
                     //If no elem found, search for elem with name attribute
-                    target = target.length ? target : $('[name=' + hash.slice(1) +']');
+                    if (target.length === 0) {
+                        if (hash.length <= 1) {
+                            target = $scrollRoot;
+                        } else {
+                            target = $('[name=' + hash.slice(1) +']');
+                        }
+                    }
                     //Calc offset
                     offset = target.length ? target.offset().top : 0;
                     $scrollRoot.animate({
@@ -132,7 +138,7 @@
 
                 //If only hash is changed (anchor links),
                 //trigger navigate (for history) and scroll to new position
-                if (this.hash !== '' && w.location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'') && w.location.hostname == this.hostname) {
+                if (w.location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'') && w.location.hostname == this.hostname) {
                     App.historyRouter.navigate(href.replace(App.options.history.urlRoot, ''));
                     App.e.trigger("history:scroll");
 
