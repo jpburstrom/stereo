@@ -264,6 +264,7 @@ class StereoCustomPost {
 
         if ($metadata !== false) {
             update_post_meta($post_id, "_stereo", $metadata);
+            $this->update_wp_fileid($post_id, $metadata);
         } else {
             delete_post_meta($post_id, "_stereo");
         }
@@ -321,8 +322,21 @@ class StereoCustomPost {
     {
         $metadata = get_stereo_track_meta($id);
         $this->_do_track_metadata($metadata);
-        update_post_meta($id, "_stereo", $metadata);
+        update_post_meta($id, '_stereo', $metadata);
+        $this->update_wp_fileid($id, $metadata);
 
+    }
+
+    /**
+     * Update wp fileid metadata
+     */
+    private function update_wp_fileid($id, $metadata) {
+        if ($metadata['host'] == 'wp') {
+            //_stereo_wp_fileid is used to query for track from attachment
+            update_post_meta($id, '_stereo_wp_fileid', $metadata['fileid']);
+        } else {
+            delete_post_meta($id, '_stereo_wp_fileid');
+        }
     }
 
     /**

@@ -23,6 +23,7 @@ class StereoAttachment {
         add_filter("attachment_fields_to_edit", array(&$this, "edit_fields"), null, 2);
         add_filter("attachment_fields_to_save", array(&$this, "save_fields"), null, 2);
         add_filter( 'wp_generate_attachment_metadata', array(&$this, "generate_metadata"), 10, 2);
+        add_action('delete_attachment', array(&$this, 'delete_attachment'));
     }
 
     /**
@@ -94,6 +95,24 @@ class StereoAttachment {
 
     function get_metadata($id) {
         return get_post_meta($id, "_stereo_metadata", true);
+    }
+
+    //See stereo_custom_post:321
+    function delete_attachment($id) {
+        $tracks = get_posts( array(
+            'post_type' => 'stereo_track',
+            'nopaging' => true,
+            'meta_key' => '_stereo_wp_fileid',
+            'meta_value' => $id
+        ));
+        foreach ($tracks as $track) {
+            $m = get_stereo_track_meta($track->ID);
+            unset($m['host'], $m['fileid']);
+            update_post_meta($track->ID, '_stereo', $m);
+            delete_post_meta($id, '_stereo_wp_fileid');
+
+        }
+
     }
 }
 
