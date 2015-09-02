@@ -9478,13 +9478,22 @@ return __p
 
 this["Stereo"]["Tmpl"]["playlist"] = function(obj) {
 obj || (obj = {});
-var __t, __p = '', __e = _.escape;
+var __t, __p = '', __e = _.escape, __j = Array.prototype.join;
+function print() { __p += __j.call(arguments, '') }
 with (obj) {
-__p += '<span class="playlist"><a href="' +
+__p += '<span class="playlist">\n';
+ if (playlist.url !== null && playlist.url.length > 0) { ;
+__p += '\n<a href="' +
 ((__t = ( playlist.url )) == null ? '' : __t) +
 '">' +
 ((__t = ( playlist.title )) == null ? '' : __t) +
-'</a></span>\n';
+'</a>\n';
+ } else { ;
+__p += '\n' +
+((__t = ( playlist.title )) == null ? '' : __t) +
+'\n';
+ } ;
+__p += '\n</span>\n';
 
 }
 return __p
@@ -9546,7 +9555,14 @@ return __p
     w.Stereo = w.Stereo || {};
     App = w.Stereo;
 
-    App.e = _.clone(Backbone.Events);
+    App.e = _.clone(b.Events);
+    App.backbone = b;
+    App.underscore = _;
+
+    //HACK: We need a global underscore for templates
+    if (typeof window._ == "undefined") {
+        window._ = _;
+    }
 
     (function() {
 
@@ -10351,7 +10367,7 @@ return __p
     };
 
 
-})(window, Backbone, _, jQuery);
+})(window, Backbone.noConflict(), _.noConflict(), jQuery);
 
 ;/**
  * Stereo - a javascript audio player
@@ -10364,14 +10380,16 @@ return __p
 
 /*global window: false, Backbone:false, _:false, console:false, jQuery:false*/
 
-(function(w, b, _, $){
+(function(w, $){
 
     "use strict";
 
-    var App;
+    var App, b, _;
 
     w.Stereo = w.Stereo || {};
     App = w.Stereo;
+    b = App.backbone;
+    _ = App.underscore;
 
     //Overriding the navigate method
     b.History.prototype.navigate = function(fragment, options) {
@@ -10642,5 +10660,5 @@ return __p
     };
     
 
-})(window, Backbone, _, jQuery);
+})(window, jQuery);
 
