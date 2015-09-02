@@ -77,11 +77,11 @@
              * @param object options (optional) options
              */
             initialize: function(url, options) {
-                this.id = url.toString();
+                this.set("id", url.toString());
                 this.options = _.extend({}, options);
                 //this.url = this._fullURL(url, App.options.baseURL);
                 this.info = new App.SongInfo({
-                    id: url
+                    id: this.id
                 });
             },
 
@@ -110,7 +110,7 @@
             createSound: function() {
                 var self = this;
                 this.snd = w.soundManager.createSound({
-                    id: this.options.id,
+                    id: this.id,
                     url: this.url(),
                     onload: function() {
                         if (this.readyState == 2) {
