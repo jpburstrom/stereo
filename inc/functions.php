@@ -188,7 +188,7 @@ function stereo_init_sc()
 
     if ($clientid = stereo_option("soundcloud_id")) {
         //$secret = stereo_option("soundcloud_secret");
-        if (!$secret) $secret = null;
+        //if (!$secret) $secret = null;
         $sc = new Services_SoundCloud($clientid, "");
         return $sc;
     }
