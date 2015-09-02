@@ -20,7 +20,11 @@ function stereo_enqueue_assets() {
     }
     //wp_enqueue_style('stereo-icons', stereo_find_asset("icons.css", $cssdir));
 
-    wp_register_script('stereo', "$jsdir/stereo.min.js"); 
+    if (defined('WP_SCRIPT_DEBUG') && WP_SCRIPT_DEBUG) {
+        wp_register_script('stereo', "$jsdir/stereo.js"); 
+    } else {
+        wp_register_script('stereo', "$jsdir/stereo.min.js"); 
+    }
     wp_register_script('stereo-widget', "$jsdir/stereo-widget.js", array("stereo"));
 
 
