@@ -30,9 +30,10 @@ class StereoSoundCloud
 
     function get_authorize_url()
     {
-        return $this->sc->getAuthorizeUrl(array(
-            'scope' => 'non-expiring'
-        ));
+        if ($this->sc)
+            return $this->sc->getAuthorizeUrl(array(
+                'scope' => 'non-expiring'
+            ));
     }
 
 
@@ -55,7 +56,8 @@ class StereoSoundCloud
      */
     function get_token() 
     {
-        return $this->sc->getAccessToken();
+        if ($this->sc)
+            return $this->sc->getAccessToken();
     }
 
     /**
