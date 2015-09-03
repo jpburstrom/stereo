@@ -24,24 +24,39 @@ if ( !defined( 'ABSPATH' ) )
 		<form action="options.php" method="post">
 	
             <?php settings_fields( 'stereo_options' ); ?>
-            <div class="ui-tabs">
-                <ul class="ui-tabs-nav">
-            
-                    <?php foreach ( $this->sections as $section_slug => $section ) : if ($section_slug == "default_tracks") continue; ?>
-                    <li><a href="#<?php echo $section_slug ?>"><?php echo $section ?></a></li>
-                    <?php endforeach; ?>
-            
-                </ul>
             <?php do_settings_sections( $_GET['page'] ); ?>
             
-            </div>
-                <p class="submit"><input name="Submit" type="submit" class="button-primary" value="<?php  _e( 'Save Changes', 'stereo' ) ?>" /></p>
+            <p class="submit"><input name="Submit" type="submit" class="button-primary" value="<?php  _e( 'Save Changes', 'stereo' ) ?>" /></p>
 		
         </form>
+
         
 	<script type="text/javascript">
 		jQuery(document).ready(function($) {
 			var sections = [];
+            $("#stereo_update_tracks").on("click", function(ev) {
+                var $msg, $self = $(this);
+                ev.preventDefault();
+                if ($self.attr("disabled") == "disabled")
+                    return;
+                $self.attr("disabled", "disabled");
+                $msg = $(" <span class='msg'></span>").appendTo($self.parent());
+                $msg.text(" Updating...");
+                window.onbeforeunload = function() { return "Please wait until tracks are updated"; }
+                $.post(ajaxurl, { action: 'stereo_update_tracks' }, function(data) {
+                    $self.siblings(".msg").text(" " + data);
+                    $self.siblings('.msg').fadeOut(3000, function() {
+                        $(this).remove();
+                        $self.removeAttr("disabled");
+                    });
+                    window.onbeforeunload = null;
+                });
+            });
+            $(".url-select").click(function() {
+                console.log("asd");
+                $(this).select();
+            });
+            return;
 			
             <?php foreach ( $this->sections as $section_slug => $section )
 				echo "sections['$section'] = '$section_slug';";
@@ -95,24 +110,6 @@ if ( !defined( 'ABSPATH' ) )
 			if ($.browser.mozilla) 
 			         $("form").attr("autocomplete", "off");
 
-            $("#stereo_update_tracks").on("click", function(ev) {
-                var $msg, $self = $(this);
-                ev.preventDefault();
-                if ($self.attr("disabled") == "disabled")
-                    return;
-                $self.attr("disabled", "disabled");
-                $msg = $(" <span class='msg'></span>").appendTo($self.parent());
-                $msg.text(" Updating...");
-                window.onbeforeunload = function() { return "Please wait until tracks are updated"; }
-                $.post(ajaxurl, { action: 'stereo_update_tracks' }, function(data) {
-                    $self.siblings(".msg").text(" " + data);
-                    $self.siblings('.msg').fadeOut(3000, function() {
-                        $(this).remove();
-                        $self.removeAttr("disabled");
-                    });
-                    window.onbeforeunload = null;
-                });
-            });
 		});
 	</script>
 </div>

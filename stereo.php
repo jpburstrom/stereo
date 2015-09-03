@@ -66,6 +66,7 @@ function stereo_init() {
 
     require('inc/functions.php');
     require('inc/info.php');
+    require('inc/soundcloud.php');
     require('inc/stream.php');
     require('inc/assets.php');
     require('inc/widget.php');

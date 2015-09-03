@@ -22,8 +22,8 @@ class StereoOptions {
             'options_nag' => __('Welcome to <strong>Stereo</strong>! Please visit the <a href="options-general.php?page=stereo_options">Stereo options page</a> to configure the plugin.')
         );
 		
-		$this->sections['general']      = __( 'User settings' );
 		$this->sections['advanced']      = __( 'Admin' );
+		$this->sections['soundcloud']      = __( 'SoundCloud settings' );
 		$this->sections['names']      = __( 'Names & Slugs' );
 		$this->sections['artists']      = __( 'Multiple Artists' );
 		$this->sections['ajax']      = __( 'Continuous Playback' );
@@ -100,7 +100,7 @@ class StereoOptions {
 			'desc'    => __( 'This is a default description.' ),
 			'std'     => '',
 			'type'    => 'text',
-			'section' => 'general',
+			'section' => 'soundcloud',
 			'choices' => array(),
 			'class'   => ''
 		);
@@ -173,6 +173,53 @@ class StereoOptions {
 	}
 	
 	/**
+	 * Description for soundcloud section
+	 *
+	 * @since 1.0
+	 */
+	public function display_section_soundcloud() {
+        $msg = false;
+        if (!(stereo_option('soundcloud_id'))) {
+            $msg = __('You need to provide a Client ID to connect with SoundCloud');
+?>
+            <p><strong><?php echo $msg?></strong></p>
+            <ol>
+                <li><?php _e('<a href="http://soundcloud.com/you/apps/new" target="_blank"/>Register an app</a> over at SoundCloud. You can give it any name, and then put the following URL as <strong>Redirect URI</strong>:') ?><br/>
+                <input class="url-select regular-text" value="<?php echo admin_url("options-general.php?page=stereo_options")?>" readonly>
+                </li>
+                <li><?php _e('Put the Client ID and Secret in the boxes below and save.')?>
+                </li>
+            </ol>
+<?php
+        } else if (!(stereo_option('soundcloud_secret'))) {
+            $msg = __('You need to provide a SoundCloud Client Secret to play private tracks');
+?>
+            <p><strong><?php echo $msg?></strong></p>
+<?php
+            return;
+        }
+?>
+
+        <div id="soundcloud-connect">
+        <?php if (stereo_sc()->save_token() === true || stereo_sc()->get_token() !== null) : ?>
+        <p><?php stereo_sc()->the_connected_user() ?></p>
+        <p><?php _e('Yes! You can play private songs from this user.')?></p>
+        <p>
+            <a href="<?php echo stereo_sc()->get_remove_token_url()?>" title="<?php _e('Remove SoundCloud connection from settings')?>"> <?php _e( 'Remove connection' ) ?></a> |
+            <a href="http://soundcloud.com/settings/connections" target="_blank" title="<?php _e('Go to your SoundCloud settings to revoke access (will open in new window)')?>"><?php _e('Revoke access')?></a>
+        </p>
+         <?php else:?>
+         
+        <p><?php _e("To be able to play private SoundCloud tracks, you need to authorize the Stereo plugin to access them. If you only intend to play public tracks, you don't need to do this."); ?></p>
+        <p><a href="<?php echo stereo_sc()->get_authorize_url() ?>" title="<?php _e('Connect with your SoundCloud Account')?>">
+        <?php _e( 'Connect with SoundCloud' ) ?></a></p>
+        <?php endif; ?>
+        </div>
+        <p><?php _e("")?></p>
+<?php 
+	}
+	
+	/**
 	 * Description for About section
 	 *
 	 * @since 1.0
@@ -227,6 +274,10 @@ class StereoOptions {
 			
 			case 'heading':
 				echo '</td></tr><tr valign="top"><td colspan="2"><h4>' . $desc . '</h4>';
+				break;
+
+			case 'body':
+				echo '<p>' . $desc . '</p>';
 				break;
 			
 			case 'checkbox':
@@ -306,7 +357,7 @@ class StereoOptions {
 			'desc'    => __( 'Your SoundCloud User(s) (Multiple users comma-separated: <code>User1, User2</code>)' ),
 			'std'     => '',
 			'type'    => 'text',
-			'section' => 'general'
+			'section' => 'soundcloud'
 		);
 
 		$this->settings['soundcloud_id'] = array(
@@ -314,18 +365,16 @@ class StereoOptions {
 			'desc'    => __( 'Your SoundCloud Client ID (Register your app <a href="http://soundcloud.com/you/apps/new" target="_blank">here</a>)' ),
 			'std'     => '',
 			'type'    => 'text',
-			'section' => 'general'
+			'section' => 'soundcloud'
 		);
 
-        /* For now we don't need this.
 		$this->settings['soundcloud_secret'] = array(
 			'title'   => __( 'SoundCloud Secret' ),
-			'desc'    => __( 'Your SoundCloud Secret (Register your app <a href="http://soundcloud.com/you/apps/new" target="_blank">here</a>)' ),
+            'desc'    => __( 'Your SoundCloud Secret (Register your app <a href="http://soundcloud.com/you/apps/new" target="_blank">here</a>) ' ),
 			'std'     => 'CLIENT_SECRET',
 			'type'    => 'text',
-			'section' => 'general'
+			'section' => 'soundcloud'
         );
-         */
 		$this->settings['rewrite_slug'] = array(
 			'title'   => __( 'API slug' ),
 			'desc'    => __( 'Slug to use for streaming and info API (make sure it doesn\'t collide with other permalinks)' ),
@@ -628,6 +677,8 @@ class StereoOptions {
 				add_settings_section( $slug, $title, array( &$this, 'display_tools_section' ), 'stereo_options' );
             } else if ( $slug == 'default_tracks' ) {
 				add_settings_section( $slug, $title, array( &$this, 'display_section' ), 'stereo_default_tracks' );
+            } else if ( $slug == 'soundcloud' ) {
+				add_settings_section( $slug, $title, array( &$this, 'display_section_soundcloud' ), 'stereo_options' );
             } else {
 				add_settings_section( $slug, $title, array( &$this, 'display_section' ), 'stereo_options' );
             }
@@ -678,6 +729,10 @@ class StereoOptions {
 	public function validate_settings( $input ) {
         $this->purge_plugin_cache();
 		if ( ! isset( $input['reset_theme'] ) ) {
+            $users = array_map('trim', explode(',', $input['soundcloud_users']));
+            $users = array_unique(array_merge($users, array(stereo_sc()->get_connected_user_slug())));
+            $input['soundcloud_users'] = implode(', ', $users);
+            
 			$options = get_option( 'stereo_options' );
 			
 			foreach ( $this->checkboxes as $id ) {
@@ -690,6 +745,7 @@ class StereoOptions {
 			
 			return $input;
 		}
+
 		return false;
 		
 	}

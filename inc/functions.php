@@ -202,20 +202,15 @@ function get_stereo_default_tracks() {
 }
 
 /**
- * Soundcloud connection dance
+ * Get StereoSoundCloud instance
  *
- * @return Services_SoundCloud || false if no client id
+ * @return StereoSoundCloud instance
  */
-function stereo_init_sc() 
-{
-    require_once( STEREO_PLUGIN_DIR . "/lib/php-soundcloud/Services/Soundcloud.php" );
-
-    if ($clientid = stereo_option("soundcloud_id")) {
-        //$secret = stereo_option("soundcloud_secret");
-        //if (!$secret) $secret = null;
-        $sc = new Services_SoundCloud($clientid, "");
-        return $sc;
+function stereo_sc() {
+    static $sc;
+    if (!$sc) {
+        $sc = new StereoSoundCloud();
     }
-    return false;
+    return $sc;
 }
 
