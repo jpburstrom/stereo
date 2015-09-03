@@ -19,7 +19,9 @@ function stereo_option( $option ) {
     if ( !isset($options) ) {
         $options = get_option( 'stereo_options' );
     }
-    $opt = $options[$option];
+    if (isset($options[$option])) {
+        $opt = $options[$option];
+    }
     return $opt;
 }
 
