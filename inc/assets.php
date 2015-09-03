@@ -23,7 +23,7 @@ function stereo_enqueue_assets() {
     if (defined('SCRIPT_DEBUG') && SCRIPT_DEBUG) {
         wp_register_script('stereo', "$jsdir/stereo.js", array("jquery")); 
     } else {
-        wp_register_script('stereo', "$jsdir/stereo.min.js"); 
+        wp_register_script('stereo', "$jsdir/stereo.min.js", array("jquery")); 
     }
     wp_register_script('stereo-widget', "$jsdir/stereo-widget.js", array("stereo"));
 
