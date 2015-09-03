@@ -123,21 +123,8 @@ class StereoStream {
 
     function sc_streaming($id) 
     {
-        $sc = stereo_init_sc();
-        if (false !== $sc) {
-            try {
-                $track = json_decode($sc->get("tracks/$id"));
-            } catch (Exception $e) {
-                header("HTTP/1.1 {$e->getHttpCode()}");
-                die();
-            }
-            if ($track->streamable) {
-                header("Location:" . $track->stream_url . "?client_id=" . stereo_option('soundcloud_id') );
-            } else {
-                header('HTTP/1.1 403 Forbidden');
-            }
-            die();
-        }
+        $sc = stereo_sc();
+        $sc->stream_track($id);
     }
 }
 

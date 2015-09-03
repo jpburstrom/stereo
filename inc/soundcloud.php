@@ -152,6 +152,32 @@ class StereoSoundCloud
         return $track;
 
     }
+    
+    /**
+     * Stream track -- used by stream script
+     */
+    function stream_track($id)
+    {
+        if (false !== $sc) {
+            try {
+                $track = json_decode($this->sc->get("tracks/$id"));
+            } catch (Exception $e) {
+                header("HTTP/1.1 {$e->getHttpCode()}");
+                die();
+            }
+            if ($track->streamable) {
+                $url = $track->stream_url . "?";
+                if ($track->sharing == 'private') {
+                    $url .= "secret_token=$track->secret_token&";
+                } 
+                header("Location:" . $url . "client_id=" . stereo_option('soundcloud_id') );
+            } else {
+                header('HTTP/1.1 403 Forbidden');
+            }
+            die();
+        }
+        
+    }
 
     /**
      * Get the handle of the connected user
