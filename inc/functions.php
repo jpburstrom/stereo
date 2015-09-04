@@ -115,10 +115,11 @@ function get_stereo_streaming_link( $trackid=false) {
 /**
     Get playlist query
  */
-function get_stereo_playlist_query() {
+function get_stereo_playlist_query($id) {
+    $id = $id ? $id : get_queried_object_id();
     $connected = new WP_Query( array(
         'connected_type' => 'playlist_to_tracks',
-        'connected_items' => get_queried_object_id(),
+        'connected_items' => $id,
         'connected_query' => array( 'post_status' => 'any' ),
         'posts_per_page' => -1,
         'orderby' => 'menu_order',
@@ -143,12 +144,12 @@ function the_stereo_track_tag($meta, $tag="li") {
 /**
  * Print playlist for current $post
  */
-function the_stereo_playlist () {
+function the_stereo_playlist ($id) {
     global $post;
     //Do not show playlist if password is required
     if (post_password_required())
        return; 
-    $connected = get_stereo_playlist_query();
+    $connected = get_stereo_playlist_query($id);
 ?>
     <?php include("views/playlist.php") ?>
 <?php
@@ -160,9 +161,9 @@ function the_stereo_playlist () {
  *
  * @return bool
  */ 
-function have_stereo_playlist () {
+function have_stereo_playlist ($id) {
     global $post;
-    $connected = get_stereo_playlist_query();
+    $connected = get_stereo_playlist_query($id);
     return $connected->have_posts();
 }
 
