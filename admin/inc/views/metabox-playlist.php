@@ -15,7 +15,7 @@ if ( !defined( 'ABSPATH' ) )
     <?php $this->metabox_toolbar() ?>
     <input type="hidden" id="stereo_track_count" name="stereo_track_count">
     <?php if (true === STEREO_SC_SRC): ?>
-    <div class="hide-if-js" id="stereo_soundcloud_import_container">
+    <div class="hide-if-js soundcloud-import-container" id="stereo_soundcloud_import_container">
         <h4><?php _e("Import from SoundCloud") ?></h4>
         <select class="soundcloud-select" id="stereo_sc_sets"><option>Playlists</option></select>
         <select class="soundcloud-select" id="stereo_sc_tracks"><option>Tracks</option></select>

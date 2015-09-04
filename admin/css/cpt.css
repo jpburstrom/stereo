@@ -140,3 +140,7 @@
 .soundcloud-select {
     display:block;
 }
+
+.soundcloud-import-container .spinner {
+    float:left;
+}
