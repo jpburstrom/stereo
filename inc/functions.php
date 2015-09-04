@@ -90,6 +90,14 @@ function stereo_url($append="") {
 }
 
 /**
+ * Get base url for js history
+ */
+function stereo_history_root($append="") {
+    $cmp = parse_url(home_url());
+    return $cmp['scheme'] ."://". $cmp['host'];
+}
+
+/**
  * Get streaming link for track
  */
 function get_stereo_streaming_link( $trackid=false) {
