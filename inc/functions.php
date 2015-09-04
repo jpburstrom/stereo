@@ -160,7 +160,7 @@ function get_stereo_playlist ($id) {
 /**
  * Print playlist for current $post
  */
-function the_stereo_playlist ($id) {
+function the_stereo_playlist ($id=null) {
     echo get_stereo_playlist($id);
 }
 
