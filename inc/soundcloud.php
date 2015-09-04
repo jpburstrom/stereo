@@ -6,10 +6,13 @@
 class StereoSoundCloud
 {
     private $me;
+    private $ignore_cache;
     
     function __construct()
     {
         require_once( STEREO_PLUGIN_DIR . "/lib/php-soundcloud/Services/Soundcloud.php" );
+
+        $this->ignore_cache = false;
 
         if ($clientid = stereo_option("soundcloud_id")) {
             $secret = stereo_option("soundcloud_secret");
@@ -79,6 +82,21 @@ class StereoSoundCloud
         update_option('stereo_deferred_admin_notices', $notices);
         wp_redirect('options-general.php?page=stereo_options');
     }
+    /**
+     * Get json object of tracks and sets
+     */
+    function ajax_get_tracks($data)
+    {
+        $sc = stereo_sc();
+        if (isset($_POST['reload']) && $_POST['reload'] == "true") {
+            $sc->ignore_cache = true;
+        }
+        $newdata = array();
+        $newdata['tracks'] = $sc->get_tracks();
+        $newdata['sets'] = $sc->get_sets();
+        echo json_encode($newdata);
+        die();
+    }
 
     function get_users()
     {
@@ -137,7 +155,7 @@ class StereoSoundCloud
     function get_query($query)
     {
         $query_label = "stereo_sc_query_$query";
-        $data = get_transient($query_label);
+        $data = $this->ignore_cache ? false : get_transient($query_label);
         if (false === $data) {
             $data = $this->sc->get($query);
             set_transient( $query_label, $data, 60*5 );
@@ -208,3 +226,4 @@ class StereoSoundCloud
 }
 
 add_action('admin_post_stereo_remove_token', 'StereoSoundCloud::admin_post_remove_token');
+add_action('wp_ajax_stereo_get_soundcloud_tracks', 'StereoSoundCloud::ajax_get_tracks');

@@ -64,6 +64,7 @@ jQuery(document).ready(function($) {
         });
      },
     add_sc_track = function(data) {
+        if (typeof(data) == "undefined") return;
          data.url = data.stream_url + "?client_id=" + stereo_sc_id;
          data.host = "sc";
          return add_track(data);
@@ -86,6 +87,21 @@ jQuery(document).ready(function($) {
      },
      basename = function(path) {
          return path.split('/').reverse()[0];
+     },
+     $spinner = $('<div class="spinner"/>'),
+     $soundcloud_container = $("#stereo_soundcloud_import_container").prepend($spinner),
+     soundcloud_toggle = null,
+     soundcloud_track_callback = function(resp) {
+         var $elem;
+         var looper = function(id, obj) {
+             $("<option/>").val(id).attr("data-stereo_tracks", obj[1]).text(obj[0]).appendTo($elem);
+         };
+         resp = JSON.parse(resp);
+         $elem = $("#stereo_sc_sets").empty().append("<option>Playlists</option>");
+         $.each(resp.sets, looper);
+         $elem = $("#stereo_sc_tracks").empty().append("<option>Tracks</option>");
+         $.each(resp.tracks, looper);
+         $spinner.removeClass('is-active');
      }
      ;
 
@@ -102,8 +118,25 @@ jQuery(document).ready(function($) {
         ev.preventDefault();
     });
 
-    $("#stereo_soundcloud_import").click(function(ev) {
-        $("#stereo_soundcloud_import_container").toggle(200);
+    $("#stereo_soundcloud_import").on("click", function(ev) {
+        if (soundcloud_toggle === false) {
+            $soundcloud_container.hide();
+        } else {
+            $soundcloud_container.show();
+            //First time!
+            if (soundcloud_toggle === null) {
+                $spinner.addClass("is-active");
+                $.post(ajaxurl, {action: 'stereo_get_soundcloud_tracks'}, soundcloud_track_callback);
+                soundcloud_toggle = true;
+            }
+        }
+        soundcloud_toggle = !soundcloud_toggle;
+        ev.preventDefault();
+    });
+
+    $("#stereo_reload").click(function(ev) {
+        $spinner.addClass("is-active");
+        $.post(ajaxurl, {action: 'stereo_get_soundcloud_tracks', 'reload': true}, soundcloud_track_callback);
         ev.preventDefault();
     });
 
@@ -118,8 +151,8 @@ jQuery(document).ready(function($) {
         add_sc_track(data);
     });
 
-    $(".stereo-cancel").click(function(ev) {
-        $(this).parent().hide(200);
+    $("#stereo_cancel").click(function(ev) {
+        $soundcloud_container.hide();
         ev.preventDefault();
     });
     

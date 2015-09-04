@@ -8,6 +8,7 @@
 
 if ( !defined( 'ABSPATH' ) )
     die( '-1' );
+
 ?>
 
 <div id="stereo_container">
@@ -16,21 +17,12 @@ if ( !defined( 'ABSPATH' ) )
     <?php if (true === STEREO_SC_SRC): ?>
     <div class="hide-if-js" id="stereo_soundcloud_import_container">
         <h4><?php _e("Import from SoundCloud") ?></h4>
-        <label for="stereo_sc_sets">Sets</label>
-        <select id="stereo_sc_sets">
-            <option></option>
-            <?php foreach (stereo_sc()->get_sets() as $id => $set): ?>
-                <option value="<?php echo $id ?>" data-stereo_tracks='<?php echo $set[1]?>'><?php echo $set[0] ?> </option>
-            <?php endforeach; ?>
-        </select>
-        <label for="stereo_sc_tracks">Tracks</label>
-        <select id="stereo_sc_tracks">
-            <option></option>
-            <?php foreach (stereo_sc()->get_tracks() as $id => $set): ?>
-                <option value="<?php echo $id ?>" data-stereo_tracks='<?php echo $set[1]?>'><?php echo $set[0] ?> </option>
-            <?php endforeach; ?>
-        </select>
-        <a href="#" class="stereo-cancel">Cancel</a>
+        <select class="soundcloud-select" id="stereo_sc_sets"><option>Playlists</option></select>
+        <select class="soundcloud-select" id="stereo_sc_tracks"><option>Tracks</option></select>
+        <p>
+        <a href="#" id="stereo_reload">Reload tracks</a> |
+        <a href="#" id="stereo_cancel">Close</a>
+        </p>
     </div>
     <?php endif; ?>
     <script id="stereo_track_template" type="text/html">

@@ -33,7 +33,7 @@ class StereoCustomPost {
         global $current_screen;
         if (($current_screen->post_type == 'stereo_playlist' || $current_screen->post_type == 'stereo_track') && $current_screen->base == 'post') {
 
-            wp_enqueue_script( 'stereo-admin-cptjs', STEREO_PLUGIN_URL . 'admin/js/cpt.js' );
+            wp_enqueue_script( 'stereo-admin-cptjs', STEREO_PLUGIN_URL . 'admin/js/cpt.js',  array('jquery-ui-sortable') );
             wp_enqueue_style( 'stereo-admin-cpt', STEREO_PLUGIN_URL . 'admin/css/cpt.css' );
 
             wp_enqueue_style( 'stereo-admin-icons', STEREO_PLUGIN_URL . 'css/icons.css' );
