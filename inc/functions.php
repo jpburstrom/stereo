@@ -140,20 +140,28 @@ function the_stereo_track_tag($meta, $tag="li") {
         echo "'>";
     }
 }
-
 /**
- * Print playlist for current $post
+ * Get playlist for current or supplied post
  */
-function the_stereo_playlist ($id) {
+function get_stereo_playlist ($id) {
     global $post;
     //Do not show playlist if password is required
     if (post_password_required())
        return; 
     $connected = get_stereo_playlist_query($id);
+    ob_start();
 ?>
     <?php include("views/playlist.php") ?>
 <?php
     wp_reset_postdata();
+    return ob_get_clean();
+}
+
+/**
+ * Print playlist for current $post
+ */
+function the_stereo_playlist ($id) {
+    echo get_stereo_playlist($id);
 }
 
 /**
@@ -224,4 +232,24 @@ function stereo_sc() {
     }
     return $sc;
 }
+
+/**
+ * Stereo shortcode, does everything
+ */
+function stereo_shortcode($attr)
+{
+    $content = "";
+    $posts = array();
+    if (isset($attr["slug"])) {
+        $slugs = explode(",", $attr["slug"]);
+        foreach ($slugs as $slug) {
+            $post = get_posts(array('post_type' => 'stereo_playlist', 'name' => $slug));
+            $content .= get_stereo_playlist($post[0]->ID);
+        }
+    }
+    return $content;
+}
+
+
+add_shortcode('stereo', 'stereo_shortcode');
 
