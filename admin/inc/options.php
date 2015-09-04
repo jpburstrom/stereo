@@ -22,11 +22,13 @@ class StereoOptions {
             'options_nag' => __('Welcome to <strong>Stereo</strong>! Please visit the <a href="options-general.php?page=stereo_options">Stereo options page</a> to configure the plugin.')
         );
 		
-		$this->sections['advanced']      = __( 'Admin' );
+		$this->sections['slugs']      = __( 'Slug settings' );
+		$this->sections['playlist']      = __( 'Playlist settings' );
+		$this->sections['taxonomy']      = __( 'Taxonomy settings' );
+		$this->sections['artists']      = __( 'Artist settings' );
 		$this->sections['soundcloud']      = __( 'SoundCloud settings' );
-		$this->sections['names']      = __( 'Names & Slugs' );
-		$this->sections['artists']      = __( 'Multiple Artists' );
-		$this->sections['ajax']      = __( 'Continuous Playback' );
+		$this->sections['ajax']      = __( 'Playback settings' );
+		$this->sections['advanced']      = __( 'Advanced' );
 		$this->sections['tools']        = __( 'Tools' );
 		$this->sections['about']        = __( 'About' );
         //This is for another page
@@ -376,11 +378,25 @@ class StereoOptions {
 			'section' => 'soundcloud'
         );
 		$this->settings['rewrite_slug'] = array(
-			'title'   => __( 'API slug' ),
-			'desc'    => __( 'Slug to use for streaming and info API (make sure it doesn\'t collide with other permalinks)' ),
+			'title'   => __( 'Internal API path' ),
+			'desc'    => __( 'Slug for streaming and info API. Make sure it doesn\'t collide with other permalinks.' ),
 			'std'     => 'stereo',
 			'type'    => 'text',
-			'section' => 'names'
+			'section' => 'advanced'
+		);
+		$this->settings['playlist_taxonomy_slug'] = array(
+			'title'   => __( 'Taxonomy path' ),
+			'desc'    => __( 'Slug for URL rewrites' ),
+			'std'     => 'playlist_category',
+			'type'    => 'text',
+			'section' => 'slugs'
+		);
+		$this->settings['playlist_taxonomy2_slug'] = array(
+			'title'   => __( 'Secondary taxonomy path' ),
+			'desc'    => __( 'Slug for URL rewrites' ),
+			'std'     => 'playlist_roles',
+			'type'    => 'text',
+			'section' => 'slugs'
 		);
 
 		$this->settings['playlist_singular'] = array(
@@ -388,91 +404,77 @@ class StereoOptions {
 			'desc'    => __( 'Name of the custom post type (could be Playlist, Set, Album...)' ),
 			'std'     => 'Playlist',
 			'type'    => 'text',
-			'section' => 'names'
+			'section' => 'playlist'
 		);
 		$this->settings['playlist_plural'] = array(
 			'title'   => __( 'Playlist plural name' ),
-			'desc'    => __( 'Plural (more than one) name of the custom post type (could be Playlists, Sets, Albums...)' ),
+			'desc'    => __( 'Plural name of the custom post type (could be Playlists, Sets, Albums...)' ),
 			'std'     => 'Playlists',
 			'type'    => 'text',
-			'section' => 'names'
+			'section' => 'playlist'
 		);
 		$this->settings['playlist_slug'] = array(
-			'title'   => __( 'Playlist rewrite slug' ),
-			'desc'    => __( 'Slug to use for URL rewrites' ),
+			'title'   => __( 'Playlist path' ),
+			'desc'    => __( 'Slug for URL rewrites' ),
 			'std'     => 'playlist',
 			'type'    => 'text',
-			'section' => 'names'
+			'section' => 'playlist'
+		);
+		$this->settings['has_playlist_archive'] = array(
+			'section' => 'playlist',
+			'title'   => sprintf(__( '%s archive' ), stereo_option('playlist_plural')),
+			'desc'    => sprintf(__( 'Enable archive for %s' ), stereo_option('playlist_plural')),
+			'type'    => 'checkbox',
+			'std'     => 0 // Set to 1 to be checked by default, 0 to be unchecked by default.
 		);
 		$this->settings['playlist_taxonomy_singular'] = array(
 			'title'   => __( 'Taxonomy singular name' ),
 			'desc'    => __( 'Name of the taxonomy (could be Group, Category, etc)' ),
 			'std'     => 'Playlist category',
 			'type'    => 'text',
-			'section' => 'names'
+			'section' => 'taxonomy'
 		);
 		$this->settings['playlist_taxonomy_plural'] = array(
 			'title'   => __( 'Taxonomy plural name' ),
 			'desc'    => __( 'Plural name of the playlist taxonomy (could be Groups, Categories, etc)' ),
 			'std'     => 'Playlist categories',
 			'type'    => 'text',
-			'section' => 'names'
+			'section' => 'taxonomy'
 		);
-		$this->settings['playlist_taxonomy_slug'] = array(
-			'title'   => __( 'Taxonomy rewrite slug' ),
-			'desc'    => __( 'Slug to use for URL rewrites' ),
-			'std'     => 'playlist_category',
-			'type'    => 'text',
-			'section' => 'names'
+		$this->settings['taxonomy_tags'] = array(
+			'section' => 'taxonomy',
+			'title'   => sprintf(__( '%s taxonomy type' ), stereo_option('playlist_singular')),
+            'desc'    => sprintf(__( 'Make taxonomy (<code>%s</code>) non-hierarchical, like tags.'), stereo_option('playlist_taxonomy_plural') ),
+			'type'    => 'checkbox',
+			'std'     => 0 // Set to 1 to be checked by default, 0 to be unchecked by default.
+		);
+		$this->settings['show_second_taxonomy'] = array(
+			'section' => 'taxonomy',
+            'title'   => "Activate secondary taxonomy",
+            'desc'    => sprintf(__( 'Activate the second %s taxonomy (<code>%s</code>)'), stereo_option('playlist_singular'), stereo_option('playlist_taxonomy2_plural') ),
+			'type'    => 'checkbox',
+			'std'     => 0 // Set to 1 to be checked by default, 0 to be unchecked by default.
 		);
 		$this->settings['playlist_taxonomy2_singular'] = array(
 			'title'   => __( 'Second taxonomy singular name' ),
 			'desc'    => __( 'Name of the taxonomy (could be Group, Category, etc)' ),
 			'std'     => 'Role',
 			'type'    => 'text',
-			'section' => 'names'
+			'section' => 'taxonomy'
 		);
 		$this->settings['playlist_taxonomy2_plural'] = array(
 			'title'   => __( 'Taxonomy plural name' ),
 			'desc'    => __( 'Plural name of the playlist taxonomy (could be Groups, Categories, etc)' ),
 			'std'     => 'Roles',
 			'type'    => 'text',
-			'section' => 'names'
-		);
-		$this->settings['playlist_taxonomy2_slug'] = array(
-			'title'   => __( 'Second taxonomy rewrite slug' ),
-			'desc'    => __( 'Slug to use for URL rewrites' ),
-			'std'     => 'playlist_roles',
-			'type'    => 'text',
-			'section' => 'names'
-		);
-		$this->settings['taxonomy_tags'] = array(
-			'section' => 'advanced',
-			'title'   => __( 'First taxonomy are tags' ),
-            'desc'    => sprintf(__( 'Use %s like tags.'), stereo_option('playlist_taxonomy_plural') ),
-			'type'    => 'checkbox',
-			'std'     => 0 // Set to 1 to be checked by default, 0 to be unchecked by default.
-		);
-		$this->settings['show_second_taxonomy'] = array(
-			'section' => 'advanced',
-            'title'   => "Activate second taxonomy",
-            'desc'    => sprintf(__( 'Activate a second taxonomy (%s) for playlists'), stereo_option('playlist_taxonomy2_plural') ),
-			'type'    => 'checkbox',
-			'std'     => 0 // Set to 1 to be checked by default, 0 to be unchecked by default.
+			'section' => 'taxonomy'
 		);
 		$this->settings['taxonomy2_tags'] = array(
-			'section' => 'advanced',
-			'title'   => __( 'Second taxonomy are tags' ),
-            'desc'    => sprintf(__( 'Use second taxonomy (%s) like tags.'), stereo_option('playlist_taxonomy2_plural') ),
+			'section' => 'taxonomy',
+			'title'   => __( 'Secondary taxonomy type' ),
+            'desc'    => sprintf(__( 'Make taxonomy (<code>%s</code>) non-hierarchical, like tags.'), stereo_option('playlist_taxonomy2_plural') ),
 			'type'    => 'checkbox',
 			'std'     => 1 // Set to 1 to be checked by default, 0 to be unchecked by default.
-		);
-		$this->settings['has_playlist_archive'] = array(
-			'section' => 'advanced',
-			'title'   => sprintf(__( 'Use archive for %s' ), stereo_option('playlist_plural')),
-			'desc'    => __( 'Check this box to enable the stereo_playlist archive' ),
-			'type'    => 'checkbox',
-			'std'     => 0 // Set to 1 to be checked by default, 0 to be unchecked by default.
 		);
 		$this->settings['show_track_ui'] = array(
 			'section' => 'advanced',
@@ -481,13 +483,15 @@ class StereoOptions {
 			'type'    => 'checkbox',
 			'std'     => 0 // Set to 1 to be checked by default, 0 to be unchecked by default.
 		);
+        /*
 		$this->settings['local_support'] = array(
 			'section' => 'advanced',
-			'title'   => __( 'Uploaded files support' ),
+			'title'   => __( 'Local Track file support' ),
 			'desc'    => __( 'Use files uploaded to the WP Media Library' ),
 			'type'    => 'checkbox',
 			'std'     => 1 // Set to 1 to be checked by default, 0 to be unchecked by default.
 		);
+         */
 		$this->settings['enable_cookie'] = array(
 			'section' => 'advanced',
 			'title'   => __( 'Enable cookie-based hotlink protection' ),
@@ -551,7 +555,7 @@ class StereoOptions {
         $this->settings['create_artist_cpt'] = array(
             'section' => 'artists',
 			'title'   => __( 'Create artist post type' ),
-            'desc'    => __( 'This will create an artist post type, useful for sites with multiple artists/projects.' ),
+            'desc'    => __( 'Create an artist post type' ),
             'type'    => 'checkbox',
             'std'     => 0
         );
@@ -565,7 +569,7 @@ class StereoOptions {
 		);
 		$this->settings['artist_plural'] = array(
 			'title'   => __( 'Artist plural name' ),
-			'desc'    => __( 'Plural (more than one) name of the stereo_artist custom post type (could be Artists, Projects...)' ),
+			'desc'    => __( 'Plural name of the stereo_artist custom post type (could be Artists, Projects...)' ),
 			'std'     => 'Artists',
 			'type'    => 'text',
 			'section' => 'artists'
@@ -574,14 +578,14 @@ class StereoOptions {
 		$this->settings['artist_slug'] = array(
 			'title'   => __( 'Artist rewrite slug' ),
 			'desc'    => __( 'Slug to use for URL rewrites' ),
-			'std'     => 'playlist',
+			'std'     => 'artist',
 			'type'    => 'text',
 			'section' => 'artists'
 		);
 		$this->settings['has_artist_archive'] = array(
 			'section' => 'artists',
-			'title'   => sprintf(__( 'Use archive for %s' ), stereo_option('artist_plural')),
-			'desc'    => __( 'Check this box to enable the artist archive' ),
+			'title'   => sprintf(__( '%s archive' ), stereo_option('artist_plural')),
+			'desc'    => sprintf(__( 'Enable archive for %s' ), stereo_option('artist_plural')),
 			'type'    => 'checkbox',
 			'std'     => 0 // Set to 1 to be checked by default, 0 to be unchecked by default.
 		);

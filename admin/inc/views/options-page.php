@@ -14,12 +14,6 @@ if ( !defined( 'ABSPATH' ) )
     <div class="wrap">
         <div class="icon32" id="icon-options-general"></div>
         <h2> <?php _e( 'Stereo Options', 'stereo' ) ?> </h2>
-        <form class="stereo-donate" action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
-        <input type="hidden" name="cmd" value="_s-xclick">
-        <input type="hidden" name="hosted_button_id" value="QQTQLT2TZ59BA">
-        <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
-        <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
-        </form>
 		
 		<form action="options.php" method="post">
 	
@@ -29,11 +23,18 @@ if ( !defined( 'ABSPATH' ) )
             <p class="submit"><input name="Submit" type="submit" class="button-primary" value="<?php  _e( 'Save Changes', 'stereo' ) ?>" /></p>
 		
         </form>
+        <form class="stereo-donate" action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+        <input type="hidden" name="cmd" value="_s-xclick">
+        <input type="hidden" name="hosted_button_id" value="QQTQLT2TZ59BA">
+        <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+        <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+        </form>
 
         
 	<script type="text/javascript">
 		jQuery(document).ready(function($) {
 			var sections = [];
+            var taxonomy2_check;
             $("#stereo_update_tracks").on("click", function(ev) {
                 var $msg, $self = $(this);
                 ev.preventDefault();
@@ -56,6 +57,11 @@ if ( !defined( 'ABSPATH' ) )
                 console.log("asd");
                 $(this).select();
             });
+
+            taxonomy2_check = function() {
+                var $el = $("#playlist_taxonomy2_singular,#playlist_taxonomy2_plural,#taxonomy2_tags").prop("readonly", !$(this).is(":checked"))
+            }
+            $("#show_second_taxonomy").change(taxonomy2_check).each(taxonomy2_check);
             return;
 			
             <?php foreach ( $this->sections as $section_slug => $section )

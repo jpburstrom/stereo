@@ -7,9 +7,13 @@
 }
 .stereo-donate {
     display:block;
-    float:right;
-    margin-top:16px;
 }
 .handle {
     font-weight:bold;
+}
+
+h3 {
+    margin-top:2em;
+    padding-bottom:0.2em;
+    border-bottom:1px solid #ccc;
 }
