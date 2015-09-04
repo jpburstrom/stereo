@@ -371,8 +371,8 @@ class StereoOptions {
 		$this->settings['soundcloud_secret'] = array(
 			'title'   => __( 'SoundCloud Secret' ),
             'desc'    => __( 'Your SoundCloud Secret (Register your app <a href="http://soundcloud.com/you/apps/new" target="_blank">here</a>) ' ),
-			'std'     => 'CLIENT_SECRET',
-			'type'    => 'text',
+			'std'     => '',
+			'type'    => 'password',
 			'section' => 'soundcloud'
         );
 		$this->settings['rewrite_slug'] = array(
