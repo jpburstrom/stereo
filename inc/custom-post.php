@@ -205,3 +205,28 @@ if (true != stereo_option('taxonomy_tags')) {
     <?php
     }
 }
+
+if (stereo_option('playlists_in_main_loop')) {
+    add_filter( 'pre_get_posts', 'stereo_cpt_get_posts' );
+}
+
+function stereo_cpt_get_posts( $query ) {
+
+    if((is_home() && $query->is_main_query()) || is_feed()) {              
+
+        $post_types = $query->get('post_type');          
+
+        if(!is_array($post_types) && !empty($post_types))   
+            $post_types = explode(',', $post_types);
+
+        if(empty($post_types))                             
+            $post_types[] = 'post';         
+        $post_types[] = 'stereo_playlist';                       
+
+        $post_types = array_filter(array_map('trim', $post_types));    
+
+        $query->set('post_type', $post_types);         
+    }
+
+	return $query;
+}

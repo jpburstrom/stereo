@@ -476,6 +476,13 @@ class StereoOptions {
 			'type'    => 'checkbox',
 			'std'     => 1 // Set to 1 to be checked by default, 0 to be unchecked by default.
 		);
+		$this->settings['playlists_in_main_loop'] = array(
+			'section' => 'advanced',
+			'title'   => sprintf(__( '%s in blog' ), stereo_option('playlist_plural')),
+			'desc'    => sprintf(__( 'Mix in %s in main loop and feed' ), stereo_option('playlist_plural')),
+			'type'    => 'checkbox',
+			'std'     => 0 // Set to 1 to be checked by default, 0 to be unchecked by default.
+		);
 		$this->settings['show_track_ui'] = array(
 			'section' => 'advanced',
 			'title'   => __( 'Show Track UI' ),
