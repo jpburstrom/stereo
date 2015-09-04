@@ -82,7 +82,7 @@ class StereoSoundCloud
 
     function get_users()
     {
-        return array_map("trim", explode(",", stereo_option('soundcloud_users')));
+        return array_filter(array_map("trim", explode(",", stereo_option('soundcloud_users'))));
     }
 
     /**
@@ -122,6 +122,7 @@ class StereoSoundCloud
                 }
             }
         }
+
         return $sets;
     }
 
