@@ -1,8 +1,17 @@
+
 module.exports = function(grunt) {
 
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
         watch: {
+            css: {
+                files: ['sass/*.scss'],
+                tasks: ['sass'],
+                options: {
+                    spawn: false,
+                    livereload: true
+                }
+            },
             scripts: {
                 files: ['js/src/*.js'],
                 tasks: ['jshint', 'concat'],
@@ -84,9 +93,22 @@ module.exports = function(grunt) {
                     {expand: true, cwd: "js/src/vendor/soundmanager2/swf", src: ["*.swf", "!*debug*"], dest:"js/swf/"}
                 ]
             }
+        },
+        sass: {
+            options: {
+                includePaths: require('node-bourbon').includePaths,
+                sourceMap: true
+            },
+            dist: {
+                files: {
+                    'css/stereo.css': 'sass/stereo.scss'
+                }
+            }
         }
+
     });
 
+    grunt.loadNpmTasks('grunt-sass');
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-jshint');
@@ -96,7 +118,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-jst');
 
     grunt.registerTask('test', ['jst', 'jshint', 'qunit']);
-    grunt.registerTask('default', ['jst', 'jshint',  'concat', 'uglify', 'copy']);
-    grunt.registerTask('release', ['jst', 'jshint',  'concat', 'uglify', 'copy']);
+    grunt.registerTask('default', ['sass', 'jst', 'jshint',  'concat', 'uglify', 'copy']);
+    grunt.registerTask('release', ['sass', 'jst', 'jshint',  'concat', 'uglify', 'copy']);
 
 };

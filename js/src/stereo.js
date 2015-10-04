@@ -681,6 +681,9 @@
             var self = this;
             this.model = App.player;
             this.$el.addClass(this.className);
+            if (App.options.controls.labelTicker) {
+                this.$el.addClass('ticker');
+            }
             _.each(options.order, function(thing) {
                 self.views[thing] = new App.View[thing]();
                 self.views[thing].render();

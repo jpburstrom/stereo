@@ -1,0 +1,211 @@
+$font-color: #000;
+$quiet-color: #999;
+$button-leftright-padding:0.3em; // * 16px (24px if play button)
+
+@import "bourbon";
+@import "icons";
+
+
+.stereo-controls {
+   @include clearfix;
+   position:relative;
+   font-size:1em;
+   min-height:3em;
+}
+
+.stereo-buttons, .stereo-label {
+    float:left;
+}
+
+.stereo.track.active {
+    cursor:pointer;
+}
+
+//TODO: fixed width only for ticker. Otherwise remove position:absolute and use floats
+
+.stereo-buttons {
+    white-space:nowrap;
+    width:7em;
+}
+.stereo-label {
+    min-width:75%;
+}
+
+.stereo-buttons button {
+    vertical-align:middle;
+    text-align:left;
+    display:inline-block;
+    border:none;
+    outline:0;
+    background:transparent;
+    color:$font-color;
+    cursor:pointer;
+    line-height:1;
+    padding:0;
+}
+.stereo-buttons button:active {
+    opacity:0.5;
+}
+
+.stereo-buttons .playpause {
+    font-size:150%;
+}
+
+.playing .stereo-buttons .playpause {
+    font-size:100%;
+    &:before {
+        width:1.5em;
+        margin: 0 $button-leftright-padding * 1.5; //compensate for larger font
+    }
+}
+
+.stereo-label a {
+    color:$font-color;
+}
+
+.stereo-label {
+    overflow:hidden;
+    position:relative;
+    line-height:1;
+}
+.stereo-label span {
+    display:block;
+    position:absolute;
+    top:100%;
+}
+.ticker .stereo-label {
+    height:1.6em;
+    span {
+        white-space:nowrap;
+        height:100%;
+        line-height:1.6;
+    }
+}
+
+.stereo-label .load-error {
+    top:0;
+}
+.stereo-label .current {
+    top:0;
+}
+
+.stereo-label .artist {
+    display:none;
+}
+
+.stereo-spinner {
+    text-shadow: 1px 0 0 #aaa, 0 -1px 0 #aaa, 0 1px 0 #aaa, -1px 0 0 #aaa;
+    position:fixed;
+    font-size:2em;
+    top:50%;
+    left:50%;
+    width:20px;
+    height:1em;
+    opacity:0;
+    transition:opacity 0.1s ;
+    -webkit-transition:opacity 0.1s ;
+    -moz-transition:opacity 0.1s ;
+    -o-transition:opacity 0.1s ;
+}
+
+.stereo-loading .stereo-spinner {
+    opacity:1;
+  -moz-animation: spin 2s infinite linear;
+  -o-animation: spin 2s infinite linear;
+  -webkit-animation: spin 2s infinite linear;
+  animation: spin 2s infinite linear;
+   -webkit-transform-origin:54% 47%;
+  -moz-transform-origin:54% 47%;
+  -ms-transform-origin:54% 47%;
+  -o-transform-origin:54% 47%;
+  transform-origin: 54% 47%;
+
+}
+
+.loading .stereo-buttons .playpause {
+  -moz-animation: spin 2s infinite linear;
+  -o-animation: spin 2s infinite linear;
+  -webkit-animation: spin 2s infinite linear;
+  animation: spin 2s infinite linear;
+   -webkit-transform-origin:53% 47%;
+  -moz-transform-origin:53% 47%;
+  -ms-transform-origin:53% 47%;
+  -o-transform-origin:53% 47%;
+  transform-origin: 53% 47%;
+}
+@-moz-keyframes spin {
+  0% {
+    -moz-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+
+  100% {
+    -moz-transform: rotate(359deg);
+    -o-transform: rotate(359deg);
+    -webkit-transform: rotate(359deg);
+    transform: rotate(359deg);
+  }
+}
+@-webkit-keyframes spin {
+  0% {
+    -moz-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+
+  100% {
+    -moz-transform: rotate(359deg);
+    -o-transform: rotate(359deg);
+    -webkit-transform: rotate(359deg);
+    transform: rotate(359deg);
+  }
+}
+@-o-keyframes spin {
+  0% {
+    -moz-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+
+  100% {
+    -moz-transform: rotate(359deg);
+    -o-transform: rotate(359deg);
+    -webkit-transform: rotate(359deg);
+    transform: rotate(359deg);
+  }
+}
+@-ms-keyframes spin {
+  0% {
+    -moz-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+
+  100% {
+    -moz-transform: rotate(359deg);
+    -o-transform: rotate(359deg);
+    -webkit-transform: rotate(359deg);
+    transform: rotate(359deg);
+  }
+}
+@keyframes spin {
+  0% {
+    -moz-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+
+  100% {
+    -moz-transform: rotate(359deg);
+    -o-transform: rotate(359deg);
+    -webkit-transform: rotate(359deg);
+    transform: rotate(359deg);
+  }
+}
+

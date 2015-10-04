@@ -1,0 +1,63 @@
+@font-face {
+  font-family: 'stereo-icons';
+  src: url('../font/icons.eot?60717918');
+  src: url('../font/icons.eot?60717918#iefix') format('embedded-opentype'),
+       url('../font/icons.woff?60717918') format('woff'),
+       url('../font/icons.ttf?60717918') format('truetype'),
+       url('../font/icons.svg?60717918#icons') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+/* Chrome hack: SVG is rendered more smooth in Windozze. 100% magic, uncomment if you need it. */
+/* Note, that will break hinting! In other OS-es font will be not as sharp as it could be */
+/*
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+  @font-face {
+    font-family: 'icons';
+    src: url('../font/icons.svg?60717918#icons') format('svg');
+  }
+}
+*/
+ 
+ [class^="icon-"]:before, [class*=" icon-"]:before, .stereo-buttons button:before, .stereo-spinner:before {
+  font-family: "stereo-icons";
+  font-style: normal;
+  font-weight: normal;
+  speak: none;
+ 
+  display: inline-block;
+  text-decoration: inherit;
+  width: 1em;
+  margin: 0 $button-leftright-padding;
+  text-align: center;
+  /* opacity: .8; */
+ 
+  /* For safety - reset parent styles, that can break glyph codes*/
+  font-variant: normal;
+  text-transform: none;
+     
+  /* fix buttons height, for twitter bootstrap */
+  line-height: 1em;
+}
+ 
+.icon-amazon:before { content: '\e803'; } /* '' */
+.icon-soundcloud:before { content: '\e802'; } /* '' */
+.icon-wordpress:before { content: '\e804'; } /* '' */
+.stereo-buttons .pause:before { content: '\e801'; } /* '' */
+.stereo-buttons .stop:before { content: '\e800'; } /* '' */
+.stereo-buttons .play:before { content: '\e805'; } /* '' */
+.stereo-buttons .playpause:before { 
+    content: '\e805'; 
+} /* '' */
+.playing .stereo-buttons .playpause:before { content: '\e801'; } /* '' */
+.stereo-spinner:before,
+.loading .stereo-buttons .playpause:before { 
+  //  position:relative;
+    content: '\e808'; 
+ //   left:-0.2em;
+ //   margin-left:0.05em;
+
+} /* '' */
+.stereo-buttons .next:before { content: '\e806'; } /* '' */
+.stereo-buttons .prev:before { content: '\e807'; } /* '' */
+

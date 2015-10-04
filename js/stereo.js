@@ -9447,7 +9447,7 @@ this["Stereo"]["Tmpl"]["button"] = function(obj) {
 obj || (obj = {});
 var __t, __p = '', __e = _.escape;
 with (obj) {
-__p += '<button class="prev"></button>\n<button class="playpause"></button>\n<button class="next"></button>\n';
+__p += '<button class="prev"></button><button class="playpause"></button><button class="next"></button>\n';
 
 }
 return __p
@@ -10220,6 +10220,9 @@ return __p
             var self = this;
             this.model = App.player;
             this.$el.addClass(this.className);
+            if (App.options.controls.labelTicker) {
+                this.$el.addClass('ticker');
+            }
             _.each(options.order, function(thing) {
                 self.views[thing] = new App.View[thing]();
                 self.views[thing].render();

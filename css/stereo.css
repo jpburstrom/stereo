@@ -1,13 +1,11 @@
+@charset "UTF-8";
 @font-face {
-  font-family: 'icons';
-  src: url('../font/icons.eot?60717918');
-  src: url('../font/icons.eot?60717918#iefix') format('embedded-opentype'),
-       url('../font/icons.woff?60717918') format('woff'),
-       url('../font/icons.ttf?60717918') format('truetype'),
-       url('../font/icons.svg?60717918#icons') format('svg');
+  font-family: 'stereo-icons';
+  src: url("../font/icons.eot?60717918");
+  src: url("../font/icons.eot?60717918#iefix") format("embedded-opentype"), url("../font/icons.woff?60717918") format("woff"), url("../font/icons.ttf?60717918") format("truetype"), url("../font/icons.svg?60717918#icons") format("svg");
   font-weight: normal;
-  font-style: normal;
-}
+  font-style: normal; }
+
 /* Chrome hack: SVG is rendered more smooth in Windozze. 100% magic, uncomment if you need it. */
 /* Note, that will break hinting! In other OS-es font will be not as sharp as it could be */
 /*
@@ -18,223 +16,238 @@
   }
 }
 */
- 
- [class^="icon-"]:before, [class*=" icon-"]:before, .stereo-buttons button:before, .stereo-spinner:before {
-  font-family: "icons";
+[class^="icon-"]:before, [class*=" icon-"]:before, .stereo-buttons button:before, .stereo-spinner:before {
+  font-family: "stereo-icons";
   font-style: normal;
   font-weight: normal;
   speak: none;
- 
   display: inline-block;
   text-decoration: inherit;
-  width: 0.5em;
-  margin-right: .2em;
-  margin-left: .2em;
+  width: 1em;
+  margin: 0 0.3em;
   text-align: center;
   /* opacity: .8; */
- 
   /* For safety - reset parent styles, that can break glyph codes*/
   font-variant: normal;
   text-transform: none;
-     
   /* fix buttons height, for twitter bootstrap */
-  line-height: 1em;
-}
- 
-.icon-amazon:before { content: '\e803'; } /* '' */
-.icon-soundcloud:before { content: '\e802'; } /* '' */
-.icon-wordpress:before { content: '\e804'; } /* '' */
-.stereo-buttons .pause:before { content: '\e801'; } /* '' */
-.stereo-buttons .stop:before { content: '\e800'; } /* '' */
-.stereo-buttons .play:before { content: '\e805'; } /* '' */
-.stereo-buttons .playpause:before { 
-    position:relative;
-    left:1px;
-    content: '\e805'; 
-} /* '' */
-.playing .stereo-buttons .playpause:before { content: '\e801'; } /* '' */
+  line-height: 1em; }
+
+.icon-amazon:before {
+  content: '\e803'; }
+
+/* '' */
+.icon-soundcloud:before {
+  content: '\e802'; }
+
+/* '' */
+.icon-wordpress:before {
+  content: '\e804'; }
+
+/* '' */
+.stereo-buttons .pause:before {
+  content: '\e801'; }
+
+/* '' */
+.stereo-buttons .stop:before {
+  content: '\e800'; }
+
+/* '' */
+.stereo-buttons .play:before {
+  content: '\e805'; }
+
+/* '' */
+.stereo-buttons .playpause:before {
+  content: '\e805'; }
+
+/* '' */
+.playing .stereo-buttons .playpause:before {
+  content: '\e801'; }
+
+/* '' */
 .stereo-spinner:before,
-.loading .stereo-buttons .playpause:before { 
-    position:relative;
-    content: '\e808'; 
-    left:-0.2em;
-    margin-left:0.05em;
+.loading .stereo-buttons .playpause:before {
+  content: '\e808'; }
 
-} /* '' */
-.stereo-buttons .next:before { content: '\e806'; } /* '' */
-.stereo-buttons .prev:before { content: '\e807'; } /* '' */
+/* '' */
+.stereo-buttons .next:before {
+  content: '\e806'; }
 
-.stereo-controls, .stereo-buttons, .stereo-label {
-    float:left;
-}
+/* '' */
+.stereo-buttons .prev:before {
+  content: '\e807'; }
 
+/* '' */
 .stereo-controls {
-    line-height:1;
-    height:1.3em;
-}
+  position: relative;
+  font-size: 1em;
+  min-height: 3em; }
+  .stereo-controls::after {
+    clear: both;
+    content: "";
+    display: table; }
+
+.stereo-buttons, .stereo-label {
+  float: left; }
 
 .stereo.track.active {
-    cursor:pointer;
-}
+  cursor: pointer; }
 
-.stereo-buttons button {
-    border:none;
-    outline:0;
-    background:transparent;
-    cursor:pointer;
-    float:left;
-    line-height:1;
-}
-.stereo-buttons button:active {
-    opacity:0.5;
-}
-
-.stereo-buttons .prev {
-    padding-right:0.75em;
-}
-
-.stereo-buttons .next {
-    padding-right:2.25em;
-}
+.stereo-buttons {
+  white-space: nowrap;
+  width: 7em; }
 
 .stereo-label {
-    width:200px;
-    overflow:hidden;
-    position:relative;
-    top:2px;
-    height:100%;
-    line-height:1;
-}
+  min-width: 75%; }
+
+.stereo-buttons button {
+  vertical-align: middle;
+  text-align: left;
+  display: inline-block;
+  border: none;
+  outline: 0;
+  background: transparent;
+  color: #000;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0; }
+
+.stereo-buttons button:active {
+  opacity: 0.5; }
+
+.stereo-buttons .playpause {
+  font-size: 150%; }
+
+.playing .stereo-buttons .playpause {
+  font-size: 100%; }
+  .playing .stereo-buttons .playpause:before {
+    width: 1.5em;
+    margin: 0 0.45em; }
+
+.stereo-label a {
+  color: #000; }
+
+.stereo-label {
+  overflow: hidden;
+  position: relative;
+  line-height: 1; }
 
 .stereo-label span {
-    display:block;
-    position:absolute;
-    top:100%;
-}
+  display: block;
+  position: absolute;
+  top: 100%; }
+
+.ticker .stereo-label {
+  height: 1.6em; }
+  .ticker .stereo-label span {
+    white-space: nowrap;
+    height: 100%;
+    line-height: 1.6; }
+
 .stereo-label .load-error {
-    top:0;
-}
+  top: 0; }
+
 .stereo-label .current {
-    top:0;
-}
+  top: 0; }
 
 .stereo-label .artist {
-    display:none;
-}
+  display: none; }
 
 .stereo-spinner {
-    text-shadow: 1px 0 0 #aaa, 0 -1px 0 #aaa, 0 1px 0 #aaa, -1px 0 0 #aaa;
-    position:fixed;
-    font-size:2em;
-    top:50%;
-    left:50%;
-    width:20px;
-    height:1em;
-    opacity:0;
-    transition:opacity 0.1s ;
-    -webkit-transition:opacity 0.1s ;
-    -moz-transition:opacity 0.1s ;
-    -o-transition:opacity 0.1s ;
-}
+  text-shadow: 1px 0 0 #aaa, 0 -1px 0 #aaa, 0 1px 0 #aaa, -1px 0 0 #aaa;
+  position: fixed;
+  font-size: 2em;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 1em;
+  opacity: 0;
+  transition: opacity 0.1s;
+  -webkit-transition: opacity 0.1s;
+  -moz-transition: opacity 0.1s;
+  -o-transition: opacity 0.1s; }
 
 .stereo-loading .stereo-spinner {
-    opacity:1;
+  opacity: 1;
   -moz-animation: spin 2s infinite linear;
   -o-animation: spin 2s infinite linear;
   -webkit-animation: spin 2s infinite linear;
   animation: spin 2s infinite linear;
-   -webkit-transform-origin:54% 47%;
-  -moz-transform-origin:54% 47%;
-  -ms-transform-origin:54% 47%;
-  -o-transform-origin:54% 47%;
-  transform-origin: 54% 47%;
-
-}
+  -webkit-transform-origin: 54% 47%;
+  -moz-transform-origin: 54% 47%;
+  -ms-transform-origin: 54% 47%;
+  -o-transform-origin: 54% 47%;
+  transform-origin: 54% 47%; }
 
 .loading .stereo-buttons .playpause {
   -moz-animation: spin 2s infinite linear;
   -o-animation: spin 2s infinite linear;
   -webkit-animation: spin 2s infinite linear;
   animation: spin 2s infinite linear;
-   -webkit-transform-origin:53% 47%;
-  -moz-transform-origin:53% 47%;
-  -ms-transform-origin:53% 47%;
-  -o-transform-origin:53% 47%;
-  transform-origin: 53% 47%;
-}
+  -webkit-transform-origin: 53% 47%;
+  -moz-transform-origin: 53% 47%;
+  -ms-transform-origin: 53% 47%;
+  -o-transform-origin: 53% 47%;
+  transform-origin: 53% 47%; }
+
 @-moz-keyframes spin {
   0% {
     -moz-transform: rotate(0deg);
     -o-transform: rotate(0deg);
     -webkit-transform: rotate(0deg);
-    transform: rotate(0deg);
-  }
-
+    transform: rotate(0deg); }
   100% {
     -moz-transform: rotate(359deg);
     -o-transform: rotate(359deg);
     -webkit-transform: rotate(359deg);
-    transform: rotate(359deg);
-  }
-}
+    transform: rotate(359deg); } }
+
 @-webkit-keyframes spin {
   0% {
     -moz-transform: rotate(0deg);
     -o-transform: rotate(0deg);
     -webkit-transform: rotate(0deg);
-    transform: rotate(0deg);
-  }
-
+    transform: rotate(0deg); }
   100% {
     -moz-transform: rotate(359deg);
     -o-transform: rotate(359deg);
     -webkit-transform: rotate(359deg);
-    transform: rotate(359deg);
-  }
-}
+    transform: rotate(359deg); } }
+
 @-o-keyframes spin {
   0% {
     -moz-transform: rotate(0deg);
     -o-transform: rotate(0deg);
     -webkit-transform: rotate(0deg);
-    transform: rotate(0deg);
-  }
-
+    transform: rotate(0deg); }
   100% {
     -moz-transform: rotate(359deg);
     -o-transform: rotate(359deg);
     -webkit-transform: rotate(359deg);
-    transform: rotate(359deg);
-  }
-}
+    transform: rotate(359deg); } }
+
 @-ms-keyframes spin {
   0% {
     -moz-transform: rotate(0deg);
     -o-transform: rotate(0deg);
     -webkit-transform: rotate(0deg);
-    transform: rotate(0deg);
-  }
-
+    transform: rotate(0deg); }
   100% {
     -moz-transform: rotate(359deg);
     -o-transform: rotate(359deg);
     -webkit-transform: rotate(359deg);
-    transform: rotate(359deg);
-  }
-}
+    transform: rotate(359deg); } }
+
 @keyframes spin {
   0% {
     -moz-transform: rotate(0deg);
     -o-transform: rotate(0deg);
     -webkit-transform: rotate(0deg);
-    transform: rotate(0deg);
-  }
-
+    transform: rotate(0deg); }
   100% {
     -moz-transform: rotate(359deg);
     -o-transform: rotate(359deg);
     -webkit-transform: rotate(359deg);
-    transform: rotate(359deg);
-  }
-}
+    transform: rotate(359deg); } }
 
+/*# sourceMappingURL=stereo.css.map */
