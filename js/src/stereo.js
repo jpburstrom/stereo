@@ -124,10 +124,13 @@
                             self.trigger('loaderror', this);
                         } else {
                             self.trigger('load', this);
+                            self.off('load');
                         }
                     },
                     onplay: function() {
-                        self.trigger('play', this);
+                        self.once('load', function() {
+                            self.trigger('play', this);
+                        });
                     },
                     onresume: function() {
                         self.trigger('resume', this);
