@@ -144,11 +144,11 @@
                     onfinish: function() {
                         self.trigger('finish', this);
                     },
-                    onwhileloading : function() {
+                    whileloading : function() {
                         var amt = this.bytesLoaded / this.bytesTotal;
                         self.trigger("whileloading", this, amt);
                     },
-                    onwhileplaying : function() {
+                    whileplaying : function() {
                         var d = (this.readyState == 1) ? this.durationEstimate : this.duration,
                             amt = this.position / d;
                         self.trigger("whileplaying", this, amt);
@@ -611,24 +611,10 @@
                 if (!this.song) {
                     this.empty();
                 } else {
-                    this.listenTo(this.song, 'whileloading', this.render);
-                    this.listenTo(this.song, 'whileplaying', this.render);
+                    this.listenTo(this.song, 'whileloading', this.whileloading);
+                    this.listenTo(this.song, 'whileplaying', this.whileplaying);
                 }
             }
-        },
-
-        empty: function() {
-        },
-
-        render: function(empty) {
-            /*
-            if (empty) 
-                this.$el.html(this.template({}));
-            else
-                this.$el.html(this.template(this.song.info.attributes));
-                */
-
-            return this;
         }
 
     });
@@ -636,11 +622,26 @@
     App.View.Position = App.View.ContinousSongData.extend({
         //TODO: fix drag things
         initialize: function() {
-            this.data = {};
+            
             this.listenTo(this.model, 'change', this.changeSong);
+            this.$el.html(this.template);
+            this.$loaded = this.$el.find('.loaded');
+            this.$played = this.$el.find('.played');
+            
         },
         className: 'stereo-position',
-        template: App.Tmpl.position
+        template: App.Tmpl.position,
+        empty: function() {
+            console.log("empty");
+            this.$loaded.css("width", "0%");
+            this.$played.css("left", "0%");
+        },
+        whileloading: function(ev, val) {
+            this.$loaded.css("width", (val * 100) + "%");
+        },
+        whileplaying: function(ev, val) {
+            this.$played.css("left", (val * 100) + "%");
+        }
     });
 
     App.View.Time = App.View.ContinousSongData.extend({

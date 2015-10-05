@@ -96,6 +96,45 @@ $button-leftright-padding:0.3em; // * 16px (24px if play button)
     display:none;
 }
 
+.stereo-position {
+    position:relative;
+    margin:10px 0;
+    width:100%;
+    clear:both;
+    .progress {
+        top:4px;
+        position:absolute;
+        background-color:#ddd;
+        height:8px;
+        width:100%;
+        border-radius:8px;
+    }
+    .meter {
+        background-color:#aaa;
+        position:absolute;
+        height:100%;
+        width:10%;
+    }
+    .handle {
+        cursor:pointer;
+        z-index:10;
+        position:absolute;
+        width:20px;
+        padding:6px 20px 6px 15px;
+        margin-top:-8px;
+        margin-left:-20px;
+        left:10%;
+        &:before {
+            content: "";
+            display:block;
+            background-color:#000;
+            width:5px;
+            height:12px;
+        }
+
+    }
+}
+
 .stereo-spinner {
     text-shadow: 1px 0 0 #aaa, 0 -1px 0 #aaa, 0 1px 0 #aaa, -1px 0 0 #aaa;
     position:fixed;
