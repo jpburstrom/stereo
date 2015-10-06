@@ -38,6 +38,7 @@ module.exports = function(grunt) {
                 // the files to concatenate
                 src: ['js/src/vendor/soundmanager2/script/soundmanager2.js', 
                     'js/src/vendor/underscore.js', 'js/src/vendor/backbone.js',
+                    'js/src/vendor/jquery.finger.js',
                     'js/src/templates/compiled.js', 'js/src/stereo.js', 'js/src/stereo-history.js'],
                 // the location of the resulting JS file
                 dest: 'js/<%= pkg.name %>.js'

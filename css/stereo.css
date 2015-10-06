@@ -158,7 +158,8 @@
   position: relative;
   margin: 10px 0;
   width: 100%;
-  clear: both; }
+  clear: both;
+  cursor: pointer; }
   .stereo-position .progress {
     top: 4px;
     position: absolute;
@@ -170,22 +171,31 @@
     background-color: #aaa;
     position: absolute;
     height: 100%;
-    width: 10%; }
+    border-radius: 8px;
+    box-shadow: 0px 1px 3px #555555 inset; }
+  .stereo-position .rail {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border: 0 solid transparent;
+    border-width: 0 5px; }
   .stereo-position .handle {
-    cursor: pointer;
     z-index: 10;
     position: absolute;
-    width: 20px;
-    padding: 6px 20px 6px 15px;
-    margin-top: -8px;
-    margin-left: -20px;
-    left: 10%; }
+    padding: 6px 20px;
+    margin-top: -9px;
+    margin-left: -17.5px; }
     .stereo-position .handle:before {
+      border-radius: 4px;
       content: "";
       display: block;
       background-color: #000;
       width: 5px;
-      height: 12px; }
+      margin-left: -5px;
+      height: 14px; }
+
+.stopped .stereo-position .handle:before {
+  background-color: #bbb; }
 
 .stereo-spinner {
   text-shadow: 1px 0 0 #aaa, 0 -1px 0 #aaa, 0 1px 0 #aaa, -1px 0 0 #aaa;

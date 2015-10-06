@@ -9428,6 +9428,168 @@ window.soundManager = soundManager; // public API, flash callbacks etc.
   return Backbone;
 
 }));
+;/*! jquery.finger - v0.1.2 - 2014-10-01
+* https://github.com/ngryman/jquery.finger
+* Copyright (c) 2014 Nicolas Gryman; Licensed MIT */
+
+(function($, ua) {
+
+	var isChrome = /chrome/i.exec(ua),
+		isAndroid = /android/i.exec(ua),
+		hasTouch = 'ontouchstart' in window && !(isChrome && !isAndroid),
+		startEvent = hasTouch ? 'touchstart' : 'mousedown',
+		stopEvent = hasTouch ? 'touchend touchcancel' : 'mouseup mouseleave',
+		moveEvent = hasTouch ? 'touchmove' : 'mousemove',
+
+		namespace = 'finger',
+		rootEl = $('html')[0],
+
+		start = {},
+		move = {},
+		motion,
+		cancel,
+		safeguard,
+		timeout,
+		prevEl,
+		prevTime,
+
+		Finger = $.Finger = {
+			pressDuration: 300,
+			doubleTapInterval: 300,
+			flickDuration: 150,
+			motionThreshold: 5
+		};
+
+	function preventDefault(event) {
+		event.preventDefault();
+		$.event.remove(rootEl, 'click', preventDefault);
+	}
+
+	function page(coord, event) {
+		return (hasTouch ? event.originalEvent.touches[0] : event)['page' + coord.toUpperCase()];
+	}
+
+	function trigger(event, evtName, remove) {
+		var fingerEvent = $.Event(evtName, move);
+		$.event.trigger(fingerEvent, { originalEvent: event }, event.target);
+
+		if (fingerEvent.isDefaultPrevented()) {
+			if (~evtName.indexOf('tap') && !hasTouch)
+				$.event.add(rootEl, 'click', preventDefault);
+			else
+				event.preventDefault();
+		}
+
+		if (remove) {
+			$.event.remove(rootEl, moveEvent + '.' + namespace, moveHandler);
+			$.event.remove(rootEl, stopEvent + '.' + namespace, stopHandler);
+		}
+	}
+
+	function startHandler(event) {
+		var timeStamp = event.timeStamp || +new Date();
+
+		if (safeguard == timeStamp) return;
+		safeguard = timeStamp;
+
+		// initializes data
+		start.x = move.x = page('x', event);
+		start.y = move.y = page('y', event);
+		start.time = timeStamp;
+		start.target = event.target;
+		move.orientation = null;
+		move.end = false;
+		motion = false;
+		cancel = false;
+		timeout = setTimeout(function() {
+			cancel = true;
+			trigger(event, 'press');
+		}, $.Finger.pressDuration);
+
+		$.event.add(rootEl, moveEvent + '.' + namespace, moveHandler);
+		$.event.add(rootEl, stopEvent + '.' + namespace, stopHandler);
+
+		// global prevent default
+		if (Finger.preventDefault) {
+			event.preventDefault();
+			$.event.add(rootEl, 'click', preventDefault);
+		}
+	}
+
+	function moveHandler(event) {
+		// motion data
+		move.x = page('x', event);
+		move.y = page('y', event);
+		move.dx = move.x - start.x;
+		move.dy = move.y - start.y;
+		move.adx = Math.abs(move.dx);
+		move.ady = Math.abs(move.dy);
+
+		// security
+		motion = move.adx > Finger.motionThreshold || move.ady > Finger.motionThreshold;
+		if (!motion) return;
+
+		// moves cancel press events
+		clearTimeout(timeout);
+
+		// orientation
+		if (!move.orientation) {
+			if (move.adx > move.ady) {
+				move.orientation = 'horizontal';
+				move.direction = move.dx > 0 ? +1 : -1;
+			}
+			else {
+				move.orientation = 'vertical';
+				move.direction = move.dy > 0 ? +1 : -1;
+			}
+		}
+
+		// for delegated events, the target may change over time
+		// this ensures we notify the right target and simulates the mouseleave behavior
+		while (event.target && event.target !== start.target)
+			event.target = event.target.parentNode;
+		if (event.target !== start.target) {
+			event.target = start.target;
+			stopHandler.call(this, $.Event(stopEvent + '.' + namespace, event));
+			return;
+		}
+
+		// fire drag event
+		trigger(event, 'drag');
+	}
+
+	function stopHandler(event) {
+		var timeStamp = event.timeStamp || +new Date(),
+			dt = timeStamp - start.time,
+			evtName;
+
+		// always clears press timeout
+		clearTimeout(timeout);
+
+		// tap-like events
+		// triggered only if targets match
+		if (!motion && !cancel && event.target === start.target) {
+			var doubleTap = prevEl === event.target && timeStamp - prevTime < Finger.doubleTapInterval;
+			evtName = doubleTap ? 'doubletap' : 'tap';
+			prevEl = doubleTap ? null : start.target;
+			prevTime = timeStamp;
+		}
+		// motion events
+		else {
+			// ensure last target is set the initial one
+			event.target = start.target;
+			if (dt < Finger.flickDuration) trigger(event, 'flick');
+			move.end = true;
+			evtName = 'drag';
+		}
+
+		trigger(event, evtName, true);
+	}
+
+	// initial binding
+	$.event.add(rootEl, startEvent + '.' + namespace, startHandler);
+
+})(jQuery, navigator.userAgent);
 ;this["Stereo"] = this["Stereo"] || {};
 this["Stereo"]["Tmpl"] = this["Stereo"]["Tmpl"] || {};
 
@@ -9503,7 +9665,7 @@ this["Stereo"]["Tmpl"]["position"] = function(obj) {
 obj || (obj = {});
 var __t, __p = '', __e = _.escape;
 with (obj) {
-__p += '<span class="progress">\n<span class="meter loaded"></span>\n<span class="handle played"></span>\n</span>\n';
+__p += '<span class="progress">\n<span class="meter loaded"></span>\n<span class="rail">\n    <span class="handle played"></span>\n</span>\n</span>\n';
 
 }
 return __p
@@ -9645,8 +9807,10 @@ return __p
                 }
             },
 
-            seek: function() {
-                console.log("Seek: Not implemented");
+            seek: function(x) {
+                if (this.snd) {
+                    this.snd.setPosition(x * this.snd.durationEstimate);
+                }
             },
 
             createSound: function() {
@@ -9686,7 +9850,7 @@ return __p
                     whileplaying : function() {
                         var d = (this.readyState == 1) ? this.durationEstimate : this.duration,
                             amt = this.position / d;
-                        self.trigger("whileplaying", this, amt);
+                        self.trigger("whileplaying", this, amt, this.position);
                     }
 
                 });
@@ -9877,6 +10041,13 @@ return __p
         },
         stop: function() { 
             this._stop(this.getSongSafe());
+        },
+
+        seek: function(x) {
+            var s = this.getSongSafe();
+            if (s) {
+                s.seek(x);
+            }
         },
 
         /**
@@ -10147,8 +10318,16 @@ return __p
                     this.empty();
                 } else {
                     this.listenTo(this.song, 'whileloading', this.whileloading);
-                    this.listenTo(this.song, 'whileplaying', this.whileplaying);
+                    this.togglePlayProgress(true);
                 }
+            }
+        },
+
+        togglePlayProgress: function(play) {
+            if (play) {
+                this.listenTo(this.song, 'whileplaying', this.whileplaying);
+            } else {
+                this.stopListening(this.song, 'whileplaying');
             }
         }
 
@@ -10160,6 +10339,8 @@ return __p
             
             this.listenTo(this.model, 'change', this.changeSong);
             this.$el.html(this.template);
+            this.$el.on('tap', this.ontap.bind(this));
+            this.$el.on('drag', this.onmove.bind(this));
             this.$loaded = this.$el.find('.loaded');
             this.$played = this.$el.find('.played');
             
@@ -10167,16 +10348,42 @@ return __p
         className: 'stereo-position',
         template: App.Tmpl.position,
         empty: function() {
-            console.log("empty");
             this.$loaded.css("width", "0%");
             this.$played.css("left", "0%");
         },
         whileloading: function(ev, val) {
             this.$loaded.css("width", (val * 100) + "%");
         },
-        whileplaying: function(ev, val) {
-            this.$played.css("left", (val * 100) + "%");
+        whileplaying: function(ev, val, pos) {
+            this.$played.css("left", (val * 100) + "%").attr("title", pos);
+        },
+        ontap: function(ev) {
+            if (!this.model.isPlaying()) {
+                this.model.play();
+            }
+            this.model.seek(this._calcSeek(ev.x));
+        },
+        onmove: function(ev) {
+            if (ev.end === false) {
+                this.togglePlayProgress(false);
+                this.$played.css("left", this._calcPos(ev.x) + "px");
+            } else {
+                this.togglePlayProgress(true);
+                if (!this.model.isPlaying()) {
+                    this.model.play();
+                }
+                this.model.seek(this._calcSeek(ev.x));
+            }
+            ev.preventDefault();
+            ev.stopPropagation();
+        },
+        _calcSeek: function(x) {
+            return (x - this.$el.offset().left) / this.$el.width();
+        },
+        _calcPos: function(x) {
+            return (x - this.$el.offset().left);
         }
+
     });
 
     App.View.Time = App.View.ContinousSongData.extend({
@@ -10219,6 +10426,7 @@ return __p
         initialize: function(options) {
             var self = this;
             this.model = App.player;
+            this._initClass();
             this.$el.addClass(this.className);
             if (App.options.controls.labelTicker) {
                 this.$el.addClass('ticker');

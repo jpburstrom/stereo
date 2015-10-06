@@ -2,6 +2,20 @@ $font-color: #000;
 $quiet-color: #999;
 $button-leftright-padding:0.3em; // * 16px (24px if play button)
 
+$progress-background-color:#ddd;
+$progress-loaded-color:#aaa;
+$handle-inactive-color: #bbb;
+$handle-active-color:#000;
+
+$progress-height:8px;
+$handle-width: 5px;
+$handle-height: 14px;
+
+$handle-padding-x:20px; //Horizontal padding of handle. Width = $handle-height + $handle-padding-x
+$handle-padding-y:6px;  //Vertical padding
+
+$debug: false;
+
 @import "bourbon";
 @import "icons";
 
@@ -101,38 +115,58 @@ $button-leftright-padding:0.3em; // * 16px (24px if play button)
     margin:10px 0;
     width:100%;
     clear:both;
+    cursor:pointer;
     .progress {
         top:4px;
         position:absolute;
-        background-color:#ddd;
-        height:8px;
+        background-color:$progress-background-color;
+        height:$progress-height;
         width:100%;
         border-radius:8px;
     }
     .meter {
-        background-color:#aaa;
+        background-color:$progress-loaded-color;
         position:absolute;
         height:100%;
-        width:10%;
+        border-radius:8px;
+        box-shadow: 0px 1px 3px shade($progress-loaded-color, 50%) inset;
+    }
+    .rail {
+        position:absolute;
+        width:100%;
+        height:100%;
+        border:0 solid transparent;
+        border-width:0 $handle-width;
     }
     .handle {
-        cursor:pointer;
         z-index:10;
         position:absolute;
-        width:20px;
-        padding:6px 20px 6px 15px;
-        margin-top:-8px;
-        margin-left:-20px;
-        left:10%;
+        //Handle dimensions = the 'grabbable' area
+        padding:$handle-padding-y $handle-padding-x;
+        margin-top:($handle-height * -0.5) + ($progress-height * 0.5) - $handle-padding-y; //top padding
+        margin-left:-$handle-padding-x + ($handle-width * 0.5);
+        //Position is controlled from JS
+        //left:0%;
+        @if $debug {
+            background:rgba(0,0,0,0.1); // debug
+        }
+        
         &:before {
+            //This is the visible area
+            border-radius:4px;
             content: "";
             display:block;
-            background-color:#000;
-            width:5px;
-            height:12px;
+            background-color:$handle-active-color;
+            width:$handle-width;
+            margin-left:-$handle-width;
+            height:$handle-height;
         }
 
     }
+}
+
+.stopped .stereo-position .handle:before {
+    background-color:$handle-inactive-color;
 }
 
 .stereo-spinner {

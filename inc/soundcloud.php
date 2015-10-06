@@ -179,7 +179,7 @@ class StereoSoundCloud
      */
     function stream_track($id)
     {
-        if (false !== $sc) {
+        if (false !== $this->sc) {
             try {
                 $track = json_decode($this->sc->get("tracks/$id"));
             } catch (Exception $e) {

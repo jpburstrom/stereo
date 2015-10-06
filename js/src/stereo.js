@@ -110,8 +110,10 @@
                 }
             },
 
-            seek: function() {
-                console.log("Seek: Not implemented");
+            seek: function(x) {
+                if (this.snd) {
+                    this.snd.setPosition(x * this.snd.durationEstimate);
+                }
             },
 
             createSound: function() {
@@ -151,7 +153,7 @@
                     whileplaying : function() {
                         var d = (this.readyState == 1) ? this.durationEstimate : this.duration,
                             amt = this.position / d;
-                        self.trigger("whileplaying", this, amt);
+                        self.trigger("whileplaying", this, amt, this.position);
                     }
 
                 });
@@ -342,6 +344,13 @@
         },
         stop: function() { 
             this._stop(this.getSongSafe());
+        },
+
+        seek: function(x) {
+            var s = this.getSongSafe();
+            if (s) {
+                s.seek(x);
+            }
         },
 
         /**
@@ -612,8 +621,16 @@
                     this.empty();
                 } else {
                     this.listenTo(this.song, 'whileloading', this.whileloading);
-                    this.listenTo(this.song, 'whileplaying', this.whileplaying);
+                    this.togglePlayProgress(true);
                 }
+            }
+        },
+
+        togglePlayProgress: function(play) {
+            if (play) {
+                this.listenTo(this.song, 'whileplaying', this.whileplaying);
+            } else {
+                this.stopListening(this.song, 'whileplaying');
             }
         }
 
@@ -625,6 +642,8 @@
             
             this.listenTo(this.model, 'change', this.changeSong);
             this.$el.html(this.template);
+            this.$el.on('tap', this.ontap.bind(this));
+            this.$el.on('drag', this.onmove.bind(this));
             this.$loaded = this.$el.find('.loaded');
             this.$played = this.$el.find('.played');
             
@@ -632,16 +651,42 @@
         className: 'stereo-position',
         template: App.Tmpl.position,
         empty: function() {
-            console.log("empty");
             this.$loaded.css("width", "0%");
             this.$played.css("left", "0%");
         },
         whileloading: function(ev, val) {
             this.$loaded.css("width", (val * 100) + "%");
         },
-        whileplaying: function(ev, val) {
-            this.$played.css("left", (val * 100) + "%");
+        whileplaying: function(ev, val, pos) {
+            this.$played.css("left", (val * 100) + "%").attr("title", pos);
+        },
+        ontap: function(ev) {
+            if (!this.model.isPlaying()) {
+                this.model.play();
+            }
+            this.model.seek(this._calcSeek(ev.x));
+        },
+        onmove: function(ev) {
+            if (ev.end === false) {
+                this.togglePlayProgress(false);
+                this.$played.css("left", this._calcPos(ev.x) + "px");
+            } else {
+                this.togglePlayProgress(true);
+                if (!this.model.isPlaying()) {
+                    this.model.play();
+                }
+                this.model.seek(this._calcSeek(ev.x));
+            }
+            ev.preventDefault();
+            ev.stopPropagation();
+        },
+        _calcSeek: function(x) {
+            return (x - this.$el.offset().left) / this.$el.width();
+        },
+        _calcPos: function(x) {
+            return (x - this.$el.offset().left);
         }
+
     });
 
     App.View.Time = App.View.ContinousSongData.extend({
@@ -684,6 +729,7 @@
         initialize: function(options) {
             var self = this;
             this.model = App.player;
+            this._initClass();
             this.$el.addClass(this.className);
             if (App.options.controls.labelTicker) {
                 this.$el.addClass('ticker');
