@@ -32,12 +32,13 @@ class StereoPlayerWidget extends scbWidget {
         include("views/widget-player.php");
 	}
 
- 	public function form( $instance ) {
+    public function form( $instance ) {
+
         if ( isset( $instance[ 'title' ] ) ) {
 			$title = $instance[ 'title' ];
 		}
 		else {
-			$title = __( 'New title', 'stereo' );
+			$title = __( 'Music Player', 'stereo' );
 		}
 		?>
 		<p>
@@ -54,10 +55,13 @@ class StereoPlayerWidget extends scbWidget {
 		return $instance;
 	}
 
+    /*
     public function widget($args, $instance)
     {
+        var_export( $args );
         $this->content($instance);
     }
+     */
 
 }
 

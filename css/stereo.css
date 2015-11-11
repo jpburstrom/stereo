@@ -100,7 +100,7 @@
 .stereo-label {
   min-width: 75%; }
 
-.stereo-buttons button {
+.stereo-controls .stereo-buttons button {
   vertical-align: middle;
   text-align: left;
   display: inline-block;
