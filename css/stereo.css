@@ -95,10 +95,7 @@
 
 .stereo-buttons {
   white-space: nowrap;
-  width: 7em; }
-
-.stereo-label {
-  min-width: 75%; }
+  width: 6.5em; }
 
 .stereo-controls .stereo-buttons button {
   vertical-align: middle;
@@ -130,8 +127,11 @@
 
 .stereo-label {
   overflow: hidden;
+  line-height: 1;
   position: relative;
-  line-height: 1; }
+  width: -webkit-calc(100% - 6.5em);
+  width: calc(100% - 6.5em);
+  min-width: 12em; }
 
 .stereo-label span {
   display: block;

@@ -37,12 +37,13 @@ $debug: false;
 
 //TODO: fixed width only for ticker. Otherwise remove position:absolute and use floats
 
+$button-container-width: 6.5em;
+
 .stereo-buttons {
     white-space:nowrap;
-    width:7em;
+    width:$button-container-width;
 }
 .stereo-label {
-    min-width:75%;
 }
 
 .stereo-controls .stereo-buttons button {
@@ -82,8 +83,10 @@ $debug: false;
 
 .stereo-label {
     overflow:hidden;
-    position:relative;
     line-height:1;
+    position:relative;
+    @include calc(width, "100% - #{$button-container-width}");
+    min-width:12em;
 }
 .stereo-label span {
     display:block;
