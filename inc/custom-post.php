@@ -206,7 +206,7 @@ if (true != stereo_option('taxonomy_tags')) {
     }
 }
 
-if (stereo_option('playlists_in_main_loop')) {
+if (!is_admin() && stereo_option('playlists_in_main_loop')) {
     add_filter( 'pre_get_posts', 'stereo_cpt_get_posts' );
 }
 
